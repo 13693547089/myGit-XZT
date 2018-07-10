@@ -11,6 +11,7 @@ public class LoginController {
 	@ResponseBody
 	@RequestMapping("/login")
 	public String login(){
+		System.out.println("111111");
 		return "登录成功";
 	}
 }
