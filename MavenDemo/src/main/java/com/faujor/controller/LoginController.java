@@ -12,6 +12,7 @@ public class LoginController {
 	@RequestMapping("/login")
 	public String login(){
 		System.out.println("111111");
+		System.out.println("分支创建输出22222");
 		return "登录成功";
 	}
 }
