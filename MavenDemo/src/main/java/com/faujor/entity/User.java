@@ -5,6 +5,19 @@ public class User {
 	private String id;
 	private String username;
 	private String password;
+	private Integer age;
+	
+	public User(String id, String username, String password, Integer age) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.age = age;
+	}
+	public User() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * @return the id
 	 */
@@ -40,6 +53,18 @@ public class User {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	/**
+	 * @return the age
+	 */
+	public Integer getAge() {
+		return age;
+	}
+	/**
+	 * @param age the age to set
+	 */
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 	
 }
