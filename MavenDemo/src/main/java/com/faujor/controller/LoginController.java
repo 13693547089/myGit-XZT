@@ -21,13 +21,7 @@ public class LoginController {
 
 	Map<String, User> map = new HashMap<String, User>();
 	
-	@PostConstruct
-	public void init() {
-		User user1 = new User("1","lisi","123456",23);
-		User user2 = new User("2","xiao","78900",30);
-		map.put(user1.getId(), user1);
-		map.put(user2.getId(), user2);
-	}
+	
 	
 	@ResponseBody
 	@GetMapping("/get")
@@ -54,10 +48,13 @@ public class LoginController {
 	@ResponseBody
 	@RequestMapping("/login")
 	public String login(){
-		System.out.println("111111");
+		System.out.println("111111222");
 		return "登录成功";
 	}
-	
+	@RequestMapping("/getHello")
+	public String getHelloHtml(){
+		return "hello";
+	}
 	
 	
 	
