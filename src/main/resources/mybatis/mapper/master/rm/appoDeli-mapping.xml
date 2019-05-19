@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.rm.AppoDeliMapper">
+
+	<resultMap type="com.faujor.entity.rm.AppoDeli" id="appoDeli">
+		<result property="sapId" column="sap_id" />
+		<result property="suppName" column="supp_name" />
+		<result property="appoCode" column="appo_code" />
+		<result property="requCode" column="requ_code" />
+		<result property="appoDate" column="appo_date" />
+		<result property="createDate" column="create_date" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="opId" column="op_id" />
+		<result property="mateNumber" column="mate_number" />
+		<result property="appoStatus" column="appo_status" />
+		<result property="appoType" column="appo_type" />
+		<result property="status" column="status" />
+		<result property="deliCode" column="deli_code" />
+		<result property="deliDate" column="deli_date" />
+		<result property="deliCreateDate" column="deli_create_date" />
+		<result property="orderId" column="order_id" />
+		<result property="frequency" column="frequency" />
+		<result property="deliNumber" column="deli_number" />
+		<result property="appoNumber" column="appo_number" />
+		<result property="unpaNumber" column="unpa_number" />
+		<result property="calculNumber" column="calcul_number" />
+		<result property="receUnit" column="rece_unit" />
+		<result property="receCode" column="rece_code" />
+		<result property="receDate" column="rece_date" />
+		<result property="receCreateDate" column="rece_create_date" />
+		<result property="receNumber" column="rece_number" />
+		<result property="inboDeliCode" column="inbo_deli_code" />
+		<result property="isOccupy" column="is_occupy" />
+		<result property="receStatus" column="rece_status" />
+		<result property="suppRange" column="supp_Range" />
+		<result property="suppRangeDesc" column="supp_Range_Desc" />
+	</resultMap>
+	<select id="queryAppoDeliByPage" parameterType="Map" resultMap="appoDeli">
+		select * from (
+		select h.*,rownum rn from (
+		select z.* from (
+		select * from (
+		select qs.sap_id,qs.supp_name,ba.appo_code,'' as requ_code,ba.appo_date,ba.create_date,
+		bam.mate_code,bam.mate_name,'' as po_id,ba.appo_status,bam.mate_number,'appo' as appo_type,ba.rece_unit,ba.supp_range,ba.supp_range_desc
+		  from bam_appoint ba
+		 left join bam_appo_mate bam on ba.appo_id = bam.appo_id left join
+		  mdm_qual_supp qs on ba.supp_id = qs.supp_id )appo left join 
+		(
+		select bd.status,bd.deli_code,bd.deli_date,bd.create_date deli_create_date,bdm.order_id,bdm.mate_code mate_code2,bdm.mate_name mate_name2,
+		bdm.frequency,bdm.deli_number,bdm.appo_number,bdm.unpa_number,bdm.calcul_number,bd.mapg_code
+		 from bam_delivery bd left join bam_deli_mate bdm  on bd.deli_id = bdm.deli_id) deli  
+		 on appo.appo_code = deli.mapg_code and appo.mate_code = deli.mate_code2
+		 left join (
+		select br.rece_code,br.rece_date,br.create_date rece_create_date,
+		brm.order_id order_id2,brm.mate_code mate_code3,brm.mate_name mate_name3,
+		brm.rece_number,brm.inbo_deli_code,br.deli_code deli_code2,brm.is_occupy,br.status rece_status,brm.frequency as frequency2,brm.deli_number as deli_number2
+		 from bam_receive br left join bam_rece_mate brm on br.rece_id = brm.rece_id ) rece
+		 on deli.deli_code = rece.deli_code2 and deli.mate_code2 = rece.mate_code3 and deli.order_id = rece.order_id2
+		 and deli.frequency = rece.frequency2 and deli.deli_number = rece.deli_number2
+		 union
+		select * from (
+		select qs.sap_id,qs.supp_name,bm.mess_code appo_code,bmm.order_id requ_code,
+		bm.arri_date appo_date,bm.create_date,bmm.semi_mate_code mate_code,bmm.semi_mate_name mate_name,
+		bmm.po_id,bm.mess_status appo_status,bmm.mate_number,'stra' as appo_type,bm.rece_unit,bm.supp_range,bm.supp_range_desc
+		 from bam_message bm left join bam_mess_mate bmm on bm.mess_id = bmm.mess_id 
+		 left join mdm_qual_supp qs on bm.zzoem = qs.sap_id)appo left join 
+		(
+		select bd.status,bd.deli_code,bd.deli_date,bd.create_date deli_create_date,
+		bdm.order_id,bdm.mate_code mate_code2,bdm.mate_name mate_name2,
+		bdm.frequency,bdm.deli_number,bdm.appo_number,bdm.unpa_number,bdm.calcul_number,bd.mapg_code
+		 from bam_delivery bd left join bam_deli_mate bdm  on bd.deli_id = bdm.deli_id) deli  
+		 on appo.appo_code = deli.mapg_code and appo.mate_code = deli.mate_code2 and appo.po_id = deli.order_id
+		 and appo.mate_number = deli.appo_number
+		 left join (
+		select br.rece_code,br.rece_date,br.create_date rece_create_date,brm.order_id order_id2,
+		brm.mate_code mate_code3,brm.mate_name mate_name3,
+		brm.rece_number,brm.inbo_deli_code,br.deli_code deli_code2,brm.is_occupy,br.status rece_status,brm.frequency as frequency2,brm.deli_number as deli_number2
+		 from bam_receive br left join bam_rece_mate brm on br.rece_id = brm.rece_id ) rece
+		 on deli.deli_code = rece.deli_code2 and deli.mate_code2 = rece.mate_code3 and deli.order_id = rece.order_id2
+		  and deli.frequency = rece.frequency2 and deli.deli_number = rece.deli_number2
+		 )z
+		 where 1=1
+		 	<if test="appoDeli.suppName != null and appoDeli.suppName != '' ">
+		 		and (z.supp_name like '%${appoDeli.suppName}%' or z.sap_id like '%${appoDeli.suppName}%')
+		 	</if>
+		 	<if test="appoDeli.suppRange != null and appoDeli.suppRange != '' ">
+		 		and (z.supp_range like '%${appoDeli.suppRange}%' or z.supp_Range_Desc like '%${appoDeli.suppRange}%')
+		 	</if>
+		 	<if test="appoDeli.appoType != null and appoDeli.appoType != '' ">
+		 		and z.appo_type = #{appoDeli.appoType}
+		 	</if>
+		 	<if test="appoDeli.appoCode != null and appoDeli.appoCode != '' ">
+		 	    and z.appo_code like '%${appoDeli.appoCode}%'
+		 	</if>
+		 	<if test="appoDeli.requCode != null and appoDeli.requCode != '' ">
+		 		and z.requ_code like '%${appoDeli.requCode}%'
+		 	</if>
+		 	<if test="appoDeli.mateName != null and appoDeli.mateName != '' ">
+		 		and (z.mate_name like '%${appoDeli.mateName}%' or z.mate_code like '%${appoDeli.mateName}%')
+		 	</if>
+		 	<if test="appoDeli.deliCode != null and appoDeli.deliCode != '' ">
+		 		and z.deli_code like '%${appoDeli.deliCode}%'
+		 	</if>
+		 	<if test="statusList != null">
+		 		and z.status in 
+		 		<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+		 	</if>
+		 	<if test="appoDeli.orderId != null and appoDeli.orderId != '' ">
+		 		and z.order_id like '%${appoDeli.orderId}%'
+		 	</if>
+		 	<if test="appoDeli.receCode != null and appoDeli.receCode != '' ">
+		 		and z.rece_code like '%${appoDeli.receCode}%'
+		 	</if>
+		 	<if test="appoDeli.inboDeliCode != null and appoDeli.inboDeliCode != '' ">
+		 		and z.inbo_deli_code like '%${appoDeli.inboDeliCode}%'
+		 	</if>
+		 	<if test="appoDeli.isOccupy != null and appoDeli.isOccupy != '' ">
+		 		and z.is_occupy = #{appoDeli.isOccupy}
+		 	</if>
+		 	<if test="appoDeli.appoStartDate != null or appoDeli.appoEndDate != null ">
+				and z.appo_date between #{appoDeli.appoStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.appoEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.appoCreStartDate != null and appoDeli.appoCreEndDate != null">
+				and z.create_date between #{appoDeli.appoCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.appoCreEndDate,jdbcType=VARCHAR}
+			</if>
+		 	<if test="appoDeli.deliStartDate != null or appoDeli.deliEndDate != null ">
+				and z.deli_date between #{appoDeli.deliStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.deliEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.deliCreStartDate != null and appoDeli.deliCreEndDate != null">
+				and z.deli_create_date between #{appoDeli.deliCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.deliCreEndDate,jdbcType=VARCHAR}
+			</if>
+		 	<if test="appoDeli.receStartDate != null or appoDeli.receEndDate != null ">
+				and z.rece_date between #{appoDeli.receStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.receEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.receCreStartDate != null and appoDeli.receCreEndDate != null">
+				and z.rece_create_date between #{appoDeli.receCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.receCreEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.receUnit != null and appoDeli.receUnit != '' ">
+				and z.rece_unit = #{appoDeli.receUnit}
+			</if>
+			<if test="receStatusList != null">
+				and z.rece_status in 
+		 		<foreach collection="receStatusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+			</if>
+			<if test="appoStatusList != null">
+				and z.appo_status in 
+		 		<foreach collection="appoStatusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+			</if>
+		 order by z.appo_code desc)h)k
+		<![CDATA[ where k.rn>=#{start} and k.rn <=#{end}]]>
+	</select>
+	
+	
+	<select id="queryAppoDeliByPageCount" parameterType="Map" resultType="int">	
+		select count(*) from (
+		select * from (
+		select qs.sap_id,qs.supp_name,ba.appo_code,'' as requ_code,ba.appo_date,ba.create_date,
+		bam.mate_code,bam.mate_name,'' as po_id,ba.appo_status,bam.mate_number,'appo' as appo_type,ba.rece_unit,ba.supp_range,ba.supp_range_desc  
+		from bam_appoint ba
+		 left join bam_appo_mate bam on ba.appo_id = bam.appo_id left join
+		  mdm_qual_supp qs on ba.supp_id = qs.supp_id )appo left join 
+		(
+		select bd.status,bd.deli_code,bd.deli_date,bd.create_date deli_create_date,bdm.order_id,bdm.mate_code mate_code2,bdm.mate_name mate_name2,
+		bdm.frequency,bdm.deli_number,bdm.appo_number,bdm.unpa_number,bdm.calcul_number,bd.mapg_code
+		 from bam_delivery bd left join bam_deli_mate bdm  on bd.deli_id = bdm.deli_id) deli  
+		 on appo.appo_code = deli.mapg_code and appo.mate_code = deli.mate_code2
+		 left join (
+		select br.rece_code,br.rece_date,br.create_date rece_create_date,
+		brm.order_id order_id2,brm.mate_code mate_code3,brm.mate_name mate_name3,
+		brm.rece_number,brm.inbo_deli_code,br.deli_code deli_code2,brm.is_occupy,br.status rece_status,brm.frequency as frequency2,brm.deli_number as deli_number2
+		 from bam_receive br left join bam_rece_mate brm on br.rece_id = brm.rece_id ) rece
+		 on deli.deli_code = rece.deli_code2 and deli.mate_code2 = rece.mate_code3 and deli.order_id = rece.order_id2
+		 and deli.frequency = rece.frequency2 and deli.deli_number = rece.deli_number2
+		 union
+		select * from (
+		select qs.sap_id,qs.supp_name,bm.mess_code appo_code,bmm.order_id requ_code,
+		bm.arri_date appo_date,bm.create_date,bmm.semi_mate_code mate_code,bmm.semi_mate_name mate_name,
+		bmm.po_id,bm.mess_status appo_status,bmm.mate_number,'stra' as appo_type,bm.rece_unit,bm.supp_range,bm.supp_range_desc
+		 from bam_message bm left join bam_mess_mate bmm on bm.mess_id = bmm.mess_id 
+		 left join mdm_qual_supp qs on bm.zzoem = qs.sap_id)appo left join 
+		(
+		select bd.status,bd.deli_code,bd.deli_date,bd.create_date deli_create_date,
+		bdm.order_id,bdm.mate_code mate_code2,bdm.mate_name mate_name2,
+		bdm.frequency,bdm.deli_number,bdm.appo_number,bdm.unpa_number,bdm.calcul_number,bd.mapg_code
+		 from bam_delivery bd left join bam_deli_mate bdm  on bd.deli_id = bdm.deli_id) deli  
+		 on appo.appo_code = deli.mapg_code and appo.mate_code = deli.mate_code2 and appo.po_id = deli.order_id
+		 and appo.mate_number = deli.appo_number
+		 left join (
+		select br.rece_code,br.rece_date,br.create_date rece_create_date,brm.order_id order_id2,
+		brm.mate_code mate_code3,brm.mate_name mate_name3,
+		brm.rece_number,brm.inbo_deli_code,br.deli_code deli_code2,brm.is_occupy,br.status rece_status,brm.frequency as frequency2,brm.deli_number as deli_number2
+		 from bam_receive br left join bam_rece_mate brm on br.rece_id = brm.rece_id ) rece
+		 on deli.deli_code = rece.deli_code2 and deli.mate_code2 = rece.mate_code3 and deli.order_id = rece.order_id2
+		 and deli.frequency = rece.frequency2 and deli.deli_number = rece.deli_number2
+		)z
+		where 1=1
+		 	<if test="appoDeli.suppName != null and appoDeli.suppName != '' ">
+		 		and (z.supp_name like '%${appoDeli.suppName}%' or z.sap_id like '%${appoDeli.suppName}%')
+		 	</if>
+		 	<if test="appoDeli.suppRange != null and appoDeli.suppRange != '' ">
+		 		and (z.supp_range like '%${appoDeli.suppRange}%' or z.supp_Range_Desc like '%${appoDeli.suppRange}%')
+		 	</if>
+		 	<if test="appoDeli.appoType != null and appoDeli.appoType != '' ">
+		 		and z.appo_type = #{appoDeli.appoType}
+		 	</if>
+		 	<if test="appoDeli.appoCode != null and appoDeli.appoCode != '' ">
+		 	    and z.appo_code like '%${appoDeli.appoCode}%'
+		 	</if>
+		 	<if test="appoDeli.requCode != null and appoDeli.requCode != '' ">
+		 		and z.requ_code like '%${appoDeli.requCode}%'
+		 	</if>
+		 	<if test="appoDeli.mateName != null and appoDeli.mateName != '' ">
+		 		and (z.mate_name like '%${appoDeli.mateName}%' or z.mate_code like '%${appoDeli.mateName}%')
+		 	</if>
+		 	<if test="appoDeli.deliCode != null and appoDeli.deliCode != '' ">
+		 		and z.deli_code like '%${appoDeli.deliCode}%'
+		 	</if>
+		 	<if test="statusList != null">
+		 		and z.status in 
+		 		<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+		 	</if>
+		 	<if test="appoDeli.orderId != null and appoDeli.orderId != '' ">
+		 		and z.order_id like '%${appoDeli.orderId}%'
+		 	</if>
+		 	<if test="appoDeli.receCode != null and appoDeli.receCode != '' ">
+		 		and z.rece_code like '%${appoDeli.receCode}%'
+		 	</if>
+		 	<if test="appoDeli.inboDeliCode != null and appoDeli.inboDeliCode != '' ">
+		 		and z.inbo_deli_code like '%${appoDeli.inboDeliCode}%'
+		 	</if>
+		 	<if test="appoDeli.isOccupy != null and appoDeli.isOccupy != '' ">
+		 		and z.is_occupy = #{appoDeli.isOccupy}
+		 	</if>
+		 	<if test="appoDeli.appoStartDate != null or appoDeli.appoEndDate != null ">
+				and z.appo_date between #{appoDeli.appoStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.appoEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.appoCreStartDate != null and appoDeli.appoCreEndDate != null">
+				and z.create_date between #{appoDeli.appoCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.appoCreEndDate,jdbcType=VARCHAR}
+			</if>
+		 	<if test="appoDeli.deliStartDate != null or appoDeli.deliEndDate != null ">
+				and z.deli_date between #{appoDeli.deliStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.deliEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.deliCreStartDate != null and appoDeli.deliCreEndDate != null">
+				and z.deli_create_date between #{appoDeli.deliCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.deliCreEndDate,jdbcType=VARCHAR}
+			</if>
+		 	<if test="appoDeli.receStartDate != null or appoDeli.receEndDate != null ">
+				and z.rece_date between #{appoDeli.receStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.receEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.receCreStartDate != null and appoDeli.receCreEndDate != null">
+				and z.rece_create_date between #{appoDeli.receCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.receCreEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.receUnit != null and appoDeli.receUnit != '' ">
+				and z.rece_unit = #{appoDeli.receUnit}
+			</if>
+			<if test="receStatusList != null">
+				and z.rece_status in 
+		 		<foreach collection="receStatusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+			</if>
+			<if test="appoStatusList != null">
+				and z.appo_status in 
+		 		<foreach collection="appoStatusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+			</if>
+	</select>
+	
+	<select id="queryAppoDeliListByMap" parameterType="Map" resultMap="appoDeli">
+		select z.* from (
+		select * from (
+		select qs.sap_id,qs.supp_name,ba.appo_code,'' as requ_code,ba.appo_date,ba.create_date,
+		bam.mate_code,bam.mate_name,'' as po_id,ba.appo_status,bam.mate_number,'appo' as appo_type,ba.rece_unit,ba.supp_range,ba.supp_range_desc
+		  from bam_appoint ba
+		 left join bam_appo_mate bam on ba.appo_id = bam.appo_id left join
+		  mdm_qual_supp qs on ba.supp_id = qs.supp_id )appo left join 
+		(
+		select bd.status,bd.deli_code,bd.deli_date,bd.create_date deli_create_date,bdm.order_id,bdm.mate_code mate_code2,bdm.mate_name mate_name2,
+		bdm.frequency,bdm.deli_number,bdm.appo_number,bdm.unpa_number,bdm.calcul_number,bd.mapg_code
+		 from bam_delivery bd left join bam_deli_mate bdm  on bd.deli_id = bdm.deli_id) deli  
+		 on appo.appo_code = deli.mapg_code and appo.mate_code = deli.mate_code2
+		 left join (
+		select br.rece_code,br.rece_date,br.create_date rece_create_date,
+		brm.order_id order_id2,brm.mate_code mate_code3,brm.mate_name mate_name3,
+		brm.rece_number,brm.inbo_deli_code,br.deli_code deli_code2,brm.is_occupy,br.status rece_status,brm.frequency as frequency2,brm.deli_number as deli_number2
+		 from bam_receive br left join bam_rece_mate brm on br.rece_id = brm.rece_id ) rece
+		 on deli.deli_code = rece.deli_code2 and deli.mate_code2 = rece.mate_code3 and deli.order_id = rece.order_id2
+		  and deli.frequency = rece.frequency2 and deli.deli_number = rece.deli_number2
+		 union
+		select * from (
+		select qs.sap_id,qs.supp_name,bm.mess_code appo_code,bmm.order_id requ_code,
+		bm.arri_date appo_date,bm.create_date,bmm.semi_mate_code mate_code,bmm.semi_mate_name mate_name,
+		bmm.po_id,bm.mess_status appo_status,bmm.mate_number,'stra' as appo_type,bm.rece_unit,bm.supp_range,bm.supp_range_desc
+		 from bam_message bm left join bam_mess_mate bmm on bm.mess_id = bmm.mess_id 
+		 left join mdm_qual_supp qs on bm.zzoem = qs.sap_id)appo left join 
+		(
+		select bd.status,bd.deli_code,bd.deli_date,bd.create_date deli_create_date,
+		bdm.order_id,bdm.mate_code mate_code2,bdm.mate_name mate_name2,
+		bdm.frequency,bdm.deli_number,bdm.appo_number,bdm.unpa_number,bdm.calcul_number,bd.mapg_code
+		 from bam_delivery bd left join bam_deli_mate bdm  on bd.deli_id = bdm.deli_id) deli  
+		 on appo.appo_code = deli.mapg_code and appo.mate_code = deli.mate_code2 and appo.po_id = deli.order_id
+		 and appo.mate_number = deli.appo_number
+		 left join (
+		select br.rece_code,br.rece_date,br.create_date rece_create_date,brm.order_id order_id2,
+		brm.mate_code mate_code3,brm.mate_name mate_name3,
+		brm.rece_number,brm.inbo_deli_code,br.deli_code deli_code2,brm.is_occupy,br.status rece_status,brm.frequency as frequency2,brm.deli_number as deli_number2
+		 from bam_receive br left join bam_rece_mate brm on br.rece_id = brm.rece_id ) rece
+		 on deli.deli_code = rece.deli_code2 and deli.mate_code2 = rece.mate_code3 and deli.order_id = rece.order_id2
+		  and deli.frequency = rece.frequency2 and deli.deli_number = rece.deli_number2
+		 )z
+		 where 1=1
+		 	<if test="appoDeli.suppName != null and appoDeli.suppName != '' ">
+		 		and (z.supp_name like '%${appoDeli.suppName}%' or z.sap_id like '%${appoDeli.suppName}%')
+		 	</if>
+		 	<if test="appoDeli.suppRange != null and appoDeli.suppRange != '' ">
+		 		and (z.supp_range like '%${appoDeli.suppRange}%' or z.supp_Range_Desc like '%${appoDeli.suppRange}%')
+		 	</if>
+		 	<if test="appoDeli.appoType != null and appoDeli.appoType != '' ">
+		 		and z.appo_type = #{appoDeli.appoType}
+		 	</if>
+		 	<if test="appoDeli.appoCode != null and appoDeli.appoCode != '' ">
+		 	    and z.appo_code like '%${appoDeli.appoCode}%'
+		 	</if>
+		 	<if test="appoDeli.requCode != null and appoDeli.requCode != '' ">
+		 		and z.requ_code like '%${appoDeli.requCode}%'
+		 	</if>
+		 	<if test="appoDeli.mateName != null and appoDeli.mateName != '' ">
+		 		and (z.mate_name like '%${appoDeli.mateName}%' or z.mate_code like '%${appoDeli.mateName}%')
+		 	</if>
+		 	<if test="appoDeli.deliCode != null and appoDeli.deliCode != '' ">
+		 		and z.deli_code like '%${appoDeli.deliCode}%'
+		 	</if>
+		 	<if test="statusList != null">
+		 		and z.status in 
+		 		<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+		 	</if>
+		 	<if test="appoDeli.orderId != null and appoDeli.orderId != '' ">
+		 		and z.order_id like '%${appoDeli.orderId}%'
+		 	</if>
+		 	<if test="appoDeli.receCode != null and appoDeli.receCode != '' ">
+		 		and z.rece_code like '%${appoDeli.receCode}%'
+		 	</if>
+		 	<if test="appoDeli.inboDeliCode != null and appoDeli.inboDeliCode != '' ">
+		 		and z.inbo_deli_code like '%${appoDeli.inboDeliCode}%'
+		 	</if>
+		 	<if test="appoDeli.isOccupy != null and appoDeli.isOccupy != '' ">
+		 		and z.is_occupy = #{appoDeli.isOccupy}
+		 	</if>
+		 	<if test="appoDeli.appoStartDate != null or appoDeli.appoEndDate != null ">
+				and z.appo_date between #{appoDeli.appoStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.appoEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.appoCreStartDate != null and appoDeli.appoCreEndDate != null">
+				and z.create_date between #{appoDeli.appoCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.appoCreEndDate,jdbcType=VARCHAR}
+			</if>
+		 	<if test="appoDeli.deliStartDate != null or appoDeli.deliEndDate != null ">
+				and z.deli_date between #{appoDeli.deliStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.deliEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.deliCreStartDate != null and appoDeli.deliCreEndDate != null">
+				and z.deli_create_date between #{appoDeli.deliCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.deliCreEndDate,jdbcType=VARCHAR}
+			</if>
+		 	<if test="appoDeli.receStartDate != null or appoDeli.receEndDate != null ">
+				and z.rece_date between #{appoDeli.receStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.receEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.receCreStartDate != null and appoDeli.receCreEndDate != null">
+				and z.rece_create_date between #{appoDeli.receCreStartDate,jdbcType=VARCHAR}
+				and #{appoDeli.receCreEndDate,jdbcType=VARCHAR}
+			</if>
+			<if test="appoDeli.receUnit != null and appoDeli.receUnit != '' ">
+				and z.rece_unit = #{appoDeli.receUnit}
+			</if>
+			<if test="receStatusList != null">
+				and z.rece_status in 
+		 		<foreach collection="receStatusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+			</if>
+			<if test="appoStatusList != null">
+				and z.appo_status in 
+		 		<foreach collection="appoStatusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			    </foreach>
+			</if>
+		 order by z.appo_code desc
+	</select>
+	
+	
+</mapper>

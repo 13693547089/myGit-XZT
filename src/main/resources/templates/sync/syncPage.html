@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- <head th:include="include::layuiHeader">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+ -->
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/larryMS/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/larryMS/layui/css/style.css" media="all">
+<title>同步操作页面</title>
+</head>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/sync/syncPage.js}"></script>
+
+<style type="text/css">
+ input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {margin-top: 0px;margin-bottom: 0px;}
+.margin-top20{margin-top: 20px;}   
+.layui-form-label{width:100px;}
+.layui-form-label10{width:10px;}
+.pull-right{margin-right:20px} 
+.panel-body{padding:10px !important;}
+</style>
+<body>
+<div class="layui-row main-body ">
+	<div class="layui-row margin-top20" >
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseOne"> 
+					<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;生产交货计划物料同步
+				</a>
+				<div id="collapseOne" class="panel-collapse">
+					<div class="panel-body">
+						<div class="layui-row">
+						<form action="" id="dealForm" class="layui-form">
+							<div class="layui-col-md6">
+								<div class="layui-inline">
+									<label class="layui-form-label">月份</label>
+									<div class="layui-input-block">
+		        						<input type="text" class="layui-input" id="padMonth" name="padMonth" th:value="${month}" placeholder="yyyy-MM">
+		     	 					</div>
+								</div>
+								<div class="layui-inline">
+		     	 					<div class="layui-input-block" style="float:left;">
+		        						<input type="checkbox" id="isFlag" name="like[isLast]" title="月末最后一天">
+		     	 					</div>
+		     	 				</div>
+							</div>
+						</form>
+						<div class="layui-col-md6">
+							<div class="layui-inline">
+								<button class="layui-btn layui-btn-xs blueHollow" id="syncBtn">同步</button>
+								<!-- <button class="layui-btn layui-btn-xs blueHollow" id="delBtn">删除</button>
+								<button class="layui-btn layui-btn-xs blueHollow" id="delAllBtn">删除所有</button> -->
+							</div>
+						</div>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.common.InterfaceLogMapper">
+
+	<insert id="saveLog" parameterType="com.faujor.entity.common.InterfaceLogMain">
+		insert into interface_log_main t1
+		(id,
+		interface_num,
+		interface_desc,
+		in_json,
+		out_json,
+		invoke_time,
+		status,
+		message,
+		invoker)
+		values
+		(sys_guid(),#{interfaceNum},#{interfaceDesc},
+		#{inJson},#{outJson},sysdate,#{status},#{message},#{invoker})
+	</insert>
+</mapper>

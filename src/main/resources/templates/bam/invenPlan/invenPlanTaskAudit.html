@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>备货计划</title>
+</head>
+<style type="text/css">
+#suppDiv {
+	width: 78% ! important;
+}
+
+.layui-form-label {
+	width: 100px;
+}
+
+.main-body {
+	margin: 10px 15px;
+}
+
+.marginLeft5 {
+	margin-left: 5%;
+}
+
+.margin-top20 {
+	margin-top: 10px;
+}
+
+.blueHollow {
+	border: 1px #458ffc solid;
+	background: white;
+	color: #458ffc;
+}
+
+.blueHollow:hover {
+	background: #458ffc;
+	color: #fff;
+}
+
+.layui-tab-title {
+	height: 41px !important;
+	background: none !important;
+}
+
+.panel-body {
+	padding: 0px !important;
+}
+
+.layui-tab-content {
+	padding: 0px !important;
+}
+.centerBtn{
+	margin-top: 2%; margin-left: 4%;
+}
+.layui-btn-xs{
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    padding: 0px 5px}
+</style>
+<body>
+	<div class="layui-row main-body ">
+		<div class="layui-row">
+			<div class="layui-col-md4 ">
+				<span th:if="${taskPDO.pagePattern == 'write'}">
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn"
+					id="saveBtn">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn"
+					id="submitBtn">提交</button>
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn"
+					hidden="hidden" id="saveBtn2">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn"
+				    hidden="hidden"   id="auditBtn">审核</button>
+				<button class="layui-btn layui-btn-xs blueHollow layui-hide "
+					id="suppProdBtn">排产计划</button>
+				</span>
+				<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+			</div>
+		</div>
+		<form class="layui-form" action="" id="invenPlan-form">
+			<input type="hidden" id="id" name="id" th:value="${invenPlan.id}" />
+			<input type="hidden" id="detailJson" name="detailJson" /> <input
+				type="hidden" id="type" name="type" th:value="${type}" /> <input
+				type="hidden" id="prodSeriesDesc" name="prodSeriesDesc"
+				th:value="${invenPlan.prodSeriesDesc}" /> <input type="hidden"
+				id="seriesCode" th:value="${invenPlan.prodSeriesCode}" />
+			<input  id="taskName" th:value="${taskPDO.taskName}" name="taskName" class="hide" style=''></input>
+		    <input  id="processCode" th:value="${taskPDO.processCode}" name="processCode" class="hide" style=''></input> 
+		    <input  id="pagePattern" th:value="${taskPDO.pagePattern}" name="pagePattern" class="hide" style=''></input> 
+			<div class="layui-row margin-top20">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">计划单号</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" id="planCode"
+								name="planCode" th:value="${invenPlan.planCode}"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">计划名称</label>
+						<div class="layui-input-inline">
+							<input type="text" id="planDesc" name="planDesc"
+								th:value="${invenPlan.planDesc}" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="status" id="status"
+								th:value="${invenPlan.status}" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">创建日期</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="createDate"
+								id="createDate"
+								th:value="${invenPlan.createTime== null} ? '':${#dates.format(invenPlan.createTime, 'yyyy-MM-dd')}"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md3">
+					<div class="layui-form-item ">
+						<label class="layui-form-label">月份</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="planMonth"
+								id="planMonth"
+								th:value="${invenPlan.planMonth== null} ? '':${#dates.format(invenPlan.planMonth, 'yyyy-MM')} "
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- 报表开始 -->
+		<div class="layui-tab" lay-filter="planTab">
+			<ul class="layui-tab-title">
+				<li class="layui-this" lay-id="mateSum">按物料汇总</li>
+				<li lay-id="suppSum">按供应商汇总</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+				<div class="layui-row">
+					<div class="layui-col-md3 layui-col-md-offset9">
+					    <input type="hidden" id="mateDesc">
+					    <input type="hidden" id="selectSeriesCodes">
+					    <input type="hidden" id="selectItemCodes">
+						<div class="layui-btn layui-btn-xs blueHollow centerBtn " id="itemSearchBtn">选择类别</div>
+						<div class="layui-btn layui-btn-xs blueHollow centerBtn " id="seriesSearchBtn">选择系列</div>
+						<div class="layui-btn layui-btn-xs blueHollow centerBtn " id="mateSearchBtn">选择物料</div>
+						<div class="layui-btn layui-btn-xs blueHollow centerBtn " id="searchBtn1">查询</div>
+					</div>
+				</div>
+					<div class="layui-fluid tableCont" style='padding:0px;'>
+				
+					<table id="mateTable" lay-filter="mateTable">
+					</table>
+					</div>
+				</div>
+				<div class="layui-tab-item">
+				<div class="layui-row">
+					<div class="layui-col-md3 layui-col-md-offset9">
+					    <input type="hidden" id="selectSuppCodes">
+						<div class="layui-btn layui-btn-xs blueHollow centerBtn " id="suppSearchBtn">选择供应商</div>
+						<div class="layui-btn layui-btn-xs blueHollow centerBtn " id="searchBtn2">查询</div>
+					</div>
+				</div>
+					<div class="layui-fluid tableCont" style='padding:0px;'>
+				
+					<table id="suppTable" lay-filter="suppTable">
+					</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/html" id="operateBar">
+  			<a class="layui-btn layui-btn-xs blueInline" lay-event="decompose">分解</a>
+  			<a class="layui-btn layui-btn-xs blueInline" lay-event="cancle">撤销</a>
+  			<a class="layui-btn layui-btn-xs blueInline" lay-event="view">查看</a>
+		</script>
+	<script type="text/html" id="operateBar1">
+			<a class="layui-btn layui-btn-xs blueInline" lay-event="view">查看</a>
+	</script>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>	
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/bam/invenPlan/invenPlanTaskAudit.js}"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader"></head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+.layui-table-cell{padding:0px !important;}
+html,body{overflow:auto !important;}
+.appoStatusSpan{margin-right: -1%; margin-left: 3%;}
+.uncheck{margin-left:20px}
+.checked{margin-left:20px}
+.status{cursor: pointer;}
+</style>
+<body >
+<form class="layui-form" action="" method="post">
+	<div class="demoTable">
+		<!--日期状态选择框 -->
+		<div class="layui-row MarginTop">		   
+			  <input type="hidden" id="userId" name="userId" th:value="${user.userId}"  class="layui-input">
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">OEM供应商</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="oemSuppName" name="oemSuppName" placeholder="OEM供应商名称/编号"     class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">采购组织</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="purchOrg" name="purchOrg" placeholder="采购组织"    class="layui-input">
+				    </div>
+				  </div>
+			 </div>
+		  	  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">合同/订单编号</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="oemOrderCode" name="oemOrderCode" placeholder="合同/订单编号"    class="layui-input">
+				    </div>
+				  </div>
+			  </div>  
+		  </div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">订购日期</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" id="startDate" name="startDate" placeholder="yyyy-MM-dd"   class="layui-input">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							 <input type="text" id="endDate" name="endDate"   placeholder="yyyy-MM-dd"   class="layui-input">
+						</div>
+					</div>
+			</div>
+			<div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">状态</label>
+				    <div class="layui-input-block">
+				    	  <select name="status"  id="status">
+					        <option id="aaa" value=""></option>
+					        <option th:each="orderPackStatus:${orderPackStatus}" th:value="${orderPackStatus.dicName}" th:text="${orderPackStatus.dicName}"></option>
+					      </select>
+				    </div>
+				  </div>
+			  </div> 
+		</div>
+		
+		<div class="layui-row">
+			<div class="layui-col-md9" >
+				<button class="layui-btn layui-btn-xs blueHollow" type="button" id="addOrderPack" >创建</button>
+			</div>
+			<div class="textRight" style="margin-right:5px;">
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button" data-type="reload" id="serachSupp">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" type="reset" id="reset">重置</button>
+			</div>
+		</div> 	
+	</div>
+	</form>	
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-table " id ="orderPackTableId" lay-filter="demo" style='display:none' >
+		</table>
+	</div>
+<script type="text/html" id="barDemo">
+<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="check">查看</a>
+  <a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+</script>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/order/orderPack/orderPackList.js}"></script>	
+				
+</body>
+</html>
+		 

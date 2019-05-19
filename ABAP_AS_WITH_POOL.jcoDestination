@@ -1,0 +1,10 @@
+#SAP Properties File !
+#Sun May 19 18:28:22 CST 2019
+jco.client.lang=zh
+jco.destination.peak_limit=10
+jco.client.client=800
+jco.client.passwd=thatok
+jco.client.user=xuchen
+jco.client.sysnr=00
+jco.destination.pool_capacity=3
+jco.client.ashost=/H/sap.top-china.cn/H/192.168.80.237

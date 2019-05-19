@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader"></head>
+<body>
+	<form action="" class="layui-form" id="signForm">
+		<div class="layui-inline">
+			<label class="layui-form-label">节点类型</label>
+			<div class="layui-input-inline">
+				<select name="nodeType" lay-verify="">
+					<option value="01">所有前序环节</option>
+					<option value="02">前序环节</option>
+					<option value="03" selected="selected">指定环节</option>
+					<option value="04">首环节</option>
+					<option value="05">前序人</option>
+				</select>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+</body>
+</html>

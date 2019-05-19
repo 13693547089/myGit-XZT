@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.MdmConfigMapper">
+
+	<select id="findSelectedMateCodesByOemPackSupp" parameterType="com.faujor.entity.mdm.OemPackSupp" resultType="String">
+		select ${selected_col} as mateCode from mdm_oem_pack_supp t 
+		<where>
+			<if test="oemSuppCode != null and oemSuppCode != ''">
+				and t.oem_supp_code = #{oemSuppCode}
+			</if>
+			<if test="packSuppCode != null and packSuppCode != ''">
+				 and t.pack_supp_code = #{packSuppCode}
+			</if>
+			<if test="mateCode != null and mateCode != ''">
+				and (t.mate_code like '%${mateCode}%' 
+					or t.mate_name like '%${mateCode}%')
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteOemPackSuppByOPS" parameterType="com.faujor.entity.mdm.OemPackSupp">
+		delete from mdm_oem_pack_supp where oem_supp_code = #{oemSuppCode} and pack_supp_code = #{packSuppCode}
+	</delete>
+	
+	<insert id="batchSaveOemPackSupp" parameterType="list">
+		insert all 
+		<foreach collection="list" index="index" item="item">
+			into mdm_oem_pack_supp (id, oem_supp_code, oem_supp_name, pack_supp_code, pack_supp_name, 
+			mate_code, mate_name) values
+			(#{item.id}, #{item.oemSuppCode}, #{item.oemSuppName}, #{item.packSuppCode}, #{item.packSuppName}, 
+			#{item.mateCode}, #{item.mateName})
+		</foreach>
+		select 1 from dual
+	</insert>	
+	
+	<resultMap type="com.faujor.entity.mdm.OemPackSupp" id="opsMap">
+		<id property="id" column="id" />
+		<result property="oemSuppCode" column="oem_supp_code" />
+		<result property="oemSuppName" column="oem_supp_name" />
+		<result property="packSuppCode" column="pack_supp_code" />
+		<result property="packSuppName" column="pack_supp_name" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+	</resultMap>
+	<select id="findOemPackSuppList" parameterType="com.faujor.entity.mdm.OemPackSupp" resultMap="opsMap">
+		select t.* from mdm_oem_pack_supp t
+		<where>
+			<if test="oemSuppCode != null and oemSuppCode != ''">
+				and (t.oem_supp_code like '%${oemSuppCode}%'
+					or t.oem_supp_name like '%${oemSuppCode}%')
+			</if>
+			<if test="packSuppCode != null and packSuppCode != ''">
+				and (t.pack_supp_code like '%${packSuppCode}%'
+					or t.pack_supp_name like '%${packSuppCode}%')
+			</if>
+			<if test="mateCode != null and mateCode != ''">
+				and (t.mate_code like '%${mateCode}%'
+					or t.mate_name like '%${mateCode}%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="countOemPackSuppList" parameterType="com.faujor.entity.mdm.OemPackSupp" resultType="Integer">
+		select count(1) from mdm_oem_pack_supp t
+		<where>
+			<if test="oemSuppCode != null and oemSuppCode != ''">
+				and (t.oem_supp_code like '%${oemSuppCode}%'
+					or t.oem_supp_name like '%${oemSuppCode}%')
+			</if>
+			<if test="packSuppCode != null and packSuppCode != ''">
+				and (t.pack_supp_code like '%${packSuppCode}%'
+					or t.pack_supp_name like '%${packSuppCode}%')
+			</if>
+			<if test="mateCode != null and mateCode != ''">
+				and (t.mate_code like '%${mateCode}%'
+					or t.mate_name like '%${mateCode}%')
+			</if>
+		</where>
+		order by t.oem_supp_code desc, t.pack_supp_code desc
+	</select>
+	
+	<delete id="removeOemPackSupp" parameterType="list">
+		delete from mdm_oem_pack_supp where id in 
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item.id}
+		</foreach>
+	</delete>
+</mapper>

@@ -1,0 +1,282 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>预约申请列表</title>
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" th:href="@{/layui/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}"> -->
+</head>
+<style type="text/css">
+.top_div {
+	height: 50px;
+	width: 100%;
+}
+
+.layui-table-cell {
+	padding: 0px !important;
+}
+
+.clear {
+	clear: both;
+}
+
+.heigt150 {
+	height: 100px;
+}
+
+.heightMax {
+	height: 100%;
+	padding-left: 2%;
+}
+
+.box {
+	width: 50px;
+	height: 19px;
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0 auto;
+}
+
+.help {
+	width: 75%;
+	height: 100%;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.mone_div {
+	height: 50px;
+}
+
+.mone_input {
+	height: 100%;
+	border: none;
+}
+
+body {
+	overflow: auto !important;
+}
+
+.hide {
+	display: none;
+}
+
+.fixed-table-body {
+	height: auto !important;
+}
+
+.fixed-table-container {
+	border: none !important;
+}
+
+table {
+	margin-top: 0px !important;
+}
+
+#fallBack {
+	display: none;
+}
+
+#confirm {
+	display: none;
+}
+
+.layui-table-view .layui-table td,.layui-table-view .layui-table th {
+	padding: 2px 0px;
+}
+
+button[disabled],html input[disabled] {
+	background: white
+}
+
+.popWidth {
+	width: 252px;
+}
+
+.popSpan {
+	padding-top: 8px;
+	height: 30px;
+	display: block;
+	float: left;
+	width: 10px;
+	color: red;
+}
+
+</style>
+<body>
+
+	<!-- 订单信息 -->
+	<div class='mid_div'>
+
+		<div class='BttonDiv' style="margin-top: 10px;">
+			<button class="layui-btn layui-btn-xs blueHollow" id="submitBut">提交</button>
+			<button class="layui-btn layui-btn-xs blueHollow" id="saveBut">保存</button>
+			<button class="layui-btn layui-btn-xs blueHollow" th:if="${type == '2'}" id="updateBut">更新</button>
+			<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+		</div>
+		<form action="" class="layui-form">
+		<input type="hidden" name="OrderCode" id="OrderCode" th:value="${orderPackVO?.oemOrderCode}"/>
+		<input type="hidden" name="OrderId" id="OrderId" th:value="${orderPackVO?.id}"/>
+		<input type="hidden" name="type" id="type" th:value="${type}"/>
+		<input type="hidden" name="type" id="userType" th:value="${userType}"/>
+		<div class="layui-row" style="margin-top: 10px;">
+			<div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 118px;" >订单编号</label>
+			    <div class="layui-input-block"  >
+			           <select name="oemOrderCode" lay-search="" lay-filter="oemOrderCode" id="oemOrderCode" th:if="${type =='1'}">
+					        <option id="aaa" value=""></option>
+					        <option th:each="orderCodeList:${orderCodeList}" th:value="${orderCodeList}"
+									th:text="${orderCodeList}" th:selected="${orderCodeList==orderPackVO?.oemOrderCode}"></option>
+					    </select>
+						<input type="text" name="oemOrderCode" id="oemOrderCode"
+							   style="width: 70%" class="layui-input redonl"
+							   th:value="${orderPackVO?.oemOrderCode}"
+							   readonly="readonly" th:if="${type !='1'}">
+			    </div>
+			  </div>
+		  </div> 
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style='width: 118px;'>订购日期</label>
+					<div class="layui-input-block">
+						<input type="text" name="subeDate" id="subeDate"
+							style="width: 70%" class="layui-input redonl"
+							th:value="${orderPackVO?.subeDate == null ? '' : #dates.format(orderPackVO?.subeDate,'yyyy-MM-dd')}"
+							readonly="readonly">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style='width: 118px;'>状态</label>
+					<div class="layui-input-block">
+						<input type="text" name="status" id="status"
+							style="width: 70%" class="layui-input redonl Type"
+							th:value="${orderPackVO?.status}" readonly="readonly">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style='width: 118px;'>下单限比</label>
+					<div class="layui-input-block" >
+						<input type="text" name="limitThan" id="limitThan"
+							style="width: 90% !important" class="layui-input redonl"
+							th:value="${orderPackVO?.limitThan}" readonly='readonly'>
+						
+					</div>
+					<div style='float:right; width:5%;margin-top:-29px;'>%</div>
+				</div>
+			</div>
+			<div class="layui-col-md3" >
+				<div class="layui-form-item">
+					<label class="layui-form-label" style='width: 118px;'>供应商</label>
+					<div class="layui-input-block">
+						<input type="text" name="oemSapId" id="oemSapId" 
+							style="width: 70%" class="layui-input redonl"
+							th:value="${orderPackVO?.oemSapId} " readonly="readonly" th:if="${userType =='supplier'}"/>
+						<input type="text" name="oemSapId" id="oemSapId"
+							   style="width: 70%" class="layui-input redonl"
+							   th:value="${orderPackVO?.oemSapId} " readonly="readonly" th:if="${userType !='supplier'}"/>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<input type="text" name="oemSuppName" id="oemSuppName" 
+							style="width: 70%" class="layui-input redonl"
+							th:value="${orderPackVO?.oemSuppName} " readonly="readonly"  th:if="${userType =='supplier' || (type != '1'  && userType !='supplier')}">
+				<select name="oemOrderCode" lay-search="" lay-filter="oemSupp" id="oemSupp"
+						th:if="${userType !='supplier' && type =='1'}">
+					<option id="bbb" value=""></option>
+					<option th:each="qualSuppList:${qualSuppList}" th:value="${qualSuppList?.sapId}"
+							th:text="${qualSuppList?.suppName}"></option>
+				</select>
+				<input type="hidden" name="purchOrg" id="purchOrg" />
+			</div>
+		</div>
+		<div>
+			<table class="layui-table" id="orderTable" lay-filter="demo">
+			</table>
+		</div>
+		<div class="layui-row heigt150">
+			<!--<div class="layui-col-md6 heightMax">
+				<div class='box' style='width: 60px;'>内部备注</div>
+				<textarea th:text="${orderPackVO?.remarks}" id="remark" class='help redonl1' readonly="readonly"
+					style='background: white !important;'></textarea>
+			</div>-->
+			<div class="layui-col-md6 heightMax" style="float: right">
+				<div class='layui-row'>
+					<div class="layui-col-md3 " style='margin-top: 42px;'>
+						<label>币种：</label> <label>人民币</label>
+					</div>
+					<div class='help layui-col-md6'>
+						<div class='mone_div' style='height: 35px;'>
+							小计：<input class='mone_input Mone redonl' id="subtotal" th:value="${orderPackVO?.subtotal}" readonly='readonly'>
+						</div>
+						<div class='mone_div' style='height: 35px;'>
+							税额：<input class='mone_input Tax redonl' id="taxNumber" th:value="${orderPackVO?.subtotal}" readonly='readonly'>
+						</div>
+						<div class='mone_div' style='height: 35px;'>
+							合计：<input class='mone_input TaxMone redonl' id="total" th:value="${orderPackVO?.subtotal}" readonly='readonly'>
+						</div>
+
+					</div>
+				</div>
+				<div class='clear'></div>
+			</div>
+		</div>
+		</form>
+		<div class="panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;包材信息
+				</a>
+			</div>
+		</div>
+		<div>
+			<table class="layui-table" id="orderPackMessTable" lay-filter="orderPackMessTableDemo">
+			</table>
+		</div>
+		<div class="panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;包材订单
+				</a>
+				<a class="btn editRow " style='padding-left: 0px;float:right;'>
+					<button class="layui-btn layui-btn-xs blueHollow" type="button"
+						data-toggle="modal" data-target="#paperInfo" id="addOrder" th:if="${type !='3'}">添加</button>
+				</a>
+				<div style="margin-top: -10px;">
+					<table class="table table-striped table-bordered table-hover text-nowrap" id="orderPackMateTable" lay-filter="orderPackMateTableDemo">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/html" id="barDemo1" th:if="${type == '1'}">
+		<a class="layui-btn layui-btn-danger layui-btn-xs blueInline" lay-event="edit">编辑</a>
+	  	<a class="layui-btn layui-btn-danger layui-btn-xs blueInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/html" id="barDemo2" th:if="${type == '2'}">
+	  	<a class="layui-btn layui-btn-danger layui-btn-xs blueInline" lay-event="edit">编辑</a>
+	  	<a class="layui-btn layui-btn-danger layui-btn-xs blueInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/html" id="barDemo3" th:if="${type == '3'}">
+		<a class="layui-btn layui-btn-danger layui-btn-xs blueInline" lay-event="down">下载</a>
+	</script>
+</body>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+<div th:include="include::bootstrapJS"></div>
+<script type="text/javascript"
+	src="/larryMS/js/appjs/task/taskCommon.js"></script>
+<script type="text/javascript"
+	th:src="@{/larryMS/js/appjs/bam/order/orderPack/orderPackDetail.js}"></script>
+</html>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.ReceiveMessageMapper">
+
+	<resultMap type="com.faujor.entity.bam.ReceiveMessage" id="receMess">
+		<result property="id" column="id" />
+		<result property="receUnit" column="rece_unit" />
+		<result property="receAddr" column="rece_addr" />
+		<result property="contact" column="contact" />
+		<result property="phone" column="phone" />
+		<result property="createId" column="create_id" />
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="post" column="post" />
+		<result property="freightRange" column="freight_Range" />
+	</resultMap>
+	<select id="queryReceiveMessByReceUnit" parameterType="String"
+		resultMap="receMess">
+		select
+		rm.id,rm.rece_unit,rm.rece_addr,rm.contact,rm.phone,rm.post from
+		bam_rece_mess rm
+		where rm.rece_unit=#{receUnit}
+	</select>
+
+	<select id="queryReceiveMessByPage" parameterType="Map"
+		resultMap="receMess">
+		select m2.* from(
+		select m1.*,rownum rn from(
+		select rm.* from bam_rece_mess rm
+		<where>
+			<if test="receUnit!=null">
+				and rm.rece_unit like #{receUnit}
+			</if>
+			<if test="freightRange!=null">
+				and rm.freight_Range like #{freightRange}
+			</if>
+		</where>
+		order by rm.create_date desc)m1)m2
+		<![CDATA[where m2.rn >=#{start} and m2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryReceiveMessByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_rece_mess rm 
+	    <where>
+			<if test="receUnit!=null">
+				and rm.rece_unit like #{receUnit}
+			</if>
+			<if test="freightRange!=null">
+				and rm.freight_Range like #{freightRange}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteReceMessById">
+		delete from bam_rece_mess rm where rm.id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<insert id="addReceiveMessage" parameterType="com.faujor.entity.bam.ReceiveMessage">
+		insert into
+		bam_rece_mess values(lower(sys_guid()),#{receUnit},#{receAddr},
+		#{contact},#{phone},#{createId},#{creator},#{createDate},null,null,null,#{post},#{freightRange})
+	</insert>
+
+	<select id="queryReceMessById" parameterType="String" resultMap="receMess">
+		select * from bam_rece_mess rm where rm.id=#{id}
+	</select>
+
+	<update id="udpateReceiveMessage" parameterType="com.faujor.entity.bam.ReceiveMessage">
+		update
+		bam_rece_mess rm set
+		rm.rece_unit=#{receUnit},
+		rm.rece_addr=#{receAddr},
+		rm.contact=#{contact},
+		rm.phone=#{phone},
+		rm.modifie_id=#{modifieId},
+		rm.modifier=#{modifier},
+		rm.udpate_date=#{udpateDate},
+		rm.post=#{post},
+		rm.freight_Range = #{freightRange}
+		where rm.id=#{id}
+	</update>
+
+	<select id="queryAllReceUnitOfReceiveMess" resultType="String">
+		select
+		rm.rece_unit from bam_rece_mess rm
+	</select>
+
+	<select id="queryReceiveMessByPost" parameterType="String"
+		resultMap="receMess">
+		select * from bam_rece_mess rm where rm.post=#{userId}
+	</select>
+
+	<select id="findReceiveAddr" resultMap="receMess">
+		select * from
+		bam_rece_mess rm
+	</select>
+</mapper>

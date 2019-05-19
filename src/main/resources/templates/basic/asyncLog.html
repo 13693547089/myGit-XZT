@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader"></head>
+<body class='fau-body-list'>
+	<form class="layui-form" id="searchForm" action="" method="post">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">同步任务</label>
+					<div class="layui-input-block">
+						<input type="text" id="asyncName" name="asyncName"
+							placeholder="同步任务" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">任务状态</label>
+					<div class="layui-input-block">
+						<input type="text" id="asyncStatus" name="asyncStatus"
+							placeholder="任务状态" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">操作人</label>
+					<div class="layui-input-block">
+						<input type="text" id="asyncUserName" name="asyncUserName"
+							placeholder="操作人" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">开始时间</label>
+					<div class="layui-input-block">
+						<input type="date" id="dateStr" name="dateStr" placeholder="开始时间"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid divMargin">
+		<div class="layui-row">
+			<div class="layui-col-md3">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="serachInfo">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="reset">重置</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="asyncLogTable"
+			lay-filter="asyncLogTable">
+		</table>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+
+	<script type="text/javascript">
+		layui.use([ "form", "table" ], function() {
+			var $ = layui.$;
+			var form = layui.form;
+			var table = layui.table;
+			// 搜索
+			$("#serachInfo").on("click", function() {
+				var asyncName = $("#asyncName").val();
+				var asyncStatus = $("#asyncStatus").val();
+				var asyncUserName = $("#asyncUserName").val();
+				var dateStr = $("#dateStr").val();
+				table.reload('asyncLogTable', {
+					where : {
+						asyncName : asyncName,
+						asyncStatus : asyncStatus,
+						asyncUserName : asyncUserName,
+						dateStr : dateStr
+					}
+				});
+			});
+
+			// 重置
+			$("#reset").on("click", function() {
+				$("#asyncName").val("");
+				$("#asyncStatus").val("");
+				$("#asyncUserName").val("");
+				$("#dateStr").val("");
+				table.reload('asyncLogTable', {
+					where : {
+						asyncName : "",
+						asyncStatus : "",
+						asyncUserName : "",
+						dateStr : ""
+					}
+				});
+			});
+
+			table.render({
+				elem : '#asyncLogTable',
+				url : "/basic/findAsyncLogList",
+				page : true,
+				cols : [ [ {
+					field : 'asyncName',
+					title : '同步任务',
+					width : 150,
+					fixed : 'left'
+				}, {
+					field : 'asyncStatus',
+					title : '同步状态',
+					width : 100
+				}, {
+					field : 'asyncUserName',
+					title : '操作人员',
+					width : 100
+				}, {
+					field : 'startDate',
+					title : '开始时间',
+					width : 150,
+					templet : function(d) {
+						return formatTime(d.startDate, 'yyyy-MM-dd hh:mm:ss');
+					}
+				}, {
+					field : 'endDate',
+					title : '结束时间',
+					width : 150,
+					templet : function(d) {
+						return formatTime(d.endDate, 'yyyy-MM-dd hh:mm:ss');
+					}
+				}, {
+					field : 'asyncNum',
+					title : '同步条数',
+					width : 90
+				}, {
+					field : 'errorMsg',
+					title : '错误信息'
+				} ] ]
+			});
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.StraMessageMapper">
+
+	<insert id="addStraMessage" parameterType="com.faujor.entity.bam.StraMessage">
+		<selectKey keyProperty="messId" resultType="java.lang.String"
+			order="BEFORE">
+			select lower(sys_guid()) from dual
+		</selectKey>
+		insert into bam_message(mess_id,mess_code,supp_id,supp_name,
+		delivery_date,mess_status,mate_number,mate_amount,rece_unit,
+		rece_addr,create_id,creator,create_date,contact,phone,zzoem,qrurl,
+		allo_no,arri_date,post,supp_range,supp_range_desc)
+		values(#{messId},#{messCode},#{suppId},#{suppName},
+		#{deliveryDate},#{messStatus},#{mateNumber},#{mateAmount},
+		#{receUnit},#{receAddr},#{createId},#{creator},#{createDate},
+		#{contact},#{phone},#{zzoem},#{qrurl}, #{alloNo},#{arriDate},#{post},#{suppRange},#{suppRangeDesc})
+	</insert>
+
+	<insert id="addMessMate" parameterType="com.faujor.entity.bam.MessMate">
+		insert into bam_mess_mate
+		values(lower(sys_guid()), #{messId}, #{mateCode}, #{mateName},
+		#{mateNumber}, #{mateAmount}, #{orderId}, #{unit}, #{frequency},
+		#{poId}, #{semiMateCode}, #{semiMateName}, #{semiMateNumber},
+		#{semiMateAmount}, #{semiUnit}, #{semiFrequency}, #{calculNumber},
+		#{unpaNumber}, #{subeDate})
+	</insert>
+
+	<resultMap type="com.faujor.entity.bam.StraMessage" id="straMessage">
+		<result property="messId" column="mess_id" />
+		<result property="messCode" column="mess_code" />
+		<result property="suppId" column="supp_id" />
+		<result property="suppName" column="supp_name" />
+		<result property="deliveryDate" column="delivery_date" />
+		<result property="messStatus" column="mess_status" />
+		<result property="mateNumber" column="mate_number" />
+		<result property="mateAmount" column="mate_amount" />
+		<result property="receUnit" column="rece_unit" />
+		<result property="receAddr" column="rece_addr" />
+		<result property="createId" column="create_id" />
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="modifieId" column="modifie_id" />
+		<result property="modifier" column="modifier" />
+		<result property="udpateDate" column="udpate_date" />
+		<result property="contact" column="contact" />
+		<result property="phone" column="phone" />
+		<result property="zzoem" column="zzoem" />
+		<result property="qrurl" column="qrurl" />
+		<result property="alloNo" column="allo_no" />
+		<result property="arriDate" column="arri_date" />
+		<result property="post" column="post" />
+		<result property="suppRange" column="supp_Range" />
+		<result property="suppRangeDesc" column="supp_Range_desc" />
+		<collection property="messMates" ofType="com.faujor.entity.bam.MessMate">
+			<result property="id" column="id" />
+			<result property="messId" column="mess_id2" />
+			<result property="mateCode" column="mate_code" />
+			<result property="mateName" column="mate_name" />
+			<result property="mateNumber" column="mate_number2" />
+			<result property="mateAmount" column="mate_amount2" />
+			<result property="orderId" column="order_id" />
+			<result property="unit" column="unit" />
+			<result property="frequency" column="frequency" />
+			<result property="poId" column="po_id" />
+			<result property="semiMateCode" column="semi_mate_code" />
+			<result property="semiMateName" column="semi_mate_name" />
+			<result property="semiMateNumber" column="semi_mate_number" />
+			<result property="semiMateAmount" column="semi_mate_amount" />
+			<result property="semiUnit" column="semi_unit" />
+			<result property="semiFrequency" column="semi_frequency" />
+			<result property="calculNumber" column="calcul_number" />
+			<result property="unpaNumber" column="unpa_number" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.bam.StraMessDO" id="straMessDO">
+		<result property="messId" column="mess_id" />
+		<result property="messCode" column="mess_code" />
+		<result property="arriDate" column="arri_date" />
+		<result property="messStatus" column="mess_status" />
+		<result property="mateNumber" column="mate_number" />
+		<result property="mateAmount" column="mate_amount" />
+		<result property="createId" column="create_id" />
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="zzoem" column="zzoem" />
+		<result property="oemSupp" column="oem_supp" />
+		<result property="post" column="post" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.bam.MessMate" id="starMessMate">
+		<result property="id" column="id" />
+		<result property="messId" column="mess_id2" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateNumber" column="mate_number2" />
+		<result property="mateAmount" column="mate_amount2" />
+		<result property="orderId" column="order_id" />
+		<result property="unit" column="unit" />
+		<result property="frequency" column="frequency" />
+		<result property="poId" column="po_id" />
+		<result property="semiMateCode" column="semi_mate_code" />
+		<result property="semiMateName" column="semi_mate_name" />
+		<result property="semiMateNumber" column="semi_mate_number" />
+		<result property="semiMateAmount" column="semi_mate_amount" />
+		<result property="semiUnit" column="semi_unit" />
+		<result property="semiFrequency" column="semi_frequency" />
+		<result property="calculNumber" column="calcul_number" />
+		<result property="unpaNumber" column="unpa_number" />
+	</resultMap>
+	<select id="queryStraMessageByPage" parameterType="Map"
+		resultMap="straMessDO">
+		select s2.* from(
+		select s1.*,rownum rn from(
+		select s.*,qs.supp_name
+		oem_supp from bam_message s
+		left join mdm_qual_supp qs on s.zzoem =
+		qs.sap_id
+		<where>
+			<if test="zzoem != null and zzoem != '' ">
+				and s.zzoem=#{zzoem} and s.mess_status !='已保存'
+			</if>
+			<if test="userId != null and userId != ''">
+				and (s.create_id = #{userId} or (s.create_id != #{userId}
+				and s.mess_status !='已保存'))
+			</if>
+			<if test="straMess.messStatus != null and straMess.messStatus != '' ">
+				and s.mess_status = #{straMess.messStatus}
+			</if>
+			<if test="straMess.messCode != null and straMess.messCode != '' ">
+				and s.mess_code like '%${straMess.messCode}%'
+			</if>
+			<if test="straMess.suppName != null and straMess.suppName != '' ">
+				and qs.supp_name like '%${straMess.suppName}%'
+			</if>
+			<if test="straMess.receUnit != null and straMess.receUnit != '' ">
+				and s.rece_unit = #{straMess.receUnit}
+			</if>
+			<if test="straMess.alloNo != null and straMess.alloNo != '' ">
+				and s.allo_no like '%${straMess.alloNo}%'
+			</if>
+			<if test="straMess.createDate != null">
+				and s.create_date =
+				#{straMess.createDate,jdbcType=VARCHAR}
+			</if>
+			<if test="straMess.startDate != null or straMess.endDate != null ">
+				and s.delivery_date between
+				#{straMess.startDate,jdbcType=VARCHAR} and
+				#{straMess.endDate,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by s.mess_code desc,s.create_date desc)s1)s2
+		<![CDATA[where s2.rn>=#{start} and s2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryStraMessageByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_message s left join mdm_qual_supp qs on
+		s.zzoem = qs.sap_id
+		where 1=1
+		and s.mess_status !='已保存'
+		<if test="zzoem != null and zzoem != '' ">
+			and s.zzoem=#{zzoem}
+		</if>
+		<if test="straMess.messStatus != null and straMess.messStatus != '' ">
+			and s.mess_status = #{straMess.messStatus}
+		</if>
+		<if test="straMess.messCode != null and straMess.messCode != '' ">
+			and s.mess_code like '%${straMess.messCode}%'
+		</if>
+		<if test="straMess.suppName != null and straMess.suppName != '' ">
+			and qs.supp_name like '%${straMess.suppName}%'
+		</if>
+		<if test="straMess.receUnit != null and straMess.receUnit != '' ">
+		    and s.rece_unit = #{straMess.receUnit}
+		</if>
+		<if test="straMess.alloNo != null and straMess.alloNo != '' ">
+			and s.allo_no like '%${straMess.alloNo}%'
+		</if>
+		<if test="straMess.createDate != null">
+			and s.create_date =
+			#{straMess.createDate,jdbcType=VARCHAR}
+		</if>
+		<if test="straMess.startDate != null or straMess.endDate != null ">
+			and s.delivery_date between
+			#{straMess.startDate,jdbcType=VARCHAR} and
+			#{straMess.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<delete id="deleteStraMessByMessId">
+		delete from bam_message m where m.mess_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<delete id="deleteMessMateByMessId">
+		delete from bam_mess_mate mm where mm.mess_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<select id="queryStraMessageByMessId" parameterType="String"
+		resultMap="straMessage">
+		select m.*,mm.id,mm.mess_id mess_id2
+		,mm.mate_code,mm.mate_name, mm.mate_number mate_number2,mm.mate_amount
+		mate_amount2, mm.order_id, mm.unit, mm.frequency, mm.po_id,
+		mm.semi_mate_code, mm.semi_mate_name, mm.semi_mate_number,
+		mm.semi_mate_amount, mm.semi_unit, mm.semi_frequency,
+		mm.calcul_number, mm.unpa_number from bam_message m left join
+		bam_mess_mate mm on m.mess_id = mm.mess_id where m.mess_id=#{messId}
+	</select>
+
+	<update id="updateStraMessageByMessId" parameterType="com.faujor.entity.bam.StraMessage">
+		update bam_message m
+		<set>
+			m.supp_name = #{suppName},m.delivery_date=#{deliveryDate},
+			m.mate_number=#{mateNumber},m.mate_amount=#{mateAmount},m.rece_unit=#{receUnit},
+			m.rece_addr=#{receAddr},m.modifie_id=#{modifieId},m.modifier=#{modifier},
+			m.udpate_date=sysdate,m.contact=#{contact},m.phone=#{phone},m.zzoem=#{zzoem},
+			m.allo_no = #{alloNo},m.arri_date = #{arriDate},m.post = #{post},
+			m.supp_range = #{suppRange},m.supp_range_desc = #{suppRangeDesc},
+			<if test="messStatus != null">
+				m.mess_status =#{messStatus}
+			</if>
+		</set>
+		where m.mess_id=#{messId}
+	</update>
+
+	<update id="updateStraMessStatusByMessId" parameterType="Map">
+		update bam_message m set m.mess_status=#{messStatus} where m.mess_id
+		in
+		<foreach collection="messIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="queryStraMessageBymessCode" parameterType="String"
+		resultMap="straMessage">
+		select m.*,mm.id,mm.mess_id mess_id2
+		,mm.mate_code,mm.mate_name,
+		mm.mate_number mate_number2,mm.mate_amount
+		mate_amount2 ,mm.order_id,mm.unit,mm.frequency, mm.po_id,
+		mm.semi_mate_code, mm.semi_mate_name, mm.semi_mate_number,
+		mm.semi_mate_amount, mm.semi_unit, mm.semi_frequency,
+		mm.calcul_number, mm.unpa_number from bam_message m
+		left
+		join
+		bam_mess_mate mm on m.mess_id = mm.mess_id
+		where
+		m.mess_code=#{messCode} and m.mess_status='已通知'
+	</select>
+	<update id="updateMessStatusByMessCode" parameterType="Map">
+		update
+		bam_message m set m.mess_status=#{messStatus} where
+		m.mess_code=#{messCode}
+	</update>
+	<select id="queryAllNotifiedStraMessage" resultMap="straMessage">
+		select * from bam_message m where m.mess_status=#{status}
+		<if test="zzoem != null and zzoem != '' ">
+			and m.zzoem=#{zzoem}
+		</if>
+		order by m.mess_code desc
+	</select>
+
+	<select id="queryOneStraMessageByMessCode" parameterType="String"
+		resultMap="straMessage">
+		select 
+		m.*,mm.id,mm.mess_id mess_id2
+		,mm.mate_code,mm.mate_name, mm.mate_number mate_number2,mm.mate_amount
+		mate_amount2, mm.order_id, mm.unit, mm.frequency, mm.po_id,
+		mm.semi_mate_code, mm.semi_mate_name, mm.semi_mate_number,
+		mm.semi_mate_amount, mm.semi_unit, mm.semi_frequency,
+		mm.calcul_number, mm.unpa_number
+		 from bam_message m  left join bam_mess_mate mm 
+	   on m.mess_id = mm.mess_id
+	    where m.mess_code=#{mapgCode}
+	</select>
+
+	<update id="cancellStraMessByMessId" parameterType="Map">
+		update bam_message m set m.mess_status=#{messStatus} where m.mess_id
+		in
+		<foreach collection="messIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<resultMap type="com.faujor.entity.bam.StraMessAndMateDO" id="straMessAndMateMap">
+		<result property="deliCode" column="deli_code" />
+		<result property="messCode" column="mess_code" />
+		<result property="orderNo" column="order_no" />
+		<result property="mateCode" column="mate_code" />
+		<result property="unpaNumber" column="unpa_number" />
+		<result property="calculNumber" column="calcul_number" />
+		<result property="occupyNumber" column="occupy_number" />
+	</resultMap>
+
+	<select id="findOccupyNumberByParams" parameterType="map"
+		resultMap="straMessAndMateMap">
+		SELECT * FROM(
+		SELECT t2.DELI_CODE AS deli_code, '' AS
+		mess_code, t1.ORDER_ID AS order_no, t1.MATE_CODE AS mate_code,
+		t1.deli_number AS occupy_number, t1.unpa_number AS UNPA_NUMBER,
+		t1.calcul_number AS CALCUL_NUMBER FROM BAM_DELI_MATE t1 LEFT JOIN
+		bam_delivery t2 ON t1.deli_id = t2.deli_id WHERE t2.status IN( '已发货',
+		'已签到', '待收货') and t1.order_id = #{orderNo} and t1.mate_code =
+		#{mateCode} 
+		<if test="suppRange !=null and suppRange != '' ">
+			and t2.supp_range = #{suppRange}
+		</if>
+		<if test="suppRange ==null or suppRange == '' ">
+			and (t2.supp_range is null or t2.supp_range ='')
+		</if>
+		UNION
+		SELECT '' AS deli_code, t1.MESS_CODE AS MESS_CODE,
+		t2.PO_ID AS order_no, t2.SEMI_MATE_CODE AS MATE_CODE,
+		t2.SEMI_MATE_NUMBER AS occupy_number, t2.UNPA_NUMBER AS UNPA_NUMBER,
+		t2.CALCUL_NUMBER AS CALCUL_NUMBER FROM BAM_MESSAGE t1 LEFT JOIN
+		BAM_MESS_MATE t2 ON t1.MESS_ID = t2.MESS_ID WHERE t1.MESS_STATUS
+		IN('已通知', '待发货') and t2.PO_ID = #{orderNo} and t2.SEMI_MATE_CODE =
+		#{mateCode}
+		<if test="suppRange !=null and suppRange != '' ">
+			and t1.supp_range = #{suppRange}
+		</if>
+		<if test="suppRange ==null or suppRange == '' ">
+			and (t1.supp_range is null or t1.supp_range ='')
+		</if>
+		UNION
+		SELECT a1.deli_code, a1.mess_code, a1.order_no,
+		a1.mate_code, a2.occupy_number, a1.unpa_number, a1.calcul_number FROM(
+		SELECT t2.DELI_CODE AS deli_code, '' AS mess_code, t1.ORDER_ID AS
+		order_no, t1.MATE_CODE AS mate_code, t1.unpa_number AS UNPA_NUMBER,
+		t1.calcul_number AS CALCUL_NUMBER,t1.frequency,t1.deli_number FROM BAM_DELI_MATE t1 LEFT JOIN
+		bam_delivery t2 ON t1.deli_id = t2.deli_id WHERE t2.status = '已收货' and
+		t1.order_id = #{orderNo} and t1.mate_code = #{mateCode}
+		<if test="suppRange !=null and suppRange != '' ">
+			and t2.supp_range = #{suppRange}
+		</if>
+		<if test="suppRange ==null or suppRange == '' ">
+			and (t2.supp_range is null or t2.supp_range ='')
+		</if>
+		) a1 LEFT JOIN(
+		SELECT T4.DELI_CODE, t3.RECE_NUMBER as occupy_number, t3.is_occupy,t3.frequency,t3.order_id,t3.mate_code,t3.deli_number
+		FROM BAM_RECE_MATE t3 LEFT JOIN BAM_RECEIVE t4 ON t3.RECE_ID =
+		t4.RECE_ID WHERE t3.is_occupy = 'yes' and t3.mate_code = #{mateCode}
+		and t3.order_id = #{orderNo}
+		<if test="suppRange !=null and suppRange != '' ">
+			and t4.supp_range = #{suppRange}
+		</if>
+		<if test="suppRange ==null or suppRange == '' ">
+			and (t4.supp_range is null or t4.supp_range ='')
+		</if>
+		) a2 ON a1.deli_code = a2.deli_code 
+		 and a1.order_no = a2.order_id
+	    and a1.frequency = a2.frequency
+	    and a1.mate_code = a2.mate_code
+	    and a1.deli_number = a2.deli_number
+		WHERE
+		A2.IS_OCCUPY = 'yes'
+		) ORDER BY
+		calcul_number ASC
+	</select>
+	<select id="queryStarMessMateByZzoemAndMateCode" parameterType="Map"
+		resultMap="starMessMate">
+		select mm.* from bam_message m left join bam_mess_mate mm on m.mess_id
+		= mm.mess_id
+		where m.zzoem=#{zzoem} and mm.semi_mate_code=#{mateCode}
+		<if test="messId != null and messId != '' ">
+			and m.mess_id !=#{messId}
+		</if>
+		and m.mess_status in
+		<foreach collection="statusList" item="item" index="index"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="queryStarMessByZzoemAndMateCode" parameterType="Map"
+		resultMap="straMessage">
+		select m.* from bam_message m left join bam_mess_mate mm on m.mess_id
+		= mm.mess_id
+		where m.zzoem=#{zzoem} and mm.semi_mate_code=#{mateCode}
+		<if test="messId != null and messId != '' ">
+			and m.mess_id !=#{messId}
+		</if>
+		and m.mess_status in
+		<foreach collection="statusList" item="item" index="index"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+
+	<resultMap type="com.faujor.entity.bam.MessMate" id="starMessMate2">
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateNumber" column="mate_number" />
+		<result property="mateAmount" column="mate_amount" />
+		<result property="orderId" column="order_id" />
+		<result property="unit" column="unit" />
+		<result property="frequency" column="frequency" />
+		<result property="poId" column="po_id" />
+		<result property="semiMateCode" column="semi_mate_code" />
+		<result property="semiMateName" column="semi_mate_name" />
+		<result property="semiMateNumber" column="semi_mate_number" />
+		<result property="semiMateAmount" column="semi_mate_amount" />
+		<result property="semiUnit" column="semi_unit" />
+		<result property="semiFrequency" column="semi_frequency" />
+		<result property="calculNumber" column="calcul_number" />
+		<result property="unpaNumber" column="unpa_number" />
+	</resultMap>
+	<select id="findMessMateByAlloNO" parameterType="String"
+		resultMap="starMessMate2">
+		SELECT a1.*, a2.mate_code AS semi_mate_code, a2.mate_name AS
+		semi_mate_name, NVL(a2.mate_bulk, 0) AS semi_volume, a2.PROC_UNIT AS
+		semi_unit FROM( SELECT t1.CONT_ORDE_NUMB AS order_id, t1.ZZOEM AS
+		zzoem, t2.MATE_NUMB AS mate_code, t2.FREQUENCY AS FREQUENCY,
+		t2.PROD_NAME AS mate_name, t2.PURC_QUAN AS mate_number, t2.COMPANY AS
+		unit,t2.mate_volum as mate_amount FROM BAM_ORDE_RELE t1 LEFT JOIN BAM_ORDE_MATE t2 ON
+		t1.CONT_ORDE_NUMB = t2.MAIN_ID WHERE <![CDATA[t1.zzoem <>' ']]>
+		and t1.CONT_ORDE_NUMB = #{orderNo}) a1 LEFT JOIN mdm_mate a2 ON
+		a1.mate_code = a2.fin_mate_id
+		ORDER BY a1.mate_code asc, a1.mate_number ASC
+	</select>
+
+	<update id="updateDeliDate" parameterType="com.faujor.entity.bam.StraMessage">
+		update bam_message m
+		set m.arri_date =#{arriDate}
+		where m.mess_code=#{messCode}
+	</update>
+</mapper>

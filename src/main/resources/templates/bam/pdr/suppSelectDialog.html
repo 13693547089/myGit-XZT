@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>物料列表</title>
+</head>
+
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+body{overflow:hidden;}
+.margi75{margin-left:75%;}
+html,body{overflow:auto !important;}
+</style>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="layui-row" >
+	<form class="layui-form" action="" id="searchForm" method="post">
+	  <br/>
+  	  <div class="layui-col-xs3" style='margin-left:20px;float:left;'>
+		   <input type="text" id="suppInfo" name="suppInfo" placeholder="供应商编码/名称" class="layui-input">
+	  </div>
+  	  <!-- <div class="layui-col-xs3" style='margin-left:10px;float:left;'>
+		   <input type="text" id="purPerson" name="purPerson" placeholder="采购员" class="layui-input">
+	  </div> -->
+	</form>
+ 	<div class="layui-col-xs3" style='margin-left:10px;float:left;'>
+  	  <!-- <div class="layui-btn-group"> -->
+		  <button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+		  <button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+	  <!-- </div> -->
+  	</div>
+	</div>
+	<div class="layui-row" >
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table id="suppTable" class="layui-table" lay-filter="demo"></table>
+	</div>
+	</div>
+</div>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/pdr/suppSelectDialog.js}"></script>	
+</body>
+</html>
+		 

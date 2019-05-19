@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>用户系列排序配置</title>
+</head>
+<style type="text/css">
+	.layui-col-md9{margin-left:0px;}
+	.layui-col-space10>*{padding-bottom:0px;}
+	.layui-btn-group{margin-top:6px;}
+	html,body{overflow:auto !important;}
+	 .pitch{background:#b9e0ef;}
+</style>
+<body class='fau-body'>
+	<div class="demoTable">
+		<!-- <form class="layui-form" action="" method="post" style='height: 100%;'> -->
+			<div class="layui-row layui-col-space20">
+				<div class="layui-col-md5">
+					<div class="layui-row divMargin1">
+						<div class="layui-col-md7">
+							<input type="text" id="userCodeName" name="userCodeName"
+								placeholder="姓名/编号" class="layui-input">
+						</div>
+						<div class="layui-col-md5">
+							<button class="layui-btn layui-btn-xs blueHollow" id="delUserBtn" 
+								type="button" style='margin-left: 10px !important;float:right;'>删除</button>
+							<button class="layui-btn layui-btn-xs blueHollow" id="addUserBtn" style='float:right;'
+								type="button">添加</button>
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-col-md12">
+						<div class="layui-fluid tableCont xuanzhong" style='padding:0px;'>
+							<table class="layui-table" id="userTable" lay-filter="userTable"
+								style='display: none;'></table>
+						</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md7">
+					<div class="layui-row divMargin1">
+						<div class="layui-col-md12"
+							style=" height: 38px; display: flex; align-items: center;">
+							<div class="layui-btn-group1" style='width:100%;'>
+								<div style='float:left;width:50%;'>
+									<button class="layui-btn layui-btn-xs blueHollow" id="saveBtn" style='float:left;'
+										type="button">保存</button>
+									<button class="layui-btn layui-btn-xs blueHollow" id="delBtn" 
+										type="button" style='margin-left: 10px !important;float:left;'>删除</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-col-md12" >
+						<div class="layui-fluid tableCont " style='padding:0px;'>
+							<table id="userSeriesTable" lay-filter="userSeriesFilter"></table>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!-- </form> -->
+	</div>
+</body>
+<div th:include="include::layuiCommonJS"></div>
+<script th:src="@{/larryMS/js/appjs/bam/config/userSeriesOrderConfig.js}"></script>
+</html>

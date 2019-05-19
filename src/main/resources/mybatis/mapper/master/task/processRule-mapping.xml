@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.task.ProcessRuleMapper">
+	<resultMap type="com.faujor.entity.task.RelationValuesResultDO"
+		id="resultMap">
+		<id property="id" column="id" />
+		<result property="result" column="result" />
+	</resultMap>
+	<select id="relationValues" parameterType="com.faujor.entity.task.RelationValuesParamsDO"
+		resultMap="resultMap" statementType="STATEMENT">
+		select ${idName} as id,
+		${returnRelation} as result from ${tableName} where ${idName} =
+		${idValue}
+	</select>
+	<resultMap type="com.faujor.entity.task.ProcessRuleDO" id="ruleMap">
+		<id property="id" column="id" />
+		<result property="mainId" column="main_id" />
+		<result property="node" column="node" />
+		<result property="taskName" column="task_name" />
+		<result property="defaultAudit" column="default_audit" />
+		<result property="execType" column="exec_type" />
+		<result property="execStr" column="exec_str" />
+		<result property="execRange" column="exec_range" />
+		<result property="ruleType" column="rule_type" />
+		<result property="condition" column="condition" />
+		<result property="tBackNode" column="t_back_node" />
+		<result property="fBackNode" column="f_back_node" />
+		<result property="openChooseDialog" column="open_choose_dialog" />
+		<result property="executor" column="executor" />
+		<result property="execName" column="exec_name" />
+	</resultMap>
+	<select id="findConfigRuleByRuleDO" parameterType="com.faujor.entity.task.ProcessRuleDO"
+		resultMap="ruleMap">
+		select t.* from tm_process_rule t
+		<where>
+			<if test="mainId !=null and mainId !=''">
+				and t.main_id = #{mainId}
+			</if>
+			<if test="node != null">
+				and t.node = #{node}
+			</if>
+		</where>
+	</select>
+
+	<insert id="saveExecRule" parameterType="com.faujor.entity.task.ProcessRuleDO">
+		insert into
+		tm_process_rule (id, main_id, node, task_name, default_audit,
+		exec_type, exec_str, exec_range, rule_type, condition, t_back_node,
+		f_back_node, open_choose_dialog, executor, exec_name) values (#{id},
+		#{mainId}, #{node}, #{taskName}, #{defaultAudit}, #{execType},
+		#{execStr}, #{execRange}, #{ruleType}, #{condition}, #{tBackNode},
+		#{fBackNode}, #{openChooseDialog}, #{executor}, #{execName})
+	</insert>
+	<update id="updateExecRule" parameterType="com.faujor.entity.task.ProcessRuleDO">
+		update tm_process_rule
+		set task_name=#{taskName}, default_audit =#{defaultAudit}, exec_type =
+		#{execType}, exec_str=#{execStr}, exec_range=#{execRange},
+		rule_type=#{ruleType}, condition = #{condition}, t_back_node =
+		#{tBackNode}, f_back_node= #{fBackNode}, open_choose_dialog =
+		#{openChooseDialog}, executor = #{executor}, exec_name = #{execName}
+		where id = #{id}
+	</update>
+	<delete id="removeExecRule" parameterType="com.faujor.entity.task.ProcessRuleDO">
+		delete from
+		tm_process_rule where id = #{id}
+	</delete>
+	<select id="findConfigRuleByQuery" parameterType="com.faujor.entity.task.TaskParamsDO"
+		resultMap="ruleMap">
+		select * from tm_process_rule where main_id = (select b.id
+		from TM_PROCESS_CONFIG a left join TM_PROCESS_DETAILS b on a.id =
+		b.conf_id where a.process_code = #{processCode} and b.node = #{node})
+	</select>
+
+
+	<resultMap type="com.faujor.entity.task.ProcessRuleBackDO"
+		id="ruleBackMap">
+		<id property="id" column="id" />
+		<result property="mainId" column="main_id" />
+		<result property="node" column="node" />
+		<result property="backConfirm" column="back_confirm" />
+		<result property="backForce" column="back_force" />
+		<result property="backSave" column="back_save" />
+		<result property="effectCondition" column="effect_condition" />
+		<result property="backWay" column="back_way" />
+		<result property="backRange" column="back_range" />
+		<result property="backNode" column="back_node" />
+	</resultMap>
+	<select id="findBackRuleByRuleBackDO" parameterType="com.faujor.entity.task.ProcessRuleBackDO"
+		resultMap="ruleBackMap">
+		select t.* from tm_proc_rule_back t
+		<where>
+			<if test="mainId !=null and mainId != ''">
+				and t.main_id = #{mainId}
+			</if>
+			<if test="node != null">
+				and t.node = #{node}
+			</if>
+		</where>
+	</select>
+
+	<insert id="saveBackRule" parameterType="com.faujor.entity.task.ProcessRuleBackDO">
+		insert into
+		tm_proc_rule_back (id, main_id, back_confirm, effect_condition,
+		back_way, back_range, back_node, node) values (#{id}, #{mainId},
+		#{backConfirm}, #{effectCondition}, #{backWay}, #{backRange},
+		#{backNode}, #{node})
+	</insert>
+
+	<update id="updateBackRule" parameterType="com.faujor.entity.task.ProcessRuleBackDO">
+		update
+		tm_proc_rule_back t set t.back_confirm = #{backConfirm},
+		t.effect_condition = #{effectCondition}, t.back_way = #{backWay},
+		t.back_range = #{backRange}, t.back_node = #{backNode} where t.id =
+		#{id}
+	</update>
+
+	<select id="findBackRuleByTaskParamsDO" parameterType="com.faujor.entity.task.TaskParamsDO"
+		resultMap="ruleBackMap">
+		select a.* from TM_PROC_RULE_BACK a left join TM_PROCESS_DETAILS b on
+		a.main_id = b.id left join TM_PROCESS_CONFIG c on b.conf_id = c.id
+		<where>
+			<if test="processCode != null and processCode != ''">
+				and c.process_code = #{processCode}
+			</if>
+			<if test="node != null">
+				and b.node = #{node}
+			</if>
+		</where>
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

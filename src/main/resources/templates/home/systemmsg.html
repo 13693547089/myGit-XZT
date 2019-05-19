@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<div th:include="include :: header"></div>
+<title sec:authentication="name"></title>
+</head>
+
+<body>
+	<div class="row border-bottom" >
+		<nav class="navbar navbar-static-top" role="navigation"
+			style="margin-bottom: 0;background-color: #f9f9f9;">
+			<div>
+				<a class="navbar-minimalize minimalize-styl-2 btn "
+					href="#"> <i class="fa fa-bars"></i>&nbsp;&nbsp;系统信息
+				</a>
+			</div>
+		</nav>
+	</div>
+	 <div class="col-md-12">
+	    <table class="table table-bordered table-hover col-md-12">
+		  <caption class="btn-default">基本的表格布局</caption>
+		 <thead>
+		     
+		  </thead>
+		  <tbody class="table-striped ">
+		      <tr>
+		      	<th class="col-md-3 active">服务器操作系统:</th><td class="col-md-3">Linux (114.55.34.251)</td>
+		      	<th class="col-md-3 active">Web 服务器</th><td class="col-md-3">nginx/1.10.2</td>
+		      </tr>
+		       <tr>
+		      	<th class="col-md-3 active">服务器操作系统:</th><td class="col-md-3">Linux (114.55.34.251)</td>
+		      	<th class="col-md-3 active">Web 服务器</th><td class="col-md-3">nginx/1.10.2</td>
+		      </tr>
+		  </tbody>
+		</table>	
+		
+	</div>
+	<div th:include="include :: header"></div>
+</body>
+</html>
+		 

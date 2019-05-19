@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.basic.LogMapper">
+	<resultMap type="com.faujor.entity.basic.LogDO" id="logMap">
+		<id property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="realName" column="real_name" />
+		<result property="jobNumber" column="job_number" />
+		<result property="operation" column="operation" />
+		<result property="time" column="time" />
+		<result property="method" column="method" />
+		<result property="params" column="params" />
+		<result property="ip" column="ip" />
+		<result property="macAddr" column="mac_addr"/>
+		<result property="createTime" column="create_time" />
+		<result property="logTimes" column="log_times" />
+		<result property="firstTime" column="first_time" />
+		<result property="lastTime" column="last_time" />
+	</resultMap>
+
+	<select id="findLogListByLogDO" parameterType="com.faujor.entity.basic.LogDO"
+		resultMap="logMap">
+		SELECT MAX(ID) as id, t.USER_NAME, MAX(t.REAL_NAME) as
+		real_name, MAX(t.JOB_NUMBER) as job_number, COUNT(1) AS log_times,
+		MAX(t.CREATE_TIME) AS last_time, MIN(t.CREATE_TIME) AS first_time FROM
+		SYS_LOG t where t.operation = '登录系统' GROUP BY t.USER_NAME
+	</select>
+
+	<select id="countLogListByLogDO" parameterType="com.faujor.entity.basic.LogDO"
+		resultType="Integer">
+		SELECT COUNT(1) FROM( SELECT T .USER_NAME FROM SYS_LOG T
+		WHERE T .operation = '登录系统' GROUP BY T .USER_NAME)
+	</select>
+
+	<update id="saveSysLog" parameterType="com.faujor.entity.basic.LogDO">
+		insert into sys_log (id,
+		user_id, user_name, real_name, job_number, operation, time, method,
+		params, ip, create_time, mac_addr) values(#{id}, #{userId},
+		#{userName}, #{realName}, #{jobNumber}, #{operation}, #{time},
+		#{method}, #{params}, #{ip}, #{createTime}, #{macAddr})
+	</update>
+
+	<select id="findLogInfoByUserName" parameterType="String"
+		resultMap="logMap">
+		SELECT MAX(ID) as id, t.USER_NAME, MAX(t.REAL_NAME) as
+		real_name, MAX(t.JOB_NUMBER) as job_number, COUNT(1) AS log_times,
+		MAX(t.CREATE_TIME) AS last_time, MIN(t.CREATE_TIME) AS first_time FROM
+		SYS_LOG t where t.user_name = #{userName} GROUP BY t.USER_NAME
+	</select>
+
+	<select id="findLogDetailsByUserName" parameterType="String"
+		resultMap="logMap">
+		select t.* from SYS_LOG t where t.user_name = #{userName}
+		order by t.create_time desc
+	</select>
+	<select id="countLogDetailsByUserName" parameterType="String"
+		resultType="Integer">
+		select count(1) from SYS_LOG t where t.user_name =
+		#{userName}
+	</select>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.document.TemplateMapper">
+	<resultMap id="tempMap" type="com.faujor.entity.document.Template">
+			<id property="id" column="id"/>
+			<result property="tempNo" column="temp_No"/>
+			<result property="tempName" column="temp_Name"/>
+			<result property="attachNum" column="attach_num"/>
+			<result property="startDate" column="start_Date"/>
+			<result property="endDate" column="end_Date"/>
+			<result property="createTime" column="create_Time"/>
+			<result property="createUser" column="create_user"/>
+			<result property="modifyUser" column="modify_user"/>
+			<result property="modifyTime" column="modify_time"/>
+			<result property="creater" column="creater"/>
+			<result property="modifier" column="modifier"/>
+	</resultMap>
+	<select id="getTempByPage" resultMap="tempMap" parameterType="Map">
+		select * from (
+			select tb.*,rownum  rn from
+				(select * from doc_template where 1=1
+					<if test="tempName!=null and tempName!=''">
+						and (temp_name like #{tempName} or temp_no like #{tempName})
+					</if>
+				order by create_time desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	<select id="getTempNum" resultType="Integer" parameterType="Map">
+		select count(1) from doc_template where 1=1
+		<if test="tempName!=null and tempName!=''">
+			and (temp_name like #{tempName} or temp_no like #{tempName})
+		</if>
+	</select>
+	<insert id="saveTemp" parameterType="com.faujor.entity.document.Template">
+		insert into doc_template
+		  (id, temp_no,temp_name,
+		   start_date,end_date,create_user,
+		   create_time,modify_user,modify_time,
+		   attach_num,creater,modifier)
+		values
+		  (#{id},#{tempNo},#{tempName},
+		  #{startDate},#{endDate},#{createUser},
+		  #{createTime},#{createUser},#{createTime},
+		  #{attachNum},#{creater},#{modifier})
+	</insert>
+	<delete id="deleteTempByNo" parameterType="String">
+		delete from doc_template where temp_no=#{tempNo}
+	</delete>
+	<update id="updateTemp"  parameterType="com.faujor.entity.document.Template">
+		update doc_template set
+		  temp_name=#{tempName},
+		  start_date=#{startDate},end_date=#{endDate},
+		  modify_user=#{modifyUser},modify_time=#{modifyTime},
+		  modifier=#{modifier},
+		  attach_num=#{attachNum}
+		where temp_No=#{tempNo}
+	</update>
+	<select id="getTemp" parameterType="Map" resultMap="tempMap">
+		select * from doc_template dt 
+		<where>
+			<if test="tempNo!=null and tempNo!=''">
+				 temp_no=#{tempNo}
+			</if>
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+		</where>
+	</select>
+</mapper>

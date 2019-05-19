@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader"></head>
+<style>
+.layui-form-label {
+	width: 120px
+}
+.layui-form-item .layui-input-inline {
+	width: 360px;
+}
+.layui-textarea{
+	width:90%;
+}
+.checkDiv {
+	width: 9%;
+	float: right;
+}
+</style>
+<body>
+	<form class="layui-form" action="" id="signForm"
+		style="margin-top: 5px;">
+		<input class="layui-hide" name="mainId" th:value="${rule.mainId}">
+		<input class="layui-hide" name="node" th:value="${rule.node}">
+		<input class="layui-hide" name="id" th:value="${rule.id}">
+		<input class="layui-hide" name="ruleType" th:value="${rule.ruleType == '' ? 'execRule':rule.ruleType}">
+		<div class="layui-form-item">
+			<label class="layui-form-label">执行规则</label>
+			<div class="layui-input-inline">
+				<input type="checkbox" id="openChooseDialog" name="openChooseDialog" lay-skin="primary" 
+					title="弹出确认框" value="1" th:checked="${rule.openChooseDialog ==1}">
+				<input type="checkbox" id="defaultAudit" name="defaultAudit" lay-skin="primary" 
+					title="默认直接上级为审批人" value="1" th:checked="${rule.defaultAudit == '1'}">
+			</div>
+		</div>
+			
+		<div class="layui-form-item">
+			<label class="layui-form-label">任务标题</label>
+			<div class="layui-input-inline">
+				<textarea id="taskName" name="taskName" placeholder="请输入" class="layui-textarea" th:text="${rule.taskName}">
+				</textarea>
+				<div class="checkDiv">
+					<button class="layui-btn layui-btn-xs" id="taskNameBtn" type="button">校验</button>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">执行者类型</label>
+			<div class="layui-input-inline">
+				<input type="text" name="execType" lay-verify="email" autocomplete="off" class="layui-input" th:value="${rule.execType}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">执行者表达式</label>
+			<div class="layui-input-inline">
+				<textarea id="execStr" name="execStr" placeholder="请输入" class="layui-textarea" th:text="${rule.execStr}">
+				</textarea>
+				<div class="checkDiv">
+					<button class="layui-btn layui-btn-xs" id="execStrBtn" type="button">校验</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">执行者范围表达式</label>
+			<div class="layui-input-inline">
+				<textarea id="execRange" name="execRange" placeholder="请输入" class="layui-textarea" th:text="${rule.execRange}">
+				</textarea>
+				<div class="checkDiv">
+					<button class="layui-btn layui-btn-xs" type="button" id="execRangeBtn">校验</button>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">待选执行者</label>
+			<div class="layui-input-inline">
+				<textarea id="execName" name="execName" placeholder="请输入" class="layui-textarea" readonly th:text="${rule.execName}">
+				</textarea>
+				<input id="executor" name="executor" class="layui-hide" th:value="${rule.executor}" />
+				<div class="checkDiv">
+					<button class="layui-btn layui-btn-xs" type="button" id="execBtn">选择</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/task/rule/execRule.js}"></script>
+</body>
+</html>

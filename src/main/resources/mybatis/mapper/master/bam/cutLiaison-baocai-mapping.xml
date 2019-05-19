@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.CutLiaisonForBaoCaiMapper">
+
+	<resultMap type="com.faujor.entity.bam.CutBaoCai" id="cutLiaison">
+		<result property="liaiId" column="liai_id"/>
+		<result property="status" column="status"/>
+		<result property="cutMonth" column="cut_month"/>
+		<result property="liaiCode" column="liai_code"/>
+		<result property="suppId" column="supp_id"/>
+		<result property="suppName" column="supp_name"/>
+		<result property="fields" column="fields"/>
+		<result property="createId" column="create_id"/>
+		<result property="creator" column="creator"/>
+		<result property="createDate" column="create_date"/>
+		<result property="isSpecial" column="is_special"/>
+		<result property="oemSuppName" column="OEM_SUPP_NAME"/>
+		<result property="oemSuppCode" column="OEM_SUPP_CODE"/>
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.CutBaoCai" id="cutLiaison2">
+		<result property="liaiId" column="liai_id"/>
+		<result property="status" column="status"/>
+		<result property="cutMonth" column="cut_month"/>
+		<result property="liaiCode" column="liai_code"/>
+		<result property="suppId" column="supp_id"/>
+		<result property="suppName" column="supp_name"/>
+		<result property="fields" column="fields"/>
+		<result property="createId" column="create_id"/>
+		<result property="creator" column="creator"/>
+		<result property="createDate" column="create_date"/>
+		<result property="isSpecial" column="is_special"/>
+		<result property="fieldsBlob" column="fields_blob" jdbcType="BLOB"/>
+		<result property="oemSuppName" column="OEM_SUPP_NAME"/>
+		<result property="oemSuppCode" column="OEM_SUPP_CODE"/>
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.CutBaoCaiMate" id="cutLiaiMate">
+		<result property="liaiMateId" column="liai_mate_id"/>
+		<result property="liaiId" column="liai_id"/>
+		<result property="mateCode" column="mate_code"/>
+		<result property="mateName" column="mate_name"/>
+		<result property="fields" column="fields"/>
+		<result property="version" column="version"/>
+		<result property="isSpecial" column="is_special"/>
+		<result property="oemSuppName" column="OEM_SUPP_NAME"/>
+		<result property="oemSuppCode" column="OEM_SUPP_CODE"/>
+	</resultMap>
+	
+	<select id="queryBaoCaiCutLiaisonByPage" parameterType="Map" resultMap="cutLiaison">
+		select c2.* from (
+		select c1.*,rownum rn from (
+		select c.* from bam_cut_baocai c
+		where 1=1
+		and c.is_special = 'NO'
+		<if test="createId != null and createId != '' ">
+		and c.create_id=#{createId}
+		</if>
+		<if test="userId != null and userId != '' ">
+		and (c.create_id = #{userId} or (c.create_id != #{userId}
+				and c.status !='已保存' and c.status !='已退回'))
+		</if>
+		<if test="cutLiai.cutMonth != null and cutLiai.cutMonth != '' ">
+			and c.cut_month = #{cutLiai.cutMonth}
+		</if>
+		<if test="cutLiai.status != null and cutLiai.status != '' ">
+			and c.status = #{cutLiai.status}
+		</if>
+		<if test="cutLiai.liaiCode != null and cutLiai.liaiCode != '' ">
+			and c.liai_code like '%${cutLiai.liaiCode}%'
+		</if>
+		<if test="cutLiai.suppInfo != null and cutLiai.suppInfo != '' ">
+		and (
+			c.supp_id like '%${cutLiai.suppInfo}%'
+			or c.supp_name like '%${cutLiai.suppInfo}%'
+		)
+		</if>
+		order by c.liai_code desc, c.create_date desc)c1)c2
+		<![CDATA[where c2.rn>=#{start} and c2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryBaoCaiCutLiaisonByPageCount" parameterType="Map" resultType="int">
+		select count(*) from bam_cut_baocai c
+		where 1=1
+		and c.is_special = 'NO'
+		<if test="createId != null and createId != '' ">
+		and c.create_id=#{createId}
+		</if>
+		<if test="userId != null and userId != '' ">
+		and (c.create_id = #{userId} or (c.create_id != #{userId}
+				and c.status !='已保存'))
+		</if>
+		<if test="cutLiai.cutMonth != null and cutLiai.cutMonth != '' ">
+			and c.cut_month = #{cutLiai.cutMonth}
+		</if>
+		<if test="cutLiai.status != null and cutLiai.status != '' ">
+			and c.status = #{cutLiai.status}
+		</if>
+		<if test="cutLiai.liaiCode != null and cutLiai.liaiCode != '' ">
+			and c.liai_code like '%${cutLiai.liaiCode}%'
+		</if>
+		<if test="cutLiai.suppInfo != null and cutLiai.suppInfo != '' ">
+		and (
+			c.supp_id like '%${cutLiai.suppInfo}%'
+			or c.supp_name like '%${cutLiai.suppInfo}%'
+		)
+		</if>
+	</select>
+
+	<insert id="addBaoCaiCutLiaison" parameterType="com.faujor.entity.bam.CutBaoCai">
+		insert into bam_cut_baocai(liai_id,status,cut_month,liai_code,supp_id,supp_name,
+		create_id,creator,create_date,is_special,fields_blob,oem_supp_code,oem_supp_name)
+		values(#{liaiId},#{status},#{cutMonth},#{liaiCode},#{suppId},#{suppName},
+		#{createId},#{creator},#{createDate},#{isSpecial},empty_blob(),
+		#{oemSuppName},#{oemSuppCode})
+	</insert>
+
+	<insert id="addBaoCaiCutLiaiMate" parameterType="com.faujor.entity.bam.CutBaoCaiMate">
+		insert into bam_cut_baocai_mate values(lower(sys_guid()),
+		#{liaiId},#{mateCode},#{mateName},
+		#{fields},#{version},#{isSpecial},
+		#{oemSuppCode},#{oemSuppName})
+	</insert>
+
+	<delete id="deleteBaoCaiCutLiaisonByliaiIds">
+		delete from bam_cut_baocai cl where cl.liai_id in
+		<foreach collection="array" open="(" close=")" separator="," item="v">#{v}</foreach>
+	</delete>
+
+	<delete id="deleteBaoCaiCutLiaiMateByLiaiIds">
+		delete from bam_cut_baocai_mate clm where clm.liai_id in
+		<foreach collection="array" open="(" close=")" separator="," item="v">#{v}</foreach>
+	</delete>
+	<update id="updateBaoCaiCutLiaiStatusByliaiIds" parameterType="Map">
+		update bam_cut_baocai cl
+		<set>
+		cl.status=#{status},
+		<if test="user != null and user != '' ">
+		   cl.cance_user =#{user},
+		</if>
+		<if test="canceDate != null">
+			cl.cance_date=#{canceDate},
+		</if>
+		</set>
+		where cl.liai_id in
+		<foreach collection="liaiIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<select id="queryBaoCaiCutLiaisonByLiaiId" parameterType="String" resultMap="cutLiaison">
+		select * from bam_cut_baocai cl where cl.liai_id=#{liaiId}
+	</select>
+
+	<select id="queryBaoCaiCutLiaiFieldsBlobByLiaiId" parameterType="String" resultMap="cutLiaison2">
+		select cl.fields_blob from bam_cut_baocai cl where cl.liai_id=#{liaiId} 
+	</select>
+
+	<select id="queryBaoCaiCutLiaiMateByLiaiId" resultMap="cutLiaiMate">
+		  select clm.*,m.series_code,m.series_expl from bam_cut_baocai_mate  clm
+		  left join mdm_mate m
+	      on clm.mate_code = m.mate_code
+	      where clm.liai_id=#{liaiId}
+	      order by clm.mate_code
+	</select>
+
+
+	<select id="queryBaoCaiCutLiaisonForManageByPage" parameterType="Map" resultMap="cutLiaison">
+	    select c2.* from (
+		select c1.*,rownum rn from (
+		select c.* from bam_cut_baocai c
+		where 1=1
+		and c.status !='已保存'
+		and c.is_special = 'NO'
+		<if test="cutLiai.cutMonth != null and cutLiai.cutMonth != '' ">
+			and c.cut_month = #{cutLiai.cutMonth}
+		</if>
+		<if test="cutLiai.status != null and cutLiai.status != '' ">
+			and c.status = #{cutLiai.status}
+		</if>
+		<if test="cutLiai.liaiCode != null and cutLiai.liaiCode != '' ">
+			and c.liai_code like '%${cutLiai.liaiCode}%'
+		</if>
+		<if test="cutLiai.suppInfo != null and cutLiai.suppInfo != '' ">
+		and (
+			c.supp_id like '%${cutLiai.suppInfo}%'
+			or c.supp_name like '%${cutLiai.suppInfo}%'
+		)
+		</if>
+		order by c.liai_code desc, c.create_date desc)c1)c2
+		<![CDATA[where c2.rn>=#{start} and c2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryBaoCaiCutLiaisonForManageByPageCount" parameterType="Map" resultType="int">
+		select count(*) from bam_cut_baocai c
+		where 1=1
+		and c.status !='已保存'
+		and c.is_special = 'NO'
+		<if test="cutLiai.cutMonth != null and cutLiai.cutMonth != '' ">
+			and c.cut_month = #{cutLiai.cutMonth}
+		</if>
+		<if test="cutLiai.status != null and cutLiai.status != '' ">
+			and c.status = #{cutLiai.status}
+		</if>
+		<if test="cutLiai.liaiCode != null and cutLiai.liaiCode != '' ">
+			and c.liai_code like '%${cutLiai.liaiCode}%'
+		</if>
+		<if test="cutLiai.suppInfo != null and cutLiai.suppInfo != '' ">
+		and (
+			c.supp_id like '%${cutLiai.suppInfo}%'
+			or c.supp_name like '%${cutLiai.suppInfo}%'
+		)
+		</if>
+	</select>
+
+	<update id="updateBaoCaiStatusOfCutLiaisonByLiaiId" parameterType="Map">
+		update bam_cut_baocai cl set cl.status=#{status} where cl.liai_id in
+		<foreach collection="liaiIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<select id="queryBaoCaiManyCutLiaisonByLiaiIds"  resultMap="cutLiaison">
+		select * from bam_cut_baocai l where l.liai_id in
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="queryBaoCaiManyCutLiaiMateByLiaiIds" resultMap="cutLiaiMate">
+		select * from bam_cut_baocai_mate m where m.liai_id in
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="queryBaoCaiListCutLiaisonByCutMonth" parameterType="String" resultMap="cutLiaison">
+		select * from bam_cut_baocai l where l.cut_month=#{planMonth} and l.status = '已确认'
+	</select>
+	<select id="queryBaoCaiListCutLiaisonByCutMonth2" parameterType="String" resultMap="cutLiaison">
+		select a.* ,rownum rn from (
+		select * from bam_cut_baocai l 
+		where l.cut_month=#{planMonth} 
+		and l.status = '已提交' )a
+		where rownum =1
+	</select>
+
+	<select id="queryBaoCaiSpeCutLiaisonByPage" parameterType="Map" resultMap="cutLiaison">
+		select c2.* from (
+		select c1.*,rownum rn from (
+		select c.* from bam_cut_baocai c
+		where 1=1
+		and c.is_special = 'YES'
+		<if test="userId != null and userId != '' ">
+		and (c.create_id = #{userId} or (c.create_id != #{userId}
+				and c.status !='已保存'))
+		</if>
+		<if test="cutLiai.cutMonth != null and cutLiai.cutMonth != '' ">
+			and c.cut_month = #{cutLiai.cutMonth}
+		</if>
+		<if test="cutLiai.status != null and cutLiai.status != '' ">
+			and c.status = #{cutLiai.status}
+		</if>
+		<if test="cutLiai.liaiCode != null and cutLiai.liaiCode != '' ">
+			and c.liai_code like '%${cutLiai.liaiCode}%'
+		</if>
+		order by c.liai_code desc, c.create_date desc)c1)c2
+		<![CDATA[where c2.rn>=#{start} and c2.rn<=#{end}]]>
+	</select>
+	<select id="queryBaoCaiSpeCutLiaisonByPageCount" parameterType="Map" resultType="int">
+		select count(*) from bam_cut_baocai c
+		where 1=1
+		and c.is_special = 'YES'
+		<if test="userId != null and userId != '' ">
+		and (c.create_id = #{userId} or (c.create_id != #{userId}
+				and c.status !='已保存'))
+		</if>
+		<if test="cutLiai.cutMonth != null and cutLiai.cutMonth != '' ">
+			and c.cut_month = #{cutLiai.cutMonth}
+		</if>
+		<if test="cutLiai.status != null and cutLiai.status != '' ">
+			and c.status = #{cutLiai.status}
+		</if>
+		<if test="cutLiai.liaiCode != null and cutLiai.liaiCode != '' ">
+			and c.liai_code like '%${cutLiai.liaiCode}%'
+		</if>
+	</select>
+
+	<select id="queryBaoCaiAllCutLiaison" resultMap="cutLiaison">
+		select * from bam_cut_baocai
+	</select>
+	<update id="updateBaoCaiCutLiaiMateMainStruNum" parameterType="com.faujor.entity.bam.CutBaoCaiMate">
+		update bam_cut_baocai_mate lm set lm.main_stru_num=#{mainStruNum} where lm.liai_mate_id=#{liaiMateId}
+	</update>
+
+	<select id="checkoutBaoCaiCutLiaiByMonthAndSuppId" resultType="String">
+		select l.liai_id from bam_cut_baocai l
+		where l.cut_month=#{0}
+		and l.supp_id=#{1}
+		and l.status in('已保存','已提交','已确认')
+	</select>
+
+	<resultMap type="com.faujor.entity.bam.CutLiaisonVO" id="CutLiaisonVOMap">
+		<result property="liaiId" column="liai_Id"/>
+		<result property="status" column="status"/>
+		<result property="cutMonth" column="cut_Month"/>
+		<result property="liaiCode" column="liai_Code"/>
+		<result property="headerFields" column="header_Fields"/>
+		<result property="mateCode" column="mate_Code"/>
+		<result property="version" column="version"/>
+		<result property="fields" column="fields"/>
+		<result property="mainStru" column="main_Stru"/>
+	</resultMap>
+	<select id="getBaoCaiHeaderFieldsAndFieldsByMateCodeAndVersionAndCutMonth" parameterType="String" resultMap="CutLiaisonVOMap">
+		 select l.liai_id,l.liai_code,l.cut_month,l.status,
+	     l.fields as header_fields,lm.mate_code,lm.version,
+	     lm.main_stru,lm.fields
+	     from bam_cut_baocai l left join bam_cut_baocai_mate lm
+	     on l.liai_id = lm.liai_id
+	     where l.cut_month=#{cutMonth}
+	     and l.status='已确认'
+	     and nvl(lm.version,'QQQ') = #{mateVersion}
+	     and lm.mate_code=(
+	     select m.mate_code
+	     from mdm_mate m where m.fin_mate_id=#{finMateId}
+	     )
+	</select>
+	
+	<select id="queryBaoCaiCutLiaiCodeList" resultType="String">
+		select t.liai_code from BAM_CUT_BAOCAI t
+		where t.status='已提交'
+	</select>
+	
+	<select id="queryBaoCaiCutLiaiMateByLiaiCodeAndSuppId" parameterType="String" resultMap="cutLiaiMate">
+		select m.* from bam_cut_baocai b left join bam_cut_baocai_mate m 
+		on b.liai_id = m.liai_id
+		where b.liai_code=#{citeLiaiCode}
+		and m.oem_supp_code=(
+		select s.sap_id from mdm_qual_supp s where s.supp_id=#{suppId}
+		)
+	</select>
+</mapper>

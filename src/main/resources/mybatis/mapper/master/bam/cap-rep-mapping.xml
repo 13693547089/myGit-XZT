@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.CapRepMapper">
+  <resultMap id="BaseResultMap" type="com.faujor.entity.bam.psm.CapRep">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CAP_CODE" jdbcType="VARCHAR" property="capCode" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="REP_MONTH"  property="repMonth" />
+    <result column="SUPP_NO" jdbcType="VARCHAR" property="suppNo" />
+    <result column="SUPP_NAME" jdbcType="VARCHAR" property="suppName" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATER_NAME" jdbcType="VARCHAR" property="createrName" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="MODIFIER" jdbcType="VARCHAR" property="modifier" />
+    <result column="MODIFIER_NAME" jdbcType="VARCHAR" property="modifierName" />
+    <result column="MODIFY_TIME" jdbcType="DATE" property="modifyTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from PS_CAP_REP
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.faujor.entity.bam.psm.CapRep">
+    insert into PS_CAP_REP (ID, CAP_CODE, STATUS, 
+      REP_MONTH, SUPP_NO, SUPP_NAME, 
+      CREATER, CREATER_NAME, CREATE_TIME, 
+      MODIFIER, MODIFIER_NAME, MODIFY_TIME
+      )
+    values (#{id,jdbcType=VARCHAR}, #{capCode,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{repMonth}, #{suppNo,jdbcType=VARCHAR}, #{suppName,jdbcType=VARCHAR}, 
+      #{creater,jdbcType=VARCHAR}, #{createrName,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifierName,jdbcType=VARCHAR}, #{modifyTime,jdbcType=DATE}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.faujor.entity.bam.psm.CapRep">
+    update PS_CAP_REP
+    set CAP_CODE = #{capCode,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      REP_MONTH = #{repMonth},
+      SUPP_NO = #{suppNo,jdbcType=VARCHAR},
+      SUPP_NAME = #{suppName,jdbcType=VARCHAR},
+      MODIFIER = #{modifier,jdbcType=VARCHAR},
+      MODIFIER_NAME = #{modifierName,jdbcType=VARCHAR},
+      MODIFY_TIME = #{modifyTime,jdbcType=DATE}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select *
+    from PS_CAP_REP
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select *
+    from PS_CAP_REP
+  </select>
+  <select id="getCapRepByPage" parameterType="Map" resultMap="BaseResultMap">
+  	
+	  select *
+	  from (select t2.*, rownum rn
+	          from (select *
+	                  from ps_cap_rep t1
+	                 where 1=1
+	                 <if test="capCode!=null and capCode!=''">
+	                   and t1.cap_code like #{capCode}
+	                 </if>
+	                 <if test="status!=null and status!=''">
+	                   and t1.status = #{status}
+	                 </if>
+	                 <if test="startDate!=null">
+	                 <![CDATA[and t1.create_time >= #{startDate} ]]>
+	                 </if>
+	                 <if test="endDate!=null">
+	                 <![CDATA[and t1.create_time < #{endDate}]]>
+	                 </if>
+	                 <if test="repMonth != null and repMonth != ''">
+	                   and t1.rep_month = #{repMonth}
+	                 </if>
+	                 <if test="suppName!=null and suppName!=''">
+	                   and (t1.supp_no like #{suppName} or t1.supp_name like #{suppName})
+	                 </if>
+	                 <if test="suppCodes!=null">
+				      and t1.supp_No in
+					      <foreach collection="suppCodes" item="suppCode" open="(" close=")" separator=",">
+					      	#{suppCode}
+					      </foreach>
+				      </if>
+	                 order by t1.create_time desc) t2
+	         where <![CDATA[rownum <= #{page.to}]]>) t3
+	 where <![CDATA[t3.rn > 0]]>
+  </select>
+  <select id="getCapRepCount" parameterType="Map" resultType="Integer">
+  	  select count(1)
+       from ps_cap_rep t1
+      where 1=1
+      <if test="capCode!=null and capCode!=''">
+        and t1.cap_code like #{capCode}
+      </if>
+      <if test="status!=null and status!=''">
+        and t1.status = #{status}
+      </if>
+      <if test="startDate!=null">
+      <![CDATA[and t1.create_time >= #{startDate} ]]>
+      </if>
+      <if test="endDate!=null">
+      <![CDATA[and t1.create_time < #{endDate}]]>
+      </if>
+      <if test="repMonth!=null and repMonth != ''">
+        and t1.rep_month = #{repMonth}
+      </if>
+      <if test="suppName!=null and suppName!=''">
+        and (t1.supp_no like #{suppName} or t1.supp_name like #{suppName})
+      </if>
+      <if test="suppCodes!=null">
+      and t1.supp_No in
+	      <foreach collection="suppCodes" item="suppCode" open="(" close=")" separator=",">
+	      	#{suppCode}
+	      </foreach>
+      </if>
+  </select>
+  <update id="updateStatus">
+  	update ps_cap_rep t1 set t1.status=#{status} where 1=1
+  	and t1.id in
+  	<foreach collection="ids" open="(" close=")" separator="," item="id">
+  	#{id}
+  	</foreach>
+  </update>
+  <select id="getCountByMap" parameterType="Map" resultType="Integer">
+  	select count(1) from ps_cap_rep t1 where t1.rep_month=#{repMonth} and t1.supp_no=#{suppNo}
+  	and t1.id<![CDATA[<>]]> #{id}
+  </select>
+</mapper>

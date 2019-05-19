@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>物料系列选择</title>
+</head>
+<style type="text/css">
+	.red{color:red;}
+	.center{text-align: center;}
+	input{height:30px;}
+	html,body{overflow:auto !important;}
+</style>
+<body class="gray-bg">
+	<div class="demoTable">
+	<form class="layui-form" action="" method="post">
+	<div class="layui-row layui-col-space10" style="width:100%;margin-top:10px;">
+	  	  <div class="layui-col-sm4">
+			   <input type="text" id="seriesExpl" name="seriesExpl" placeholder="系列编码/名称" class="layui-input">
+		  </div>
+	  	  <div class="layui-col-sm2">
+			   <div class="layui-btn-group1">
+				   <button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn" type="button" style='margin-top: 6px;'>搜索</button>
+				   <button class="layui-btn layui-btn-xs yellowHollow"  id="resetBtn" type="reset" style='margin-top: 6px;'>重置</button>
+			   </div>
+		  </div>
+	  </div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table id="seriesTable" class="layui-table"  lay-filter="demo">
+	</table>
+	</div>
+	</div>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/config/materialSeriesSelDialog.js}"></script>	
+</body>
+</html>
+		 

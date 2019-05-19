@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.demo.PaginationMapper">
+	<resultMap type="com.faujor.entity.mdm.Material" id="mate">
+		<result property="mateId" column="mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="skuTiptop" column="sku_tiptop" />
+		<result property="skuEnglish" column="sku_english" />
+		<result property="chinName" column="chin_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="mateGroupCode" column="mate_group_code" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="barCode" column="bar_code" />
+		<result property="barCodeEngl" column="bar_code_engl" />
+		<result property="barCodeChin" column="bar_code_chin" />
+		<result property="repeUnit" column="repe_unit" />
+	</resultMap>
+	<select id="materialList" resultMap="mate">
+		select * from mdm_mate
+	</select>
+</mapper>

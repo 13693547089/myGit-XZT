@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>新建报价单</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" />
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<style type="text/css">
+.red {color: red;}
+.layui-form-label{width:100px;}
+.center {text-align: center;}
+ input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {margin-top: 0px;margin-bottom: 0px;}
+.margin-top20{margin-top: 10px;}   
+.margin-left20{margin-left: 20px;}   
+.layui-form-label{width:100px;}
+.layui-form-label10{width:10px;}
+#endDate{margin-left: -35%;}  
+.pull-right{margin-right:20px}  
+.price-table{margin-top: -10px;}
+.bootstrap-table{font-size: 12px; font-weight: normal;!important}
+.editable-select td {font-size: 11px; font-weight: normal;!important}
+.form-control{font-size: 12px;!important}
+.combox-item-selected{}
+
+.blueHollow {
+  background: #fff;
+  border: 1px solid #458ffc;
+  color: #458ffc; }
+.panel-body{
+	padding: 0px !important;
+}
+.layui-table{
+	margin-bottom: 0px !important;
+	margin-top: 0px !important;
+}
+.blueHollow:hover {
+  background: #458ffc; }
+.fixed-table-container tbody td .th-inner, .fixed-table-container thead th .th-inner{padding:0px !important;height: 32px;font-weight: initial !important;background: #f2f2f2;color:#666;line-height: 32px !important;}
+.fixed-table-container thead th .th-inner{padding:0px !important;}
+.fixed-table-container tbody td{padding: 0px 8px 0px 8px !important;}
+.table-striped>tbody>tr:nth-of-type(odd){height:23px;}
+.bootstrap-table .table>tbody>tr>td{padding-top: 5px !important;background:white;}
+</style>
+<body>
+	<div class="layui-row main-body ">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn" id="publishBtn">发布</button>
+				<button class="layui-btn layui-btn-xs blueHollow " th:if="${type=='4'}" id="validDateBtn">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn" id="saveBtn">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+			</div>
+		</div>
+		<div class="layui-row margin-top20" >
+			<div class=" panel-default ">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;基本信息
+					</a>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<form class="layui-form" method="post" id="quoteForm" >
+								<input type="hidden" name="id" id="id" th:value="${quote.id}"/>
+								<input type="hidden" name="type" id="type" th:value="${type}"/>
+								<input type="hidden" name="quoteTypeDesc" id="quoteTypeDesc" th:value="${quote.quoteTypeDesc}"/>
+								<input type="hidden" name="suppName" id="suppName" th:value="${quote.suppName}"/>
+								<input type="hidden" name="userType" id="userType" th:value="${userType}"/>
+								<input type="hidden" name="mateJson" id="mateJson"/>
+								<input type="hidden" name="attrJson" id="attrJson"/>
+								<input type="hidden" name="processCode" id="processCode" th:value="${task.processCode}"/>
+								<input type="hidden" name="isOwn" id="isOwn" th:value="${task.isOwn}"/>
+								<div class="layui-row">
+									<div class="layui-col-md3">
+										 <div class="layui-form-item">
+										    <label class="layui-form-label">报价单号</label>
+										    <div class="layui-input-block">
+										      <input type="text" name="quoteCode" id="quoteCode"  readonly="readonly" id="quoteCode" th:value="${quote.quoteCode}"  autocomplete="off" class="layui-input">
+										    </div>
+										  </div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label">创建日期</label>
+											<div class="layui-input-block">
+												<input type="text" readonly="readonly" name="quoteDate"
+													id="quoteDate"
+													th:value="${quote.quoteDate== null} ? '':${#dates.format(quote.quoteDate, 'yyyy-MM-dd')} "
+													autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label">报价单状态</label>
+											<div class="layui-input-block">
+										      <input type="text" name="status" readonly="readonly" id="status" th:value="${quote.status}"  autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<div class="layui-col-md6">
+										<div class="layui-form-item" style="width: 100%">
+											<label class="layui-form-label">供应商</label>
+											<div class="layui-input-block">
+												<select name="suppNo" id="suppNo" lay-filter="suppNo" lay-verify="required" lay-search="" class="must">
+													<option value="">直接选择或搜索选择</option>
+													<option th:each="supp:${suppList}"  th:value="${supp.sapId}" th:text="${supp.sapId}+${supp.suppName}" th:selected="${supp.sapId==quote.suppNo}">layer</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label"><i class="red xinghao">*</i>报价单类型</label>
+											<div class="layui-input-block">
+												<select name="quoteType" id="quoteType" lay-filter="quoteType" lay-verify="required" lay-search="" class="must">
+													<option value="">直接选择或搜索选择</option>
+													<option th:each="dic:${quoteTypeList}"  th:value="${dic.dicCode}" th:text="${dic.dicName}" th:selected="${dic.dicCode==quote.quoteType}">layer</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row" style='position:relative'>
+									<div class="layui-col-md9">
+										<label class="layui-form-label"><i class="red xinghao">*</i>供应商附件1</label>
+										<div style='position:absolute;left:110px;'>
+												<input type="hidden" id="quoteBase" class="must" name="quoteBase" th:value="${quote.quoteBase}"/>
+												<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="addQuoteBase" style='margin-top:3px;float:left;'><i class="layui-icon"></i>选择文件</button>
+												<span id="filename" th:text="${quote.quoteBaseName}" style="height:38px;line-height: 30px;font-size:14px;cursor: pointer;">11111.png</span>
+										</div>
+										<label class="layui-form-label" style="margin-left: 314px;">供应商附件2</label>
+										<div >		
+												<input type="hidden" id="quoteBaseTwo"  name="quoteBaseTwo" th:value="${quote.quoteBaseTwo}"/>
+												<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="addQuoteBaseTwo" style='margin-top:3px;float:left;margin-left: 9px;'><i class="layui-icon"></i>选择文件</button>
+												<span id="filenameTwo" th:text="${quote.quoteBaseTwoName}" style="height:38px;line-height: 30px;font-size:14px;cursor: pointer;margin-left: 9px;">11111.png</span>
+										 </div>
+										<div >		
+												<button type="button" class="layui-btn layui-btn-xs blueHollow" id="addAttrBtn" th:if="${type == '100hide'}"
+												 style='margin-top:-24px;float:right;'><i class="layui-icon"></i>添加</button>
+										 </div>
+									</div>	 
+								</div>
+								<div class="layui-row" style="margin-top: 10px;" th:if="${type == '100hide'}">
+									<div class="layui-col-md9">
+										<div class="layui-form-item layui-form-text">
+										    <label class="layui-form-label">附件</label>
+										    <div class="layui-input-block" style='padding:0px;'>
+												<table class="table layui-table table-bordered attr-table table-hover " id="attr-table"  lay-filter="attr-table-filter"></table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row" style="margin-top: 10px;">
+									<div class="layui-col-md9">
+										<div class="layui-form-item layui-form-text">
+										    <label class="layui-form-label">备注</label>
+										    <div class="layui-input-block">
+										      <textarea name="remark" id="remark" th:value="${quote.remark}" th:text="${quote.remark}" placeholder="请输入内容" class="layui-textarea"></textarea>
+										    </div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 报价信息 -->
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;报价信息
+				</a>
+			</div>
+			<div id="collapseFour" class="panel-collapse collapse in">
+				<div class="panel-body">
+					<div class="layui-row">
+						<div class="layui-btn layui-btn-xs blueHollow disableBtn"
+							id="addMateBtn">添加</div>
+						<div class="layui-btn layui-btn-xs blueHollow disableBtn"
+							id="delMateBtn">删除</div>
+						<table class="table table-bordered mate-table table-hover "
+							id="mate-table" style="margin-top: 5px;"></table>
+					</div>
+					<div class="layui-row margin-top20" >
+
+						<div class="layui-fluid tableCont" style='padding: 0px;'>
+							<table class="layui-table " id="price-table" class="price-table" lay-filter="price-table"></table>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">备注</label>
+							<div class="layui-input-block">
+								<textarea name="mateRemark" id="mateRemark" placeholder="请输入内容" class="layui-textarea"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 附件信息 -->
+		<!-- <div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseFive"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;附件信息
+				</a>
+			</div>
+			<div id="collapseFive" class="panel-collapse collapse in">
+				<div class="panel-body">
+						<div class="layui-btn layui-btn-xs blueHollow" id="addAttrBtn" th:if="${type == '4' || userType=='user'&&type != '3'}">添加</div>
+					<div class="layui-row">
+						<div class="layui-fluid tableCont xuanzhong5" style='padding:0px;'>
+							<table class="table layui-table table-bordered attr-table table-hover " id="attr-table"  lay-filter="attr-table"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div> -->
+		</div>
+
+	<script type="text/html" id="operateBar">
+  		<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="downLoadAttr">下载</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline " lay-event="del">删除</a>
+	</script>
+	<script type="text/html" id="operateBar1">
+  		<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="downLoadAttr">下载</a>
+	</script>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript" th:src="@{/editTable/plus/import.inc.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/quote/addQuote.js}"></script>
+	 <script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+</body>
+</html>

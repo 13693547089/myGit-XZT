@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader"> </head>
+<body class='fau-body-list'>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="logTable" lay-filter="logTable">
+		</table>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/basic/log/logList.js}"></script>
+</body>
+</html>

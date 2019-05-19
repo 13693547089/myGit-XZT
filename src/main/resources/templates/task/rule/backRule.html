@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader"></head>
+<style>
+.layui-form-label {
+	width: 120px
+}
+
+.layui-form-item .layui-input-inline {
+	width: 360px;
+}
+</style>
+<body>
+	<form class="layui-form" action="" id="signForm" style="margin-top: 5px;">
+		<input class="layui-hide" name="id" th:value="${rule.id}"/>
+		<input class="layui-hide" name="mainId" th:value="${rule.mainId}"/>
+		<input class="layui-hide" name="node" th:value="${rule.node}"/>
+		<div class="layui-form-item">
+			<label class="layui-form-label">回退确认</label>
+			<div class="layui-input-block">
+				<input type="checkbox" name="backConfirm" lay-skin="primary" title="回退确认" value="1" checked="">
+				<input type="checkbox" name="backForce" lay-skin="primary" title="强制回退" value="1" checked="">
+				<input type="checkbox" name="baceSave" lay-skin="primary" title="是否需要保存" value="1" checked="">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">生效条件</label>
+			<div class="layui-input-inline">
+				<input type="text" name="effectCondition" lay-verify="email"
+				th:value="${rule.effectCondition}" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">返回方式</label>
+			<div class="layui-input-inline">
+				<select name="backWay" lay-verify="">
+					<option value="01">原路返回</option>
+					<option value="02">重新流转</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">回退范围</label>
+			<div class="layui-input-inline">
+				<select name="backRange" lay-verify="">
+					<option value="01" th:selected="${rule.backRange == '01'}">所有前序环节</option>
+					<option value="02" th:selected="${rule.backRange == '02'}">前序环节</option>
+					<option value="03" th:selected="${rule.backRange == '03'}">指定环节</option>
+					<option value="04" th:selected="${rule.backRange == '04'}">首环节</option>
+					<option value="05" th:selected="${rule.backRange == '05'}">前序人</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">指定环节</label>
+			<div class="layui-input-inline">
+				<input type="text" name="backNode" class="layui-input" th:value="${rule.backNode}" />
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/task/rule/backRule.js}"></script>
+</body>
+</html>

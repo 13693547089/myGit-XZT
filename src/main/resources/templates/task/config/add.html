@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+<title>layui</title>
+</head>
+<body>
+	<form class="layui-form" action="" style="margin-top: 10px">
+		<div class="layui-form-item">
+			<label class="layui-form-label">节点名称</label>
+			<div class="layui-input-inline">
+				<input type="text" th:value="${pName}" class="layui-input" readonly>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">处理方式</label>
+			<div class="layui-input-block" style="width: 50%">
+				<input type="radio" name="stype" placeholder="节点的所有执行者全部执行完成，节点执行完成"
+					value="ogn" title="并处理" checked /> <input type="radio"
+					name="stype" value="dept" placeholder="节点只要有一个执行者执行完成，节点执行完成"
+					title="或处理" />
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">回退方式</label>
+			<div class="layui-input-inline">
+				<select id="backWay" name="backWay" lay-search=""
+					lay-filter="backWayDemo">
+					<option value="">请选择...</option>
+					<option th:each="users:${users}" th:value="${users.id}"
+						th:text="${users.userName}"></option>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">执行者</label>
+			<div class="layui-input-inline">
+				<input type="text" name="executor" id="executor" class="layui-input"
+					readonly>
+				<button id="chooseBtn" class="layui-btn layui-btn-xs">选择</button>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">执行者类型</label>
+			<div class="layui-input-inline">
+				<input id="execType" name="execType" class="layui-input" readonly />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">状态</label>
+			<div class="layui-input-inline">
+				<input type="radio" name="status" value="1" title="正常" checked /> <input
+					type="radio" name="status" value="0" title="禁用" />
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/config/add.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.common.AsyncLogMapper">
+	<resultMap type="com.faujor.entity.common.AsyncLog" id="asyncLogMap">
+		<id property="id" column="id" />
+		<result property="asyncName" column="async_name" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="asyncStatus" column="async_status" />
+		<result property="asyncUser" column="async_user" />
+		<result property="asyncUserName" column="async_user_name" />
+		<result property="asyncNum" column="async_num" />
+		<result property="errorMsg" column="error_msg" />
+	</resultMap>
+
+	<insert id="saveAsyncLog" parameterType="com.faujor.entity.common.AsyncLog">
+		insert into
+		srm_async_log (id, async_name, start_date,end_date, async_status,
+		async_user,
+		async_user_name,async_num) values (#{id}, #{asyncName},
+		#{startDate},#{endDate},
+		#{asyncStatus}, #{asyncUser},
+		#{asyncUserName}, #{asyncNum})
+	</insert>
+
+	<update id="updateAsyncLog" parameterType="com.faujor.entity.common.AsyncLog">
+		update srm_async_log t
+		set t.async_status = #{asyncStatus}, t.async_num = #{asyncNum},
+		t.end_date = #{endDate}, t.error_msg = #{errorMsg} where t.id = #{id}
+	</update>
+
+	<select id="findAsyncLogList" parameterType="com.faujor.entity.common.AsyncLog"
+		resultMap="asyncLogMap">
+		select * from srm_async_log t
+		<where>
+			<if test="asyncName != null and asyncName != ''">
+				and t.async_name like concat('%', concat(#{asyncName},
+				'%'))
+			</if>
+			<if test="asyncStatus != null and asyncStatus != ''">
+				and t.async_status = #{asyncStatus}
+			</if>
+			<if test="asyncUserName != null and asyncUserName !=''">
+				and t.async_user_name like concat('%',
+				concat(asyncUserName, '%'))
+			</if>
+		</where>
+		order by t.start_date desc
+	</select>
+	<select id="countAsyncLog" resultType="Integer"
+		parameterType="com.faujor.entity.common.AsyncLog">
+		select count(1) from srm_async_log t
+		<where>
+			<if test="asyncName != null and asyncName != ''">
+				and t.async_name like concat('%', concat(#{asyncName},
+				'%'))
+			</if>
+			<if test="asyncStatus != null and asyncStatus != ''">
+				and t.async_status = #{asyncStatus}
+			</if>
+			<if test="asyncUserName != null and asyncUserName !=''">
+				and t.async_user_name like concat('%',
+				concat(asyncUserName, '%'))
+			</if>
+		</where>
+	</select>
+
+
+	<resultMap type="com.faujor.entity.common.AsyncContentLogDO"
+		id="contentMap">
+		<id property="id" column="id" />
+		<result property="asyncCode" column="async_Code" />
+		<result property="asyncCode2" column="async_Code2" />
+		<result property="asyncType" column="async_Type" />
+		<result property="asyncContentStr" column="async_Content_Str" />
+		<result property="asyncContent" column="async_Content"
+			jdbcType="BLOB" />
+		<result property="asyncName" column="async_Name" />
+		<result property="asyncTime" column="async_Time" />
+		<result property="asyncOperate" column="async_Operate" />
+	</resultMap>
+	<update id="saveAsyncContent" parameterType="com.faujor.entity.common.AsyncContentLogDO">
+		insert into
+		SRM_ASYNC_CONTENT (id, ASYNC_CODE, ASYNC_CODE2, ASYNC_TYPE,
+		ASYNC_CONTENT_STR, ASYNC_CONTENT, ASYNC_NAME, ASYNC_TIME,
+		ASYNC_OPERATE) values (#{id}, #{asyncCode}, #{asyncCode2},
+		#{asyncType}, #{asyncContentStr},empty_blob(), #{asyncName},
+		#{asyncTime}, #{asyncOperate})
+	</update>
+
+	<select id="findAsyncContentById" parameterType="String"
+		resultMap="contentMap">
+		select t.ASYNC_CONTENT from SRM_ASYNC_CONTENT t where t.id =
+		#{id} for update
+	</select>
+</mapper>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:include="include :: layuiHeader">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta charset="UTF-8"/>
+    <title>实例</title>
+</head>
+<body>
+    <div class="panel panel-primary">
+        <div th:if="${not #lists.isEmpty(list)}">
+            <div class="panel panel-primary">
+                <h3 class="panel-title">列表</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="panel-group">
+                    <li class="list-group-item" th:each="person:${list}">
+                        <span th:text="${person.name}"></span>
+                        <span th:text="${person.age}"></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+<script th:inline="javascript">
+</script>
+</body>
+</html>

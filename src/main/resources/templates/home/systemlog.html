@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:include="include :: header"></div>
+</head>
+
+<body >
+	<div class="row border-bottom" >
+		<nav class="navbar navbar-static-top" role="navigation"
+			style="margin-bottom: 0;background-color: #f9f9f9;">
+			<div>
+				<a class="navbar-minimalize minimalize-styl-2 btn "
+					href="#"> <i class="fa fa-bars"></i>&nbsp;&nbsp;登录日志
+				</a>
+			</div>
+		</nav>
+	</div>
+	 <div class="col-md-12">
+	    <table class="table table-bordered table-hover col-md-12">
+		  <caption class="btn-default">登录日志</caption>
+		 <thead>
+		     <tr>
+		      	<th class="col-md-3">时间</th>
+		      	<th class="col-md-3">IP</th>
+		      	<th class="col-md-3">地址</th>
+		      	<th class="col-md-3">浏览器</th>
+		      </tr>
+		  </thead>
+		  <tbody>
+		      <tr>
+		      	<td>2017-09-08 10:36:21</td>
+		      	<td>114.114.114.8</td>
+		      	<td>长沙市岳麓区</td>
+		      	<td>浏览器</td>
+		      </tr>
+		       <tr>
+		      	<td>2017-09-08 10:36:21</td>
+		      	<td>114.114.114.8</td>
+		      	<td>长沙市岳麓区</td>
+		      	<td>浏览器</td>
+		      </tr>
+		  </tbody>
+		</table>	
+		
+	</div>
+	<div th:include="include :: footer"></div>
+</body>
+</html>
+		 

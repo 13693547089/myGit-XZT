@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+<body>
+	<div class="layui-fluid " style="margin-top:10px;" >
+		<div class="layui-row ">
+			<div class="layui-col-sm9  demoTable">
+				<button class="layui-btn layui-btn-xs blueHollow" data-type="newData">新建</button>
+				<button class="layui-btn layui-btn-xs blueHollow" data-type="delData">批量删除</button>
+		</div>
+	</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-table" lay-filter="demo" id="configTable">
+		</table>
+	</div>
+	<script type="text/html" id="barDemo">
+ 		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="detail">查看</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/config/config.js"></script>
+</body>
+</html>

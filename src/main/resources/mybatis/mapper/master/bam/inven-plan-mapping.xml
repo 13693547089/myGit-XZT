@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.InvenPlanMapper">
+	<resultMap id="invenPlan" type="com.faujor.entity.bam.psm.InvenPlan">
+		<id property="id" column="id" />
+		<result property="planCode" column="plan_Code" />
+		<result property="status" column="status" />
+		<result property="planMonth" column="plan_Month" />
+		<result property="prodSeriesCode" column="prod_Series_Code" />
+		<result property="prodSeriesDesc" column="prod_Series_Desc" />
+		<result property="planDesc" column="plan_Desc" />
+		<result property="createUser" column="create_user" />
+		<result property="createTime" column="create_time" />
+		<result property="modifyUser" column="modify_user" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="creater" column="creater" />
+		<result property="modifier" column="modifier" />
+	</resultMap>
+	<resultMap id="invenPlanDetail" type="com.faujor.entity.bam.psm.InvenPlanDetail">
+		<id property="id" column="id" />
+		<result property="mainId" column="main_Id" />
+		<result property="planCode" column="plan_Code" />
+		<result property="status" column="status" />
+		<result property="mateCode" column="mate_Code" />
+		<result property="mateDesc" column="mate_Desc" />
+		<result property="ranking" column="ranking" />
+		<result property="beginOrder" column="begin_Order" />
+		<result property="beginStock" column="begin_Stock" />
+		<result property="beginEnableOrder" column="begin_Enable_Order" />
+		<result property="prodPlan" column="prod_Plan" />
+		<result property="endStock" column="end_Stock" />
+		<result property="deliveryPlan" column="delivery_Plan" />
+		<result property="safeScale" column="safe_Scale" />
+		<result property="planMonth" column="plan_Month" />
+		<result property="nextMonthDeliveryNum" column="next_Month_Delivery_Num" />
+		<result property="itemCode" column="item_code" />
+		<result property="itemName" column="item_name" />
+		<result property="prodSeriesCode" column="prod_Series_Code" />
+		<result property="prodSeriesDesc" column="prod_Series_Desc" />
+	</resultMap>
+
+	<resultMap id="suppProd" type="com.faujor.entity.bam.psm.SuppProd">
+		<id property="id" column="id" />
+		<result property="mainId" column="main_Id" />
+		<result property="status" column="status" />
+		<result property="mateCode" column="mate_Code" />
+		<result property="mateDesc" column="mate_Desc" />
+		<result property="suppNo" column="supp_No" />
+		<result property="suppName" column="supp_Name" />
+		<result property="ranking" column="ranking" />
+		<result property="beginOrder" column="begin_Order" />
+		<result property="beginStock" column="begin_Stock" />
+		<result property="beginEnableOrder" column="begin_Enable_Order" />
+		<result property="prodPlan" column="prod_Plan" />
+		<result property="endStock" column="end_Stock" />
+		<result property="deliveryPlan" column="delivery_Plan" />
+		<result property="remainNum" column="remain_Num" />
+		<result property="planMonth" column="plan_Month" />
+		<result property="nextDeliveryNum" column="next_Delivery_Num" />
+		<result property="safeScale" column="safe_Scale" />
+		<result property="itemCode" column="item_code" />
+		<result property="itemName" column="item_name" />
+		<result property="creator" column="creator" />
+		<result property="prodSeriesCode" column="prod_Series_Code" />
+		<result property="prodSeriesDesc" column="prod_Series_Desc" />
+		<result property="planDetailId" column="plan_Detail_Id" />
+	</resultMap>
+	<select id="getInvenPlanByPage" parameterType="Map" resultMap="invenPlan">
+		select t3.* from (
+		select t2.*,rownum rn from
+		(select t1.* from
+		ps_supp_inven_plan t1 where 1=1
+			<if test="planDesc!=null and planDesc!=''">
+				and (t1.plan_Desc like #{planDesc} or t1.plan_Code like
+				#{planDesc})
+			</if>
+			<if test="status!=null and status!=''">
+				and t1.status=#{status}
+			</if>
+			<if test="startDate!=null">
+				and t1.create_time &gt; #{startDate}
+			</if>
+			<if test="endDate!=null">
+				and t1.create_time &lt; #{endDate}
+			</if>
+			<if test="planMonth!=null">
+				and t1.plan_Month = #{planMonth}
+			</if>
+			<if test="createUser!=null and createUser!=''">
+				and t1.create_user like #{createUser}
+			</if>
+			<if test="userId != null">
+				and creater in
+				<foreach collection="userId" index="index" item="item" open="("
+					close=")" separator=",">
+					#{item.id}
+				</foreach>
+			</if>
+			<if test="auditStatus != null and auditStatus != ''">
+				and t1.status &lt;&gt; #{auditStatus}
+			</if>
+		order by t1.plan_Code desc) t2
+		where rownum &lt;=#{page.to}) t3
+		where
+		t3.rn &gt; #{page.from}
+	</select>
+	<select id="getInvenPlanNum" parameterType="Map" resultType="Integer">
+		select count(1) from ps_supp_inven_plan t1 where 1=1
+			<if test="planDesc!=null and planDesc!=''">
+				and (t1.plan_Desc like #{planDesc} or t1.plan_Code like
+				#{planDesc})
+			</if>
+			<if test="status!=null and status!=''">
+				and t1.status=#{status}
+			</if>
+			<if test="startDate!=null">
+				and t1.create_time &gt; #{startDate}
+			</if>
+			<if test="endDate!=null">
+				and t1.create_time &lt; #{endDate}
+			</if>
+			<if test="planMonth!=null">
+				and t1.plan_Month = #{planMonth}
+			</if>
+			<if test="createUser!=null and createUser!=''">
+				and t1.create_user like #{createUser}
+			</if>
+			<if test="userId != null">
+				and( creater in
+				<foreach collection="userId" index="index" item="item" open="("
+					close=")" separator=",">
+					#{item.id}
+				</foreach>
+				) 
+			</if>
+			<if test="auditStatus != null and auditStatus != ''">
+				and t1.status &lt;&gt; #{auditStatus}
+			</if>
+	</select>
+	<select id="getInvenPlanDetaiByMainId" parameterType="Map"
+		resultMap="suppProd">
+		select * from PS_SUPP_PROD t1 where 1=1
+		<if test="planMonth!=null">
+			and t1.plan_Month=#{planMonth}
+		</if>
+		<if test="mainId!=null and mainId!=''">
+			and t1.main_id=#{mainId}
+		</if>
+		<if test="itemInfos!=null">
+			and t1.item_code in
+			<foreach collection="itemInfos" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="mateCodes!=null">
+			and t1.mate_code in
+			<foreach collection="mateCodes" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="suppNos!=null">
+			and t1.supp_no in
+			<foreach collection="suppNos" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="seriesCodes!=null">
+			and t1.prod_Series_Code in
+			<foreach collection="seriesCodes" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="suppName!=null and suppName!=''">
+			and (t1.supp_no like #{suppName} or t1.supp_name like
+			#{suppName})
+		</if>
+		<if test="mateDesc!=null and mateDesc!=''">
+			and (t1.mate_code like #{mateDesc} or t1.mate_desc like
+			#{mateDesc})
+		</if>
+		order by t1.item_code, t1.mate_code
+	</select>
+	<insert id="saveInvenPlan" parameterType="com.faujor.entity.bam.psm.InvenPlan">
+		insert into
+		ps_supp_inven_plan t1
+		(t1.id,t1.plan_Code,t1.status,
+		plan_Month,prod_Series_Code,prod_Series_Desc,
+		plan_Desc,create_user,create_time,
+		modify_user,modify_time,creater,modifier)
+		values
+		(#{id},#{planCode},#{status},
+		#{planMonth},#{prodSeriesCode},#{prodSeriesDesc},
+		#{planDesc},#{createUser},#{createTime},
+		#{modifyUser},#{modifyTime},#{creater},#{modifier}
+		)
+	</insert>
+	<update id="updateInvenPlan" parameterType="com.faujor.entity.bam.psm.InvenPlan">
+		update
+		ps_supp_inven_plan t1
+		set t1.status=#{status},
+		t1.plan_Month=#{planMonth},t1.prod_Series_Code=#{prodSeriesCode},t1.prod_Series_Desc=#{prodSeriesDesc},
+		t1.plan_Desc=#{planDesc},t1.modify_User=#{modifyUser},t1.modify_time=#{modifyTime},t1.modifier=#{modifier}
+		where id=#{id}
+	</update>
+	<delete id="delInvenPlanById" parameterType="String">
+		delete from
+		ps_supp_inven_plan where id=#{id}
+	</delete>
+	<update id="changeInvenPlanStatus">
+		update ps_supp_inven_plan t1
+		set t1.status=#{status}
+		where t1.id in
+		<foreach collection="ids" item="id" separator="," open="("
+			close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="getInvenPlanById" parameterType="String" resultMap="invenPlan">
+		select * from ps_supp_inven_plan t1 where t1.id=#{id}
+	</select>
+	<select id="getInvenPlanByCode" parameterType="String" resultMap="invenPlan">
+		select * from ps_supp_inven_plan t1 where t1.plan_code=#{planCode}
+	</select>
+	<insert id="saveInvenPlanDetail" parameterType="com.faujor.entity.bam.psm.InvenPlanDetail">
+		insert into
+		ps_supp_inven_plan_detail t1
+		(t1.id,t1.main_Id,t1.plan_Code,
+		status,mate_Code,mate_Desc,
+		ranking,begin_Order,begin_Stock,
+		begin_Enable_Order,prod_Plan,end_Stock,
+		delivery_Plan,safe_Scale,next_Month_Delivery_Num,
+		item_code,item_name,prod_Series_Code,prod_Series_Desc)
+		values
+		(#{id},#{mainId},#{planCode},
+		#{status},#{mateCode},#{mateDesc},
+		#{ranking},#{beginOrder},#{beginStock},
+		#{beginEnableOrder},#{prodPlan},#{endStock},
+		#{deliveryPlan},#{safeScale},#{nextMonthDeliveryNum},
+		#{itemCode},#{itemName},#{prodSeriesCode},#{prodSeriesDesc}
+		)
+	</insert>
+	<update id="updateInvenPlanDetail" parameterType="com.faujor.entity.bam.psm.InvenPlanDetail">
+		update
+		ps_supp_inven_plan_detail
+		set
+		status=#{status},mate_Code=#{mateCode},mate_Desc=#{mateDesc},
+		ranking=#{ranking},begin_Order=#{beginOrder},begin_Stock=#{beginStock},
+		begin_Enable_Order=#{beginEnableOrder},prod_Plan=#{prodPlan},end_Stock=#{endStock},
+		delivery_Plan=#{deliveryPlan},safe_Scale=#{safeScale},
+		item_Code=#{itemCode},item_Name=#{itemName},
+		prod_Series_Code=#{prodSeriesCode},prod_Series_Desc=#{prodSeriesDesc}
+		where id=#{id}
+	</update>
+	<delete id="delInvenPlanDetail" parameterType="ArrayList">
+		delete from ps_supp_inven_plan_detail where id in
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<delete id="delInvenPlanDetailByMainId" parameterType="String">
+		delete
+		from ps_supp_inven_plan_detail where main_id=#{mainId}
+	</delete>
+	<select id="getPlanDetailById" parameterType="String" resultMap="invenPlanDetail">
+		select t1.*,t2.plan_Month plan_Month from ps_supp_inven_plan_detail t1
+		left join ps_supp_inven_plan t2
+		on t1.main_id=t2.id
+		where t1.id=#{id}
+	</select>
+	<update id="changeInvenPlanDetailStatus">
+		update ps_supp_inven_plan_detail set status=#{status}
+		where id=#{id}
+	</update>
+	<select id="getStatusNumsByMainIds" resultType="Integer">
+		select count(1) from ps_supp_inven_plan_detail where status=#{status}
+		and main_id in
+		<foreach collection="ids" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</select>
+	<update id="updatePlanDetail" parameterType="Map">
+		update
+		ps_supp_inven_plan_detail
+		set status=#{status},
+		prod_Plan=#{prodPlan},safe_Scale=#{safeScale},
+		end_stock=#{endStock}
+		where id=#{id}
+	</update>
+	<select id="getMounthMateExistCount" parameterType="Map"
+		resultType="Integer">
+		select count(1)
+		from ps_supp_inven_plan_detail t1
+		left join
+		ps_supp_inven_plan t2
+		on t1.main_id = t2.id
+		<where>
+			<if test="planCode!=null and planCode!=''">
+				t2.plan_code &lt;&gt; #{planCode}
+			</if>
+			and t2.plan_month = #{planMonth}
+			<if test="mateCodes!=null">
+				and t1.mate_code in
+				<foreach collection="mateCodes" open="(" close=")"
+					separator="," item="mateCode">
+					#{mateCode}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<select id="findPlanDetailsDataByParams" resultMap="suppProd"
+		parameterType="map">
+		SELECT t1.BUYER_ID, t3.mate_code AS mate_code,t4.prod_series_code as prod_series_code,t4.prod_series as prod_Series_Desc ,
+		t3.mate_name AS mate_desc, t2.sap_id AS supp_No, t2.supp_name AS
+		SUPP_NAME, t4. RANK, t4.pad_plan_qty as delivery_plan, t3.item_code,
+		t3.item_name FROM MDM_BUYER_SUPP_MATE t1 LEFT JOIN MDM_QUAL_SUPP t2 ON
+		t2.supp_id = t1.supp_id LEFT JOIN MDM_MATE t3 ON t3.mate_id =
+		t1.mate_id LEFT JOIN PS_PAD_PLAN_DETAIL t4 ON t4.mat_code =
+		t3.mate_code LEFT JOIN PS_PAD_PLAN t5 ON t5. ID = t4.main_id WHERE
+		t5.plan_month = #{planMonth} and t1.buyer_id = #{userId} ORDER BY
+		t3.mate_code
+	</select>
+
+	<select id="countSuppNumByParams" resultType="Integer"
+		parameterType="map">
+		select count(*) from MDM_BUYER_SUPP_MATE t1 left join
+		MDM_MATE t2 on t1.mate_id
+		= t2.mate_id where t1.BUYER_ID = #{userId}
+		and t2.mate_code = #{mateCode}
+	</select>
+
+	<select id="getReportByMate" resultMap="suppProd" parameterType="map">
+		SELECT item_code, MAX(item_name) AS item_name, mate_code,
+		MAX(mate_desc) AS MATE_DESC, SUM(begin_order) AS
+		BEGIN_ORDER,
+		SUM(begin_stock) AS BEGIN_STOCK, SUM(begin_enable_order)
+		AS
+		BEGIN_ENABLE_ORDER, SUM(prod_plan) AS PROD_PLAN, SUM(end_stock) AS
+		END_STOCK, SUM(delivery_plan) AS DELIVERY_PLAN
+		,nvl(SUM(next_Delivery_Num),0) AS next_Delivery_Num FROM PS_SUPP_PROD
+		where
+		1=1
+		<if test="suppProd != null">
+			<if test="suppProd.planMonth != null">
+				and plan_month = #{suppProd.planMonth}
+			</if>
+		</if>
+		<if test="userIds != null">
+			and creator in
+			<foreach collection="userIds" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+		GROUP BY item_code, MATE_CODE
+		order BY item_code, MATE_CODE
+	</select>
+
+	<select id="getReportBySupp" resultMap="suppProd" parameterType="map">
+		SELECT SUPP_NO, MAX(SUPP_NAME) AS SUPP_NAME, SUM(begin_order) AS
+		BEGIN_ORDER, SUM(begin_stock) AS BEGIN_STOCK, SUM(begin_enable_order)
+		AS BEGIN_ENABLE_ORDER, SUM(prod_plan) AS PROD_PLAN, SUM(end_stock) AS
+		END_STOCK, SUM(delivery_plan) AS
+		DELIVERY_PLAN,nvl(SUM(next_Delivery_Num),0) AS next_Delivery_Num FROM
+		PS_SUPP_PROD
+		where
+		main_id=#{mainId}
+		<if test="suppNos != null">
+			and supp_no in
+			<foreach collection="suppNos" item="item" index="index" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		GROUP BY SUPP_NO
+	</select>
+	<insert id="batchSaveInvenPlanDetails" parameterType="list">
+		insert all into PS_SUPP_PROD (ID, MAIN_ID, MATE_CODE, MATE_DESC,
+		SUPP_NO, SUPP_NAME, RANKING, BEGIN_ORDER, BEGIN_STOCK,
+		BEGIN_ENABLE_ORDER, PROD_PLAN, END_STOCK, DELIVERY_PLAN, REMAIN_NUM,
+		NEXT_DELIVERY_NUM, SAFE_SCALE, PLAN_MONTH, ITEM_CODE, ITEM_NAME,
+		CREATOR,PROD_SERIES_CODE,prod_Series_Desc,plan_Detail_Id) values
+		<foreach collection="list" item="item" index="index" open=""
+			separator="into PS_SUPP_PROD (ID, MAIN_ID, MATE_CODE, MATE_DESC, SUPP_NO, SUPP_NAME, RANKING, BEGIN_ORDER, BEGIN_STOCK, BEGIN_ENABLE_ORDER, PROD_PLAN, END_STOCK, DELIVERY_PLAN, REMAIN_NUM, NEXT_DELIVERY_NUM, SAFE_SCALE, PLAN_MONTH, ITEM_CODE, ITEM_NAME, CREATOR,PROD_SERIES_CODE,prod_Series_Desc,plan_Detail_Id) values"
+			close="">
+			(#{item.id}, #{item.mainId}, #{item.mateCode},
+			#{item.mateDesc}, #{item.suppNo}, #{item.suppName}, #{item.ranking},
+			#{item.beginOrder}, #{item.beginStock}, #{item.beginEnableOrder},
+			#{item.prodPlan}, #{item.endStock}, #{item.deliveryPlan},
+			#{item.remainNum}, #{item.nextDeliveryNum}, #{item.safeScale},
+			#{item.planMonth}, #{item.itemCode}, #{item.itemName},
+			#{item.creator},#{item.prodSeriesCode},#{item.prodSeriesDesc},#{item.planDetailId})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<delete id="removeInvenPlanDetailsByMainId" parameterType="String">
+		delete from
+		PS_SUPP_PROD where main_id = #{mainId}
+	</delete>
+
+	<select id="findInvenPlanDetailIDsByMainId" parameterType="String"
+		resultType="String">
+		select id from PS_SUPP_PROD where main_id = #{mainId}
+	</select>
+
+	<select id="findInvenPlanDetailsMateCodeAndSuppNoByMainID"
+		resultType="String" parameterType="String">
+		select concat(concat(mate_code,
+		','), supp_no) from PS_SUPP_PROD where main_id = #{mainId}
+	</select>
+
+	<select id="findSuppProdByParams" parameterType="map" resultMap="suppProd">
+		select * from PS_SUPP_PROD where main_id=#{mainId} and
+		mate_code=#{mateCode} and supp_no=#{suppNo}
+	</select>
+
+	<update id="updateInvenPlanDetails" parameterType="com.faujor.entity.bam.psm.SuppProd">
+		update
+		PS_SUPP_PROD set RANKING = #{ranking}, BEGIN_ORDER = #{beginOrder},
+		BEGIN_STOCK = #{beginStock}, BEGIN_ENABLE_ORDER = #{beginEnableOrder},
+		PROD_PLAN = #{prodPlan}, END_STOCK = #{endStock}, DELIVERY_PLAN =
+		#{deliveryPlan}, REMAIN_NUM = #{remainNum}, NEXT_DELIVERY_NUM =
+		#{nextDeliveryNum}, SAFE_SCALE = #{safeScale} where id = #{id}
+	</update>
+
+	<select id="countInvenPlanByIdAndPlanMonth" parameterType="com.faujor.entity.bam.psm.InvenPlan"
+		resultType="Integer">
+		select count(*) from PS_SUPP_INVEN_PLAN where id <![CDATA[<>]]>
+		#{id} and plan_month = #{planMonth} and creater = #{creater}
+	</select>
+
+	<select id="checkAllSubmit" parameterType="Long" resultType="Integer">
+		SELECT COUNT(*) FROM SYS_USER t2 LEFT JOIN PS_SUPP_INVEN_PLAN t3 ON
+		TO_CHAR(t2.USER_ID) = t3.CREATER WHERE t2.LEADER = #{leaderId} AND(
+		t3.STATUS = '已保存' OR t3.STATUS IS NULL);
+	</select>
+
+	<select id="getPlanDetailForLeader" parameterType="map"
+		resultMap="suppProd">
+		select t1.* from PS_SUPP_PROD t1 where t1.plan_month = #{planMonth}
+		and t1.CREATOR in
+		<foreach collection="users" item="item" index="index" open="("
+			separator="," close=")">
+			#{item.id}
+		</foreach>
+	</select>
+
+	<update id="updateInvenPlanDetailsByParams" parameterType="map">
+		update PS_SUPP_INVEN_PLAN t1 set t1.status = '已审核' where t1.plan_month
+		= #{planMonth} and t1.creater in (SELECT t2.USER_ID from SYS_USER t2
+		where t2.leader = #{leaderId})
+	</update>
+	
+	<select id="getItemList" parameterType="Map" resultType="com.faujor.entity.basic.Dic">
+	select distinct t1.item_code as dicCode,t1.item_name as dicName
+	   from ps_supp_prod t1
+	   left join ps_supp_inven_plan t2
+	     on t1.main_id = t2.id
+	  where t2.plan_code = #{planCode}
+	  and t1.item_code is not null
+	    <if test="itemDesc!=null and itemDesc!=''">
+		  and (t1.item_code like #{itemDesc} or t1.item_name like #{itemDesc} )
+		 </if>
+		 order by t1.item_code
+	</select>
+	<select id="getMateSelectList" parameterType="Map" resultType="com.faujor.entity.mdm.MateDO">
+		 select distinct t1.mate_code as mateCode,t1.mate_desc as mateName
+		   from ps_supp_prod t1
+		   left join ps_supp_inven_plan t2
+		     on t1.main_id = t2.id
+		  where t2.plan_code = #{planCode}
+		  and t1.mate_code is not null
+		  <if test="mateDesc!=null and mateDesc!=''">
+		  and (t1.mate_code like #{mateDesc} or t1.mate_desc like #{mateDesc} )
+		  </if>
+		  order by t1.mate_code
+	</select>
+	<select id="getProdSeriers" parameterType="Map" resultType="com.faujor.entity.common.BaseEntity">
+		 select distinct t1.prod_series_code  as code ,t1.prod_series_desc as name
+		   from ps_supp_prod t1
+		   left join ps_supp_inven_plan t2
+		     on t1.main_id = t2.id
+		  where t2.plan_code = #{planCode}
+		  and t1.prod_series_code is not null
+		   <if test="seriesDesc!=null and seriesDesc!=''">
+		  and (t1.prod_series_code like #{seriesDesc} or t1.prod_series_desc like #{seriesDesc} )
+		  </if>
+		   order by t1.prod_series_code
+	</select>
+	<select id="getSuppList" parameterType="Map" resultType="com.faujor.entity.mdm.QualSupp">
+		 select distinct t1.supp_no  as  sapId ,t1.supp_name as suppName
+		   from ps_supp_prod t1
+		   left join ps_supp_inven_plan t2
+		     on t1.main_id = t2.id
+		  where t2.plan_code = #{planCode}
+		  and t1.supp_no is not null
+		    <if test="suppName!=null and suppName!=''">
+		  and (t1.supp_no like #{suppName} or t1.supp_name like #{suppName} )
+		  </if>
+		   order by t1.supp_no
+	</select>
+	
+	<!--  备货计划3开始 -->
+	<select id="findPlanDetailsByParams" resultMap="invenPlanDetail" parameterType="map">
+     select * from 
+	   ( SELECT t1.BUYER_ID, t3.mate_code AS mate_code,t3.series_code as prod_series_code,t3.series_expl as prod_Series_Desc ,
+	    t3.mate_name AS mate_desc,  t4. RANK as ranking, t4.pad_plan_qty as delivery_plan,t4.nation_stock2 as begin_Stock, t3.item_code,
+	    t3.item_name FROM MDM_BUYER_MATE t1  JOIN MDM_MATE t3 ON t3.mate_id =
+	    t1.mate_id  JOIN PS_PAD_PLAN_DETAIL t4 ON t4.mat_code =
+	    t3.fin_mate_id  JOIN PS_PAD_PLAN t5 ON t5. ID = t4.main_id WHERE
+	    t5.plan_month = #{planMonth} and t1.buyer_id = #{userId}
+      union 
+      SELECT t1.BUYER_ID, t3.mate_code AS mate_code,t3.series_code as prod_series_code,t3.series_expl as prod_Series_Desc ,
+	    t3.mate_name AS mate_desc,  t4. RANK as ranking, t4.pad_plan_qty as delivery_plan,t4.nation_stock2 as begin_Stock, t3.item_code,
+	    t3.item_name FROM MDM_BUYER_MATE t1 LEFT JOIN MDM_MATE t3 ON t3.mate_id =
+	    t1.mate_id  JOIN PS_PAD_PLAN_DETAIL t4 ON t4.mat_code =
+	    t3.mate_code LEFT JOIN PS_PAD_PLAN t5 ON t5. ID = t4.main_id WHERE
+	    t5.plan_month = #{planMonth} and t1.buyer_id = #{userId} and t3.has_semi!=1) t6
+      ORDER BY t6.item_code, t6.mate_code
+   </select >
+   
+   <select id="getMatePlanDetaiByMainId" resultMap="invenPlanDetail" parameterType="map">
+   		select * from ps_supp_inven_plan_detail t1 where 1=1
+		<if test="mainId!=null and mainId!=''">
+			and t1.main_id=#{mainId}
+		</if>
+		<if test="itemInfos!=null">
+			and t1.item_code in
+			<foreach collection="itemInfos" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="mateCodes!=null">
+			and t1.mate_code in
+			<foreach collection="mateCodes" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="seriesCodes!=null">
+			and t1.prod_Series_Code in
+			<foreach collection="seriesCodes" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>	
+		order by t1.item_code ,t1.mate_desc,t1.mate_code
+   </select>
+   
+   
+     <select id="getMatePlanDetaiByMainIdOrderBySer" resultMap="invenPlanDetail" parameterType="map">
+   		select * from ps_supp_inven_plan_detail t1 where 1=1
+		<if test="mainId!=null and mainId!=''">
+			and t1.main_id=#{mainId}
+		</if>
+		<if test="itemInfos!=null">
+			and t1.item_code in
+			<foreach collection="itemInfos" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="mateCodes!=null">
+			and t1.mate_code in
+			<foreach collection="mateCodes" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="seriesCodes!=null">
+			and t1.prod_Series_Code in
+			<foreach collection="seriesCodes" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>	
+		order by t1.PROD_SERIES_DESC, t1.prod_Series_Code,t1.ITEM_NAME,t1.item_code, t1.mate_desc ,t1.mate_code
+   </select>
+   
+   
+   <select id="getItemInfo" parameterType="Map" resultType="com.faujor.entity.basic.Dic">
+	select distinct t1.item_code as dicCode,t1.item_name as dicName
+	   from ps_supp_inven_plan_detail t1
+	   left join ps_supp_inven_plan t2
+	     on t1.main_id = t2.id
+	  where t2.plan_code = #{planCode}
+	  and t1.item_code is not null
+	    <if test="itemDesc!=null and itemDesc!=''">
+		  and (t1.item_code like #{itemDesc} or t1.item_name like #{itemDesc} )
+		 </if>
+		 order by t1.item_code
+	</select>
+	<select id="getMateSelectInfo" parameterType="Map" resultType="com.faujor.entity.mdm.MateDO">
+		 select distinct t1.mate_code as mateCode,t1.mate_desc as mateName
+		   from ps_supp_inven_plan_detail t1
+		   left join ps_supp_inven_plan t2
+		     on t1.main_id = t2.id
+		  where t2.plan_code = #{planCode}
+		  and t1.mate_code is not null
+		  <if test="mateDesc!=null and mateDesc!=''">
+		  and (t1.mate_code like #{mateDesc} or t1.mate_desc like #{mateDesc} )
+		  </if>
+		  order by t1.mate_code
+	</select>
+	<select id="getSelectProdSeriers" parameterType="Map" resultType="com.faujor.entity.common.BaseEntity">
+		 select distinct t1.prod_series_code  as code ,t1.prod_series_desc as name
+		   from ps_supp_inven_plan_detail t1
+		   left join ps_supp_inven_plan t2
+		     on t1.main_id = t2.id
+		  where t2.plan_code = #{planCode}
+		  and t1.prod_series_code is not null
+		   <if test="seriesDesc!=null and seriesDesc!=''">
+		  and (t1.prod_series_code like #{seriesDesc} or t1.prod_series_desc like #{seriesDesc} )
+		  </if>
+		   order by t1.prod_series_code
+	</select>
+   
+   <select id="getSuppProdBySuppNo" parameterType="map" resultMap="suppProd">
+		select t1.* from PS_SUPP_PROD t1 where t1.main_id = #{mainId}
+		and t1.supp_no =#{suppNo}
+	</select>
+	<select id="getPlanDetailByMateAndMonth" resultMap="invenPlanDetail" parameterType="map">
+		select t1.*
+		  from ps_supp_inven_plan_detail t1
+		  left join ps_supp_inven_plan t2
+		    on t1.plan_code = t2.plan_code
+		 where t1.mate_code = #{mateCode}
+		   and t2.plan_month = #{planMonth}
+	</select>
+	<update id="updateSafeScale" parameterType="Map"> 
+		update ps_supp_inven_plan_detail t1 
+			set t1.next_month_delivery_num=#{nextDlvNum},
+			t1.safe_scale=#{safeScale}
+		 where t1.id=#{id}
+	</update>
+   <!--  备货计划3结束 -->
+   
+   <!--  备货计划更新开始 -->
+   <select id="getPlanDetailByMateCode" parameterType="Map" resultMap="invenPlanDetail">
+  	select t1.*,t2.plan_Month plan_Month from ps_supp_inven_plan_detail t1
+	left join ps_supp_inven_plan t2
+	on t1.main_id=t2.id
+	where t1.mate_code=#{mateCode} 
+	<if test="planCode!=null and planCode!=''">
+	and t2.plan_code=#{planCode}
+	</if>
+	<if test="planMonth!=null">
+	and t2.plan_Month=#{planMonth}
+	</if>
+	<if test="creater!=null and creater!=''">
+	and t2.creater=#{creater}
+	</if>
+   </select>
+   <!--  备货计划更新结束 -->
+   
+   
+   <!--  备货计划导入结束 -->
+   <select id="getLatestPlan" parameterType="String" resultMap="invenPlanDetail">
+      select *
+     from ps_supp_inven_plan t2
+    where t2.creater = #{userId}
+      and t2.plan_month = (select max(t1.plan_month)
+                             from ps_supp_inven_plan t1
+                            where t1.creater = #{userId})
+   </select>
+   
+   <select id="getNationalStock" parameterType="Map" resultType="BigDecimal">
+	  select nvl(t2.nation_stock1, 0) nation_stock1
+	   from ps_pad_plan_detail t2
+	   left join ps_pad_plan t3
+	     on t2.main_id = t3.id
+	  where t2.mat_code =
+	        (select case
+	                  when t1.has_semi = 1 then
+	                   t1.mate_code
+	                  else
+	                   t1.fin_mate_id
+	                end
+	           from mdm_mate t1
+	          where t1.mate_code = #{mateCode})
+	    and t3.plan_month = to_char(#{planMonth}, 'yyyy-MM')
+   </select>
+
+   <!--  备货计划导出结束 -->
+   <!--  差异比较开始-->
+	<select id="getGetComPareByPlanCode"  parameterType="String" resultType="com.faujor.entity.bam.psm.InvenPadCompare">
+		 select t1.ranking,
+	        t1.mate_code as mateCode,
+	        t1.mate_desc as mateDesc,
+	        case
+	          when t3.fin_mate_id is null or t3.fin_mate_id = '' then
+	           t1.mate_code
+	          else
+	           t3.fin_mate_id
+	        end as padMateCode,
+	        t1.prod_series_code seriesCode,
+	        t1.prod_series_desc seriesDesc,
+	        t1.item_code itemCode,
+	        t1.item_name itemName,
+	        t3.box_number,
+	        t3.pack_number,
+	        t1.delivery_plan  as invenDlvNum
+	   from ps_supp_inven_plan_detail t1
+	   left join ps_supp_inven_plan t2
+	     on t1.main_id = t2.id
+	   left join mdm_mate t3
+	     on t1.mate_code = t3.mate_code
+	  where t2.plan_code = #{planCode}
+	  order by t1.item_code ,t1.mate_desc,t1.mate_code
+	</select>
+	<select id="getGetComPareByMonthAndMate" resultType="com.faujor.entity.bam.psm.InvenPadCompare">
+	   select t1.*,t2.delivery_plan as invenDlvNum,t4.pad_plan_qty as padDlvNum
+	   from (
+	   <foreach collection="mates" item="mate" separator=" union ">
+	     select #{mate.mateCode} as mateCode,
+	                #{mate.padMateCode} as padMateCode
+	           from dual
+	   </foreach>	 
+	   ) t1
+	   left join ps_supp_inven_plan_detail t2
+	     on t1.mateCode = t2.mate_code
+	   and t2.main_id in (select id from ps_supp_inven_plan where plan_month=#{planMonth})
+	   left join ps_pad_plan_detail t4 on t1.padmatecode=t4.mat_code
+	   and t4.main_id in (select id from ps_pad_plan where plan_month=to_char(#{planMonth},'yyyy-MM'))
+	</select>
+   <!--  差异比较结束-->
+</mapper>

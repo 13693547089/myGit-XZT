@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.QualSuppMapper">
+
+	<insert id="insertQualSupp" parameterType="com.faujor.entity.mdm.QualSupp">
+		<selectKey keyProperty="suppId" resultType="java.lang.String"
+			order="BEFORE">
+			select lower(sys_guid()) from dual
+		</selectKey>
+		insert into mdm_qual_supp
+		values(#{suppId},#{sapId},#{srmId},#{oaId},#{categoryId},#{category},#{subGroup},#{suppName},#{suppAbbre},
+		#{provCode},#{provName},#{cityCode},#{cityName},
+		#{postcode},#{address},#{contacts},#{phone},#{bankCode},#{bankAbbre},#{bankName},#{bankAccount},
+		#{accountHolder},#{holderPhone},#{faxNumber},#{email},
+		#{payClauseId},#{currencyId},#{taxeKindId},#{remark},#{busiLicense},#{clientId},
+		'1',#{compCode},#{akont},#{proGroup},
+		#{status},#{registerTime},#{auditTime},#{auditStatus},
+		#{firstTrialId},#{buyerAuditTime},#{miniId},#{subOATime})
+	</insert>
+
+	<resultMap type="com.faujor.entity.mdm.QualSupp" id="qualSupp">
+		<result property="suppId" column="supp_id" />
+		<result property="sapId" column="sap_id" />
+		<result property="srmId" column="srm_id" />
+		<result property="oaId" column="oa_id" />
+		<result property="categoryId" column="category_id" />
+		<result property="category" column="category" />
+		<result property="subGroup" column="sub_group" />
+		<result property="suppName" column="supp_name" />
+		<result property="suppAbbre" column="supp_abbre" />
+		<result property="provCode" column="prov_code" />
+		<result property="provName" column="prov_name" />
+		<result property="cityCode" column="city_code" />
+		<result property="cityName" column="city_name" />
+		<result property="postcode" column="postcode" />
+		<result property="address" column="address" />
+		<result property="contacts" column="contacts" />
+		<result property="phone" column="phone" />
+		<result property="bankCode" column="bank_code" />
+		<result property="bankAbbre" column="bank_abbre" />
+		<result property="bankName" column="bank_name" />
+		<result property="bankAccount" column="bank_account" />
+		<result property="accountHolder" column="account_holder" />
+		<result property="holderPhone" column="holder_phone" />
+		<result property="faxNumber" column="fax_number" />
+		<result property="email" column="email" />
+		<result property="payClauseId" column="pay_clause_id" />
+		<result property="currencyId" column="currency_id" />
+		<result property="taxeKindId" column="taxe_kind_id" />
+		<result property="remark" column="remark" />
+		<result property="busiLicense" column="busi_license" />
+		<result property="clientId" column="client_id" />
+		<result property="isDelete" column="is_delete" />
+		<result property="compCode" column="comp_code" />
+		<result property="akont" column="akont" />
+		<result property="proGroup" column="pro_group" />
+		<result property="status" column="status" />
+		<result property="registerTime" column="register_time" />
+		<result property="auditTime" column="audit_time" />
+		<result property="auditStatus" column="audit_status" />
+		<result property="firstTrialId" column="first_trial_id" />
+		<result property="buyerAuditTime" column="buyer_audit_time" />
+		<result property="miniId" column="mini_id" />
+		<result property="subOATime" column="subOA_time" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.mdm.QualSuppDO" id="qualSuppDO">
+		<result property="suppId" column="supp_id" />
+		<result property="sapId" column="sap_id" />
+		<result property="suppName" column="supp_name" />
+		<result property="username" column="name" />
+	</resultMap>
+	<select id="queryQualSuppByPage" parameterType="Map" resultMap="qualSupp">
+		select s2.* from(
+		select s1.*,rownum rn from(
+		select s.supp_id,s.sap_id,s.srm_id,s.oa_id,
+		s.category,s.supp_name,s.supp_abbre,s.prov_name,
+		s.city_name,d.dic_name category_id from
+		mdm_qual_supp s left join srm_dic d on s.category = d.dic_code
+		where 1=1
+		and s.is_delete is null
+		<if test="qualSupp.provcity != null and qualSupp.provcity != '' ">
+			and (
+			s.prov_name like '%${qualSupp.provcity}%'
+			or
+			s.city_name like
+			'%${qualSupp.provcity}%'
+			)
+		</if>
+		<if test="qualSupp.category != null and qualSupp.category != '' ">
+			and (
+			s.category like '%${qualSupp.category}%'
+			or
+			d.dic_name like '%${qualSupp.category}%'	
+			)
+		</if>
+		<if test="qualSupp.suppInfo != null and qualSupp.suppInfo != '' ">
+			and (
+			s.supp_id like '%${qualSupp.suppInfo}%'
+			or s.supp_name
+			like
+			'%${qualSupp.suppInfo}%'
+			)
+		</if>
+		order by s.register_time desc)s1)s2
+	<![CDATA[where s2.rn>=#{start} and s2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryQualSuppCountbyPage" parameterType="Map"
+		resultType="int">
+		select count(*) from mdm_qual_supp s 
+		left join srm_dic d on s.category = d.dic_code
+		where 1=1
+		and s.is_delete is null
+		<if test="qualSupp.provcity != null and qualSupp.provcity != '' ">
+			and (
+			s.prov_name like '%${qualSupp.provcity}%'
+			or
+			s.city_name like
+			'%${qualSupp.provcity}%'
+			)
+		</if>
+		<if test="qualSupp.category != null and qualSupp.category != '' ">
+			and (
+			s.category like '%${qualSupp.category}%'
+			or
+			d.dic_name like '%${qualSupp.category}%'	
+			)
+		</if>
+		<if test="qualSupp.suppInfo != null and qualSupp.suppInfo != '' ">
+			and (
+			s.supp_id like '%${qualSupp.suppInfo}%'
+			or s.supp_name
+			like
+			'%${qualSupp.suppInfo}%'
+			)
+		</if>
+	</select>
+
+	<select id="queryOneQualSuppBySuppId" parameterType="String"
+		resultMap="qualSupp">
+		select * from mdm_qual_supp s where s.supp_id=#{suppId} and
+		s.is_delete is null
+	</select>
+
+	<select id="queryQualSuppByUserId" parameterType="Map"
+		resultMap="qualSupp">
+		select s1.* from (
+		select s.*,rownum rn from (
+		select qs.* from
+		mdm_qual_supp qs left join
+		mdm_buyer_supp bs
+		on qs.supp_id = bs.supp_id
+		where 1=1
+		and qs.is_delete
+		is null
+		and bs.buyer_id =#{userId}
+		<if test="qualSupp.suppInfo != null and qualSupp.suppInfo != '' ">
+			and (
+			qs.supp_id like '%${qualSupp.suppInfo}%'
+			or
+			qs.supp_name like
+			'%${qualSupp.suppInfo}%'
+			)
+		</if>
+		<if test="qualSupp.category != null and qualSupp.category != '' ">
+			and qs.category like '%${qualSupp.category}%'
+		</if>
+		order by qs.sap_id)s)s1
+       <![CDATA[ where s1.rn>=#{start} and s1.rn <=#{end}]]>
+	</select>
+
+	<select id="queryQualSuppByUserIdCount" parameterType="Map"
+		resultType="int">
+		select count(*) from mdm_qual_supp qs left join mdm_buyer_supp bs
+		on
+		qs.supp_id = bs.supp_id
+		where 1=1
+		and qs.is_delete is null
+		and
+		bs.buyer_id =#{userId}
+		<if test="qualSupp.suppInfo != null and qualSupp.suppInfo != '' ">
+			and (
+			qs.supp_id like '%${qualSupp.suppInfo}%'
+			or
+			qs.supp_name like
+			'%${qualSupp.suppInfo}%'
+			)
+		</if>
+		<if test="qualSupp.category != null and qualSupp.category != '' ">
+			and qs.category like '%${qualSupp.category}%'
+		</if>
+	</select>
+	<!-- 改了 queryQualSuppByUserIds -->
+	<select id="queryQualSuppByUserIds" parameterType="Map"
+		resultMap="qualSuppDO">
+		select s1.* from (
+		select s.*,rownum rn from (
+		select
+		qs.supp_name,qs.supp_id,qs.sap_id,u.name
+		from mdm_qual_supp qs left
+		join mdm_buyer_supp bs
+		on qs.supp_id =
+		bs.supp_id left join sys_user u
+		on bs.buyer_id =u.user_id
+		where 1=1
+		and
+		qs.is_delete is null
+		<if test="userDO != null">
+			and bs.buyer_id in
+			<foreach collection="userDO" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+		<if test="qualSuppDO.suppInfo != null and qualSuppDO.suppInfo != '' ">
+			and (
+			qs.supp_id like '%${qualSuppDO.suppInfo}%'
+			or
+			qs.supp_name like
+			'%${qualSuppDO.suppInfo}%'
+			)
+		</if>
+		order by u.name,qs.sap_id)s)s1
+       <![CDATA[ where s1.rn>=#{start} and s1.rn <=#{end}]]>
+	</select>
+
+	<select id="queryQualSuppByUserIdsCount" parameterType="Map"
+		resultType="int">
+		select count(*) from mdm_qual_supp qs left join mdm_buyer_supp bs
+		on
+		qs.supp_id = bs.supp_id left join sys_user u on bs.buyer_id =u.user_id
+		where 1=1
+		and qs.is_delete is null
+		<if test="userDO != null">
+			and bs.buyer_id in
+			<foreach collection="userDO" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+		<if test="qualSuppDO.suppInfo != null and qualSuppDO.suppInfo != '' ">
+			and (
+			qs.supp_id like '%${qualSuppDO.suppInfo}%'
+			or
+			qs.supp_name like
+			'%${qualSuppDO.suppInfo}%'
+			)
+		</if>
+	</select>
+	<delete id="deleteQualSuppOfUser">
+		delete from mdm_buyer_supp bs
+		where bs.buyer_id=#{0}
+		and bs.supp_id = #{1}
+	</delete>
+	
+	<delete id="deleteSuppMateOfUserByUserIdAndSuppIdList" parameterType="Map">
+		delete from mdm_buyer_supp_mate bsm where bsm.buyer_id=#{userId}
+		and bsm.supp_id in 
+		<foreach collection="suppIdList" open="(" close=")" separator="," item="item" index="index" >
+			#{item}
+		</foreach>
+	</delete>
+	
+	<select id="queryQualSuppByQualSupp" resultMap="qualSuppDO" parameterType="com.faujor.entity.mdm.QualSupp">
+		select t.* from mdm_qual_supp t 
+		<where>
+			and t.is_delete is null 
+			<if test="category != null and category != ''">
+				and (t.category = #{category} or t.category like '%${category}%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryQualSuppConcatColByQualSupp" resultType="String" parameterType="com.faujor.entity.mdm.QualSupp">
+		select ${concat_col} from mdm_qual_supp t 
+		<where>
+			and t.is_delete is null 
+			<if test="category != null and category != ''">
+				and (t.category = #{category} or t.category like '%${category}%')
+			</if>
+		</where>
+	</select>
+	
+
+	<select id="queryAllQualSupp" resultMap="qualSupp">
+		select s.*
+		from
+		mdm_qual_supp s
+		where s.is_delete is null
+	</select>
+
+	<select id="queryAllQualSuppCount" resultType="int">
+		select count(*)
+		from mdm_qual_supp s
+		where s.is_delete is null
+	</select>
+
+	<insert id="addQualSuppForUser" parameterType="com.faujor.entity.mdm.UserSupp">
+		insert into
+		mdm_buyer_supp values(lower(sys_guid()),#{buyerId},
+		#{suppId},#{buyerRole},#{creator},sysdate,#{modifier},#{updateTime},
+		#{version},#{startTime},#{endTime},#{buyerId})
+	</insert>
+
+	<select id="queryQualSuppBySuppName" parameterType="String"
+		resultMap="qualSupp">
+		select qs.* from mdm_qual_supp qs where
+		qs.supp_name=#{suppName} and qs.is_delete is null
+	</select>
+
+	<select id="queryQualSuppBySapId" parameterType="String"
+		resultMap="qualSupp">
+		select * from mdm_qual_supp qs where qs.sap_id=#{sapId} and
+		qs.is_delete is null
+	</select>
+	<select id="queryQualSuppBySapCodes" parameterType="List"
+		resultMap="qualSupp">
+		select * from mdm_qual_supp qs
+		<if test="sapCodes!=null">
+			where qs.sap_id in
+			<foreach collection="sapCodes" open="(" close=")" separator=","
+				item="sapCode">
+				#{sapCode}
+			</foreach>
+		</if>
+	</select>
+	<select id="queryQualSuppOfMateByMateCode" parameterType="Map"
+		resultMap="qualSupp">
+		select * from mdm_qual_supp qs left join mdm_buyer_supp_mate
+		sm on qs.supp_id = sm.supp_id
+		where sm.mate_id=(select m.mate_id from
+		mdm_mate m where m.mate_code=#{mateCode})
+		<if test="buyerId!=null">
+		and sm.buyer_id=#{buyerId}
+		</if>
+	</select>
+
+	<update id="updateQualSuppFromEDI" parameterType="com.faujor.entity.cluster.mdm.SupplierDO">
+		update
+		mdm_qual_supp set category = #{category}, sub_group = #{subGroup},
+		supp_name = #{suppName}, supp_abbre = #{suppAbbre}, prov_code =
+		#{provCode}, prov_name = #{provName}, city_code = #{cityCode},
+		city_name = #{cityName}, address = #{address}, holder_phone =
+		#{holderPhone}, fax_number = #{faxNumber}, email = #{email}, bank_code
+		= #{bankCode}, account_holder = #{accountHolder}, bank_account =
+		#{bankAccount}, bank_name = #{bankName}, busi_license =
+		#{busiLicense}, client_id = #{clientId}, contacts = #{contacts}, phone
+		= #{phone}, is_delete = #{isDelete}, comp_code = #{compCode}, akont =
+		#{akont}, pro_group = #{proGroup} where supp_id = #{suppId}
+	</update>
+
+	<insert id="batchSaveSuppFromEDI" parameterType="list">
+		insert all into mdm_qual_supp (supp_id, sap_id, srm_id, oa_id,
+		category, sub_group, supp_name, supp_abbre, prov_code, prov_name,
+		city_code, city_name,address, contacts, phone, bank_code, bank_name,
+		bank_account, account_holder, holder_phone, fax_number, email,
+		busi_license, client_id, is_delete, comp_code, akont, pro_group)
+		values
+		<foreach collection="list" index="index" item="item" open=""
+			close=""
+			separator="into mdm_qual_supp (supp_id, sap_id, srm_id, oa_id, category, sub_group, supp_name, supp_abbre, prov_code, prov_name, city_code, city_name, address, contacts, phone, bank_code, bank_name, bank_account, account_holder, holder_phone, fax_number, email, busi_license, client_id, is_delete, comp_code, akont, pro_group) values">
+			(#{item.suppId}, #{item.sapId}, #{item.srmId},
+			#{item.oaId},
+			#{item.category},
+			#{item.subGroup}, #{item.suppName},
+			#{item.suppAbbre}, #{item.provCode}, #{item.provName},
+			#{item.cityCode}, #{item.cityName}, #{item.address},
+			#{item.contacts}, #{item.phone}, #{item.bankCode}, #{item.bankName},
+			#{item.bankAccount}, #{item.accountHolder}, #{item.holderPhone},
+			#{item.faxNumber}, #{item.email}, #{item.busiLicense},
+			#{item.clientId}, #{item.isDelete}, #{item.compCode}, #{item.akont},
+			#{item.proGroup})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<select id="queryByuerIdBySapIdAndMateCode" resultType="String">
+		select
+		distinct sm.buyer_id from mdm_buyer_supp_mate sm where
+		sm.supp_id=(
+		select s.supp_id from mdm_qual_supp s where s.sap_id=#{0}
+		and
+		s.is_delete is null
+		) and sm.mate_id=(
+		select m.mate_id from
+		mdm_mate m
+		where m.mate_code=#{1}
+		)
+	</select>
+
+	<select id="queryAllSuppIdOfQualSupp" resultType="String">
+		select
+		qs.sap_id from mdm_qual_supp qs where qs.is_delete is null
+	</select>
+
+	<select id="findSuppCodesByUsers" parameterType="List"
+		resultType="String">
+		select qs.sap_id from mdm_qual_supp qs left join mdm_buyer_supp bs on
+		qs.supp_id=bs.supp_id
+		where bs.buyer_id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">#{item.id}</foreach>
+	</select>
+
+	<select id="queryAllQualSuppByPage" parameterType="Map"
+		resultMap="qualSupp">
+		select qs2.* from (
+		select qs1.*,rownum rn from (
+		select qs.* from
+		mdm_qual_supp qs
+		where 1=1
+		and qs.is_delete is null
+		and qs.category in
+		('Z001','Z002')
+		<if test="qualSupp.suppInfo != null and qualSupp.suppInfo != '' ">
+			and (
+			qs.sap_id like '%${qualSupp.suppInfo}%'
+			or
+			qs.supp_name like
+			'%${qualSupp.suppInfo}%'
+			)
+		</if>
+		<if test="qualSupp.category != null and qualSupp.category != '' ">
+			and qs.category like '%${qualSupp.category}%'
+		</if>
+		order by qs.sap_id )qs1)qs2
+		<![CDATA[where qs2.rn>=#{start} and qs2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryAllQualSuppByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from mdm_qual_supp qs
+		where 1=1
+		and qs.is_delete is null
+		and qs.category in ('Z001','Z002')
+		<if test="qualSupp.suppInfo != null and qualSupp.suppInfo != '' ">
+			and (
+			qs.sap_id like '%${qualSupp.suppInfo}%'
+			or
+			qs.supp_name like
+			'%${qualSupp.suppInfo}%'
+			)
+		</if>
+		<if test="qualSupp.category != null and qualSupp.category != '' ">
+			and qs.category like '%${qualSupp.category}%'
+		</if>
+	</select>
+
+	<select id="queryBuyerIdBySuppIdAndMateId" resultType="String">
+		select
+		distinct bsm.buyer_id from mdm_buyer_supp_mate bsm where
+		bsm.supp_id=#{0} and bsm.mate_id=#{1}
+	</select>
+
+	<select id="queryAllQualSuppListByUserId" parameterType="String"
+		resultMap="qualSupp">
+		select qs.* from mdm_qual_supp qs left join mdm_buyer_supp
+		bs
+		on qs.supp_id = bs.supp_id
+		where 1=1
+		and qs.is_delete is null
+		and
+		bs.buyer_id =#{userId}
+	</select>
+	<select id="queryAllQualSuppListByUserIds" resultMap="qualSupp">
+		select qs.* from mdm_qual_supp qs left join mdm_buyer_supp bs
+		on
+		qs.supp_id = bs.supp_id
+		where 1=1
+		and qs.is_delete is null
+		and
+		bs.buyer_id in
+		<foreach collection="userIds" open="(" close=")" item="userId"
+			separator=",">
+			#{userId}
+		</foreach>
+		<if test="suppName!=null and suppName!=''">
+			and ( qs.sap_id like #{suppName} or qs.supp_name like
+			#{suppName})
+		</if>
+	</select>
+
+	<select id="findQualSuppInfoByParams" parameterType="map"
+		resultMap="qualSupp">
+		select t.* from mdm_qual_supp t
+		<where>
+			t.is_delete is null
+			<if test="all != null and all != ''">
+				and t.SAP_ID NOT LIKE #{all}
+			</if>
+			<if test="ds != null and ds != ''">
+				and t.SAP_ID like #{ds}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="getUserIdsOfSuppBySuppId" parameterType="String" resultType="String">
+		select distinct mbs.buyer_id from mdm_buyer_supp mbs where mbs.supp_id=#{suppId}
+	</select>
+	
+	<select id="getUserIdsBySapIdAndMateId" resultType="String">
+		select distinct bsm.buyer_id from mdm_buyer_supp_mate bsm where bsm.supp_id=(
+		select s.supp_id from mdm_qual_supp s where s.sap_id=#{0}
+		) and bsm.mate_id=#{1}
+	</select>
+	
+	<select id="queryQualSuppListByUserDOList" parameterType="Map" resultMap="qualSupp">
+		select qs.* from mdm_qual_supp qs left join mdm_buyer_supp bs
+		on
+		qs.supp_id = bs.supp_id
+		where 1=1
+		and qs.is_delete is null
+		<if test="userDO != null">
+			and bs.buyer_id in
+			<foreach collection="userDO" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="getSuppRangeDescBySapIdAndSuppRange" parameterType="String" resultType="String">
+		select p.supp_range_desc from mdm_qual_supp s left join mdm_proc p 
+		on s.sap_id = p.sap_id
+		where s.sap_id = #{suppNo}
+		and p.supp_range=#{suppRange}
+	</select>
+</mapper>

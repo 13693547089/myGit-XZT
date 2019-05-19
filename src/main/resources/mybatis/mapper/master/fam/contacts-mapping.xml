@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.fam.ContactsMapper">
+
+	<resultMap type="com.faujor.entity.fam.ContactsMain" id="Contacts">
+			<result property="fid" column="FID"/>
+			<result property="status" column="STATUS"/>
+			<result property="recoNumb" column="RECO_NUMB"/>
+			<result property="suppName" column="SUPP_NAME"/>
+			<result property="suppNumb" column="SUPP_NUMB"/>
+			<result property="founder" column="FOUNDER"/>
+			<result property="creatTime" column="CREAT_TIME"/>
+			<result property="closDate" column="CLOS_DATE"/>
+			<result property="currBankPaym" column="CURR_BANK_PAYM"/>
+			<result property="inteAmou" column="INTE_AMOU"/>
+			<result property="bankTota" column="BANK_TOTA"/>
+			<result property="advaInteAmou" column="ADVA_INTE_AMOU"/>
+			<result property="dataText" column="DATA_TEXT"/>
+			<collection property="mone" ofType="com.faujor.entity.fam.ContactsMone">
+				<result property="fid" column="FID2"/>
+				<result property="mainID" column="MAINID"/>
+				<result property="amouPaya" column="AMOU_PAYA"/>
+				<result property="amouRece" column="AMOU_RECE"/>
+				<result property="warrMone" column="WARR_MONE"/>
+				<result property="remarks" column="REMARKS"/>
+				<result property="unseAcco" column="UNSE_ACCO"/>
+				<result property="prepAcco" column="PREP_ACCO"/>
+			</collection>
+			<collection property="mones" ofType="com.faujor.entity.fam.ContactsMones">
+				<result property="fid" column="FID3"/>
+				<result property="mainID" column="MAINID"/>
+				<result property="mone" column="MONE"/>
+				<result property="remarks" column="REMARKS"/>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+				<result property="tempEsti" column="TEMP_ESTI"/>
+			</collection>
+	</resultMap>
+	
+		<resultMap type="com.faujor.entity.fam.ContactsMone" id='mone'>
+				<result property="fid" column="FID2"/>
+				<result property="mainID" column="MAINID"/>
+				<result property="amouPaya" column="AMOU_PAYA"/>
+				<result property="amouRece" column="AMOU_RECE"/>
+				<result property="warrMone" column="WARR_MONE"/>
+				<result property="remarks" column="REMARKS"/>
+				<result property="unseAcco" column="UNSE_ACCO"/>
+				<result property="prepAcco" column="PREP_ACCO"/>
+		</resultMap>
+		<resultMap type="com.faujor.entity.fam.ContactsMones" id="mones">
+				<result property="fid" column="FID3"/>
+				<result property="mainID" column="MAINID"/>
+				<result property="mone" column="MONE"/>
+				<result property="remarks" column="REMARKS"/>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+				<result property="tempEsti" column="TEMP_ESTI"/>
+		</resultMap>
+		<resultMap type="com.faujor.entity.fam.ContactsAtta" id="atta">
+				<result property="fid" column="fid"/>
+				<result property="mainId" column="main_id"/>
+				<result property="appeType" column="appe_type"/>
+				<result property="appeName" column="appe_name"/>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+				<result property="appeFile" column="appe_file"/>
+				<result property="newName" column="new_name"/>
+				<result property="fileId" column="file_id"/>
+				<result property="fileUrl" column="file_url"/>
+		</resultMap>
+	
+	<select id="queryContactsMain" parameterType="Map" resultMap="Contacts">
+		select * from FAM_FINA_INTE where 1=1
+		<if test="supply!=null and supply!=''">
+			and SUPP_NAME like #{supply}
+		</if>
+		<if test="Buyer!=null and Buyer!=''">
+			and RECO_NUMB like #{Buyer}
+		</if>
+		
+		<if test="dateSta!=null and dateEnd!=null ">
+			 and CLOS_DATE &gt; #{dateSta} and CLOS_DATE  &lt; #{dateEnd}
+		</if>
+		 ORDER BY CREAT_TIME DESC
+		
+		
+	</select> 
+	<select id="queryContactsConfirmMain" parameterType="Map" resultMap="Contacts">
+		select * from FAM_FINA_INTE where 1=1 and SUPP_NUMB=#{supplierCode} and STATUS in ('待确认','已确认','已退回')
+		<if test="supply!=null and supply!=''">
+			and SUPP_NAME like #{supply}
+		</if>
+		<if test="Buyer!=null and Buyer!=''">
+			and RECO_NUMB like #{Buyer}
+		</if>
+		
+		<if test="dateSta!=null and dateEnd!=null ">
+			 and CLOS_DATE &gt; #{dateSta} and CLOS_DATE  &lt; #{dateEnd}
+		</if>
+		 
+		ORDER BY CREAT_TIME DESC
+		
+	</select> 
+	
+	
+	<select id="contactsListByPageCount" parameterType="Map" resultType="Integer">
+		select count(1) from FAM_FINA_INTE where 1=1 
+		<if test="supply!=null and supply!=''">
+			and SUPP_NAME like #{supply}
+		</if>
+		<if test="Buyer!=null and Buyer!=''">
+			and RECO_NUMB like #{Buyer}
+		</if>
+		
+		<if test="dateSta!=null and dateEnd!=null ">
+			 and CLOS_DATE &gt; #{dateSta} and CLOS_DATE  &lt; #{dateEnd}
+		</if>
+		 
+		
+		
+	</select> 
+	<!-- 确认对账页面Count -->
+	<select id="contactsListConfirmCount" parameterType="Map" resultType="Integer">
+		select count(1) from FAM_FINA_INTE where 1=1 and SUPP_NUMB=#{supplierCode} and STATUS in ('待确认','已确认','已退回')
+		<if test="supply!=null and supply!=''">
+			and SUPP_NAME like #{supply}
+		</if>
+		<if test="Buyer!=null and Buyer!=''">
+			and RECO_NUMB like #{Buyer}
+		</if>
+		
+		<if test="dateSta!=null and dateEnd!=null ">
+			 and CLOS_DATE &gt; #{dateSta} and CLOS_DATE  &lt; #{dateEnd}
+		</if>
+		 
+		
+		
+	</select> 
+	<insert id="insertContactsMone" parameterType='com.faujor.entity.fam.ContactsMone'>
+		insert into FAM_ACCO_AMOU(FID2,MAINID,AMOU_PAYA,AMOU_RECE,WARR_MONE,REMARKS,UNSE_ACCO,PREP_ACCO)values(lower(sys_guid()),#{mainID},#{amouPaya},#{amouRece},#{warrMone},#{remarks},#{unseAcco},#{prepAcco})
+		
+	</insert>
+	<insert id="insertContactMones" parameterType='com.faujor.entity.fam.ContactsMones'>
+		insert into FAM_ACCO_BRAN(FID3,MAINID,MONE,REMARKS,TEMP_ESTI)values(lower(sys_guid()),#{mainID},#{mone},#{remarks},#{tempEsti})
+	</insert>
+	<insert id="insertContactAtta" parameterType='com.faujor.entity.fam.ContactsAtta'>
+		insert into FAM_FINA_ATTA(FID,main_id,appe_type,appe_name,appe_file,new_name,file_id,file_url)values(lower(sys_guid()),#{mainId},#{appeType},#{appeName},#{appeFile},#{newName},#{fileId},#{fileUrl})
+	</insert>
+	<insert id="insertContactsMain" parameterType='com.faujor.entity.fam.ContactsMain'>
+		insert into FAM_FINA_INTE(FID,STATUS,RECO_NUMB,SUPP_NAME,SUPP_NUMB,FOUNDER,CREAT_TIME,CLOS_DATE,CURR_BANK_PAYM,INTE_AMOU,BANK_TOTA,ADVA_INTE_AMOU,DATA_TEXT) values(#{fid},#{status},#{recoNumb},#{suppName},#{suppNumb},#{founder},#{creatTime},#{closDate},#{currBankPaym},#{inteAmou},#{bankTota},#{advaInteAmou},#{dataText})
+	</insert>
+	<select id="getReconciliationDetailList" parameterType="String" resultMap="Contacts">
+		 select BOR.*,BOA.*,BOM.AMOU_PAYA
+      from FAM_FINA_INTE BOR LEFT JOIN FAM_ACCO_AMOU BOM ON BOR.FID= BOM.MAINID left join FAM_ACCO_BRAN BOA ON BOR.FID= BOA.MAINID
+      where bor.fid=#{fid}
+	</select>
+	<select id="getReconciliationList" parameterType="String" resultMap="Contacts">
+		 select BOR.*,BOA.*,BOM.AMOU_PAYA,BOM.AMOU_RECE,BOM.WARR_MONE,BOM.REMARKS,BOM.UNSE_ACCO,BOM.PREP_ACCO
+      from FAM_FINA_INTE BOR LEFT JOIN FAM_ACCO_AMOU BOM ON BOR.FID= BOM.MAINID left join FAM_ACCO_BRAN BOA ON BOR.FID= BOA.MAINID
+      where bor.fid=#{fid}
+	</select>
+	<delete id="deleteReconciliationByFid" >
+		delete from FAM_FINA_INTE where FID in 
+		<foreach collection="array" open="(" close=")" separator=","
+  		 item="v">#{v}</foreach>
+	</delete>
+	<delete id="deleteContactsMonesByFid" >
+	delete from FAM_ACCO_BRAN where MAINID in
+		<foreach collection="array" open="(" close=")" separator=","
+      item="v">#{v}</foreach>
+	</delete>
+	<delete id="deleteContactsMoneByFid" >
+		delete from FAM_ACCO_AMOU where MAINID in 
+		<foreach collection="array" open="(" close=")" separator=","
+     item="v">#{v}</foreach>
+	</delete>
+	<update id='setConfirmList' parameterType='com.faujor.entity.fam.ContactsMain'>
+		update FAM_FINA_INTE set STATUS ='已确认' WHERE FID=#{fid}
+	</update>
+	<update id="resetReconciliationByFid" >
+		update FAM_FINA_INTE set STATUS ='待确认' WHERE FID in 
+		<foreach collection="array" open="(" close=")" separator=","
+     item="v">#{v}</foreach>
+	</update>
+	<update id="financialConfirmation" parameterType='com.faujor.entity.fam.ContactsMain'>
+		update FAM_FINA_INTE set STATUS ='已确认' WHERE FID in 
+		<foreach collection="array" open="(" close=")" separator=","
+     item="v">#{v}</foreach>
+	</update>
+	<!-- 获取对账金额mone -->
+	<select id="getReconciliationDetailListMone" parameterType='com.faujor.entity.fam.ContactsMone' resultMap='mone'>
+		select * from FAM_ACCO_AMOU where MAINID=#{Fid}
+	</select>
+	<select id="getReconciliationDetailListMones" parameterType='com.faujor.entity.fam.ContactsMones' resultMap='mones'>
+		select * from FAM_ACCO_BRAN where MAINID=#{Fid}
+	</select>
+	<select id="getqueryAttr" parameterType='com.faujor.entity.fam.ContactsAtta' resultMap='atta'>
+		select * from FAM_FINA_ATTA where main_id=#{Fid}
+	</select>
+	<!-- 清除金额 -->
+	<delete id="deleteContactsMone" parameterType='com.faujor.entity.fam.ContactsMone'>
+		delete from FAM_ACCO_AMOU where MAINID=#{Fid}
+	</delete>
+	<delete id="deleteContactsMones" parameterType='com.faujor.entity.fam.ContactsMones'>
+		delete from FAM_ACCO_BRAN where MAINID=#{Fid}
+	</delete>
+	<delete id="deleteContactsMain" parameterType='com.faujor.entity.fam.ContactsMain'>
+		delete from FAM_FINA_INTE where FID=#{Fid}
+	</delete>
+	<update id="confirmReturn" parameterType='com.faujor.entity.fam.ContactsMain'>
+		update FAM_FINA_INTE set STATUS ='已退回',INTE_AMOU=#{Radio},DATA_TEXT=#{Textarea} WHERE FID=#{Fid}
+	</update>
+	
+	<update id="updateContactsMain" parameterType="com.faujor.entity.fam.ContactsMain">
+		update FAM_FINA_INTE i
+		<set>
+		i.supp_name=#{suppName},
+		i.supp_numb=#{suppNumb},
+		i.clos_date=#{closDate},
+		i.bank_tota=#{bankTota},
+		i.adva_inte_amou=#{advaInteAmou},
+		<if test="status != null and status != '' ">
+		i.status = #{status},
+		</if>
+		</set> 
+		where i.fid=#{fid}
+	</update>
+	
+	<update id="updateContactsMain2" parameterType="com.faujor.entity.fam.ContactsMain">
+		update FAM_FINA_INTE i
+		<set>
+		<if test="inteAmou != null and inteAmou != '' ">
+		i.inte_amou = #{inteAmou},
+		</if>
+		<if test="dataText != null and dataText != '' ">
+		i.data_text = #{dataText},
+		</if>
+		<if test="status != null and status != '' ">
+		i.status = #{status},
+		</if>
+		</set> 
+		where i.fid=#{fid}
+	</update>
+	
+	
+</mapper>

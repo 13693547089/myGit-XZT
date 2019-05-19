@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+</head>
+<body class='fau-body-list'>
+	<input type="text" id="currentDay" th:value="${currentDay}" class="layui-hide"/>
+	<input type="text" id="defaultDay" th:value="${defaultDay}" class="layui-hide"/>
+	<form class="layui-form" id="searchForm" action="" method="post">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">日期</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" id="day_date" name="day_date" placeholder=" - ">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户类型</label>
+					<div class="layui-input-block">
+						<select id="user_type" name="user_type">
+							<option value="">请选择...</option>
+							<option value="user">内部用户</option>
+							<option value="supplier">外部供应商</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">用户部门</label>
+					<div class="layui-input-block">
+						<select id="user_dept" name="user_dept" lay-search="">
+							<option value="">请选择...</option>
+							<option th:selected="${user_dept==dept.scode}" th:each="dept:${deptList}" th:value="${dept.scode}" th:text="${dept.sname}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">账号</label>
+					<div class="layui-input-block">
+						<input type="text" id="username" name="username" placeholder="用户账号/供应商" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md8">
+				<div class="layui-form-item" style="padding-top: 3px; float: right;">
+					<button type="button" id="btn_search" class="layui-btn layui-btn-xs yellowSolid">搜索</button>
+					<button type="reset" id="btn_reset" class="layui-btn layui-btn-xs yellowHollow">重置</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="logTable" lay-filter="logTable">
+		</table>
+	</div>
+	<script type="text/html" id="operateBar">
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="details">明细</a>
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/rm/report/loginLog.js}"></script>
+</body>
+</html>

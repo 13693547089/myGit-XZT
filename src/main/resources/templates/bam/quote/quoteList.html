@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+ <html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>报价单管理</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" />
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {
+    margin-top: 0px;
+    margin-bottom: 0px;}
+.layui-form-label {
+    width: 105px;
+}
+.uncheck{margin-left:20px}
+.checked{margin-left:20px}
+.margin-left4{margin-left:4%}
+.checked{color:red}
+.uncheck{color:green}
+.margin_right10{margin-right:10px}
+.quoteStatusSpan{margin-right: -1%; margin-left: 3%;}
+.status{cursor: pointer;}
+div.layui-col-md3, div.layui-col-sm3{width:23%;}
+.pitch5{background:#b9e0ef;}
+</style>
+<body class='fau-body-list'>
+
+		<form action="" id="searchForm" method="post" class="layui-form">
+			<input type="hidden" name="userType" id="userType" th:value="${userType}"/>
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">供应商</label>
+						<div class="layui-input-block">
+							<input type="text" name="suppName" id="suppName" lay-verify="required"
+								placeholder="请输入供应商名称或编码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">报价单号</label>
+						<div class="layui-input-block">
+							<input type="text" name="quoteCode" id="quoteCode" lay-verify="required"
+								placeholder="请输入报价单" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">创建日期</label>
+						<div class="layui-input-block">
+							<input type="text" name="createTime" id="createTime" 
+								placeholder="yyyy-MM-dd"  class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	<div class="layui-row">
+		<div class="layui-col-md9  " style="margin-bottom: 10px;">
+			<span class="quoteStatusSpan">报价单状态</span>	
+			<span class="uncheck status" onclick="changeClass(this)"th:each="dic:${quoteStatusList}" th:name="${dic.dicName}" th:text="${dic.dicName}" style="color:gray;" ></span>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md9  ">
+			<span id="createDiv" class="margin_right10">
+				<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_ADD')" id="createBtn">新建</button>
+			</span>
+			<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_SUBMIT')"  id="submitBtn">提交</button>
+			<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_DEL')"  id="deleteBtn">删除</button>
+			
+			<button class="layui-btn layui-btn-xs blueHollow margin_right10"  sec:authorize="hasRole('ROLE_QUOTE_FIRST_REFUSE')"  id="refuseBtn">拒绝</button>
+			<span id="firstAuditDiv" class="margin_right10">
+				<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_FIRST_AUDIT')"  id="firstAuditBtn">初审</button>
+			</span>
+			<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_OA_REFUSE')"  id="OARefuseBtn">OA拒绝</button>
+			<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_OA_AUDIT')"  id="OAAuditBtn">OA审核</button>
+			<button class="layui-btn layui-btn-xs blueHollow"  sec:authorize="hasRole('ROLE_QUOTE_ADD')" id="exportBtn">导出</button>
+		</div>
+		<div class="layui-col-md3 textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-fluid tableCont xuanzhong5" style='padding:0px;'>
+				<table class="layui-table" id="quote-table" class="quote-table"  lay-filter="docTool"></table>
+		</div>
+	</div>
+	<script type="text/html"  id="barDemo">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view">查看</a>
+		<a class="layui-btn layui-btn-xs blueInline"  lay-event="edit">编辑</a>
+  		<a class="layui-btn layui-btn-danger  layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/html"  id="barDemo1">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view">查看</a>
+	</script>
+	<script type="text/html"  id="barDemo2">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view">查看</a>
+		<a class="layui-btn layui-btn-xs blueInline"  lay-event="edit">编辑</a>
+  		<a class="layui-btn layui-btn-danger  layui-btn-xs redInline" lay-event="del">删除</a>
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="validDate">附件</a>
+	</script>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/quote/quoteList.js}"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.bam.SapCutPlanMapper">
+	<resultMap id="cutPlanMate" type="com.faujor.entity.bam.CutPlanMate" >
+		<id property="planMateId" column="plan_Mate_Id"/>
+		<result property="planId" column="plan_Id"/>
+		<result property="mateId" column="mate_Id"/>
+		<result property="mateName" column="mate_Name"/>
+		<result property="nowInve" column="now_Inve"/>
+		<result property="outInve" column="out_Inve"/>
+		<result property="addOne" column="add_One"/>
+		<result property="addTwo" column="add_Two"/>
+		<result property="addThree" column="add_Three"/>
+		<result property="addFour" column="add_Four"/>
+		<result property="addFive" column="add_Five"/>
+		<result property="addSix" column="add_Six"/>
+		<result property="residue" column="residue"/>
+		<result property="replaceDate" column="replace_Date"/>
+		<result property="cutGoal" column="cut_Goal"/>
+		<result property="cutSche" column="cut_Sche"/>
+		<result property="remark" column="remark"/>
+	</resultMap>
+	<select id="getCutPlanMateFromSap" parameterType="Map" resultMap="cutPlanMate">
+		select t3.* ,
+			 nvl(t4.ZSYKC,0) now_Inve, nvl(t4.ZBYXL,0) add_one,nvl(t4.n01,0) add_two,nvl(t4.matnr,0) matnr,
+			 nvl(t4.n02,0) add_three,nvl(t4.n03,0) add_four,nvl(t4.n04,0) add_five,nvl(t4.n05,0) add_six
+		from 
+		<foreach collection="mates" item="item" open="(" close=")" separator="union all">
+			select
+			 #{item.mateId} mate_id,#{item.mateName} mate_name,#{item.outInve} out_inve
+			 from dual t2
+		</foreach>
+		t3 left join 
+		( select 
+			 t1.ZSYKC, t1.ZBYXL ,t1.n01 ,t1.matnr ,
+			 t1.n02 ,t1.n03 ,t1.n04 ,t1.n05 
+			 from T_ORA_CXJH t1 where t1.year=#{year} and t1.month=#{month} and t1.matnr=#{item.mateId}
+		 ) t4
+		on t3.mate_id=t4.matnr
+	</select>
+	<select id="getForecastNumByMap" parameterType="Map" resultType="BigDecimal">
+		select nvl(t1.ZBYXL,0) from  T_ORA_CXJH t1 where t1.year=#{year} and t1.month=#{month} and t1.matnr=#{mateId}
+	</select>
+	<select id="getLastMonthStockByMap" parameterType="Map" resultType="BigDecimal">
+		select nvl(t1.ZSYKC,0) from  T_ORA_CXJH t1 where t1.year=#{year} and t1.month=#{month} and t1.matnr=#{mateId}
+	</select>
+</mapper>

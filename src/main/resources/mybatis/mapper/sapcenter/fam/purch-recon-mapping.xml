@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.fam.SapPurchReconMapper">
+	<resultMap type="com.faujor.entity.fam.PurchReconMate" id="purchReconMate">
+		<id property="id" column="id" />
+		<result property="reconCode" column="recon_Code" />
+		<result property="incomingDate" column="incoming_Date" />
+		<result property="purchCode" column="purch_Code" />
+		<result property="mateCode" column="mate_Code" />
+		<result property="mateDesc" column="mate_Desc" />
+		<result property="unitCode" column="unit_Code" />
+		<result property="unitDesc" column="unit_Desc" />
+		<result property="wareHouse" column="wareHouse" />
+		<result property="incomingNum" column="incoming_Num" />
+		<result property="taxPrice" column="tax_Price" />
+		<result property="incomingPrice" column="incoming_Price" />
+		<result property="incomingTotalPrice" column="incoming_Total_Price" />
+		<result property="incomingCode" column="incoming_Code" />
+		<result property="rowNum" column="row_num" />
+		<result property="innerDeliveryCode" column="inner_Delivery_Code" />
+		<result property="orderReason" column="order_Reason" />
+		<result property="discountAmount" column="discount_Amount" />
+		<result property="taxCost" column="tax_Cost" />
+		<result property="supportPrice" column="support_Price" />
+		<result property="supportCost" column="support_Cost" />
+		<result property="loan" column="loan" />
+		<result property="suppScope" column="supp_Scope" />
+		<result property="suppRange" column="supp_Range" />
+		<result property="suppRangeDesc" column="supp_Range_Desc" />
+		<result property="factoryPrice" column="factory_Price" />
+		<result property="incomingFreight" column="incoming_Freight" />
+		<result property="theirCdc" column="their_cdc" />
+	</resultMap>
+	<select id="getPurchReconMateByMap" parameterType="Map" resultMap="purchReconMate">
+	 	select to_date(t1.budat,'yyyy-MM-dd') incoming_Date,
+             t1.Ebeln purch_Code,
+             t1.zsku  mate_desc,
+             t1.meins unit_Code,
+             t1.meins unit_Desc,
+             t1.lgort wareHouse,           
+             t1.menge  incoming_Num,
+             t1.DDZHHSDJ  tax_Price,
+             t1.RKHSDJ  incoming_Price,
+             t1.RKHSJE  incoming_Total_Price,
+             t1.belnr  incoming_Code,
+             t1.buzei  row_num,
+             t1.Vbeln  inner_Delivery_Code,
+             t1.zzddyy order_Reason,
+             t1.matnr  mate_code,
+             t1.YZJE  discount_Amount,
+             t1.DDZQHSDJ  tax_Cost,
+             t1.LTSNR  supp_Scope,
+             t1.LTSNR  supp_range,
+             t1.SHKZG  loan,
+             t1.ZCCJ factory_price,
+             t1.ZYF incoming_Freight,
+             t1.ZZCDCTYP their_cdc
+        from T_SAP_CGDZ t1
+        <where>
+        	<if test="plantCode!=null and plantCode!=''">
+	       		and t1.werks = #{plantCode}
+        	</if>
+        	<if test="suppNo!=null and suppNo!=''">
+	         	and t1.lifnr = #{suppNo}
+        	</if>
+	         <if test="startDate!=null">
+	           and to_date(t1.budat,'yyyy-MM-dd') &gt;=  #{startDate}
+	         </if>
+	       <if test="endDate!=null">
+	       	   and to_date(t1.budat,'yyyy-MM-dd') &lt;= #{endDate}
+	       </if>
+	       order by t1.budat
+       </where>
+	</select>
+	
+	<select id="getDevNum" resultType="BigDecimal" parameterType="Map"> 
+		select nvl(sum( case when t1.SHKZG='S' then t1.menge else t1.menge*(-1) end),0) as ff
+        from T_SAP_CGDZ t1
+        <where>
+        	<if test="mateCode!=null and mateCode!=''">
+	       		and t1.matnr = #{mateCode}
+        	</if>
+        	<if test="suppNo!=null and suppNo!=''">
+	         	and t1.lifnr = #{suppNo}
+        	</if>
+	         <if test="startDate!=null">
+	           and to_date(t1.budat,'yyyy-MM-dd') &gt;=  #{startDate}
+	         </if>
+	       <if test="endDate!=null">
+	       	   and to_date(t1.budat,'yyyy-MM-dd') &lt;= #{endDate}
+	       </if>
+       </where>
+	</select>
+</mapper>

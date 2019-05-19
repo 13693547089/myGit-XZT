@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.rm.PackInfoMapper">
+
+	
+	
+	<resultMap type="com.faujor.entity.rm.SemiMatePack" id="semiMatePackMap">
+		<result property="oemOrderCode" column="oem_Order_Code"/>
+		<result property="orderDate" column="order_Date"/>
+		<result property="oemSapId" column="oem_Sap_Id"/>
+		<result property="oemSuppName" column="oem_Supp_Name"/>
+		<result property="mateCode" column="mate_Code"/>
+		<result property="mateName" column="mate_Name"/>
+		<result property="purcQuan" column="purc_Quan"/>
+		<result property="quanMate" column="quan_Mate"/>
+		<result property="unpaQuan" column="unpa_Quan"/>
+		<result property="packCode" column="pack_Code"/>
+		<result property="packName" column="pack_Name"/>
+		<result property="packTotalNum" column="pack_Total_Num"/>
+		<result property="placedNum" column="placed_Num"/>
+		<result property="residueNum" column="residue_Num"/>
+	</resultMap>
+	<select id="getSemiMatePackList" parameterType="Map" resultMap="semiMatePackMap">
+		select main.* from (
+	    select a.* ,rownum rn from(
+	    select op.id,op.oem_order_code,op.status,r.sube_date as order_date,r.supp_name as oem_Sap_Id,
+	    r.supp_numb as oem_Supp_Name,m.mate_numb as mate_code,m.prod_name as mate_name,m.purc_quan,m.quan_mate,m.unpa_quan,
+	    opm.pack_code,opm.pack_name,opm.pack_total_num,opm.placed_num,opm.residue_num
+	    from bam_orde_rele r 
+	    right join bam_order_pack op 
+	    on op.oem_order_code = r.cont_orde_numb
+	    left join bam_orde_mate m 
+	    on r.cont_orde_numb = m.main_id
+	    left join bam_order_pack_mess opm
+	    on op.id = opm.order_pack_id
+	    and opm.mate_code = m.mate_numb
+	    and opm.frequency = m.frequency
+	    <where>
+	    	op.status = '已提交'
+	    	<if test="semiMate.oemOrderCode != null and  semiMate.oemOrderCode != '' ">
+	    		and op.oem_order_code = #{semiMate.oemOrderCode}
+	    	</if>
+	    	<if test="semiMate.oemSuppName != null and  semiMate.oemSuppName != '' ">
+	    		and (r.supp_name like concat(concat('%',#{semiMate.oemSuppName}),'%')
+	    			or r.supp_numb like concat(concat('%',#{semiMate.oemSuppName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.mateName != null and  semiMate.mateName != '' ">
+	    		and (m.mate_numb like concat(concat('%',#{semiMate.mateName}),'%')
+	    			or m.prod_name like concat(concat('%',#{semiMate.mateName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.packName != null and  semiMate.packName != '' ">
+	    		and (opm.pack_code like concat(concat('%',#{semiMate.packName}),'%')
+	    			or opm.pack_name like concat(concat('%',#{semiMate.packName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.startDate != null or  semiMate.endDate != null ">
+	    		and r.sube_date between #{semiMate.startDate,jdbcType=VARCHAR}
+				and #{semiMate.endDate,jdbcType=VARCHAR}
+	    	</if>
+	    </where>
+	    order by op.oem_order_code,m.mate_numb
+	    )a
+	   <![CDATA[ where rownum <=#{end}]]>
+	    )main
+	   <![CDATA[ where main.rn>=#{start}]]>
+	</select>
+	
+	<select id="getSemiMatePackListCount" parameterType="Map" resultType="Int">
+		select count(*)
+	    from bam_orde_rele r 
+	    right join  bam_order_pack op 
+	    on op.oem_order_code = r.cont_orde_numb
+	    left join bam_orde_mate m 
+	    on r.cont_orde_numb = m.main_id
+	    left join bam_order_pack_mess opm
+	    on op.id = opm.order_pack_id
+	    and opm.mate_code = m.mate_numb
+	    and opm.frequency = m.frequency
+	    <where>
+	    op.status = '已提交'
+	    	<if test="semiMate.oemOrderCode != null and  semiMate.oemOrderCode != '' ">
+	    		and op.oem_order_code = #{semiMate.oemOrderCode}
+	    	</if>
+	    	<if test="semiMate.oemSuppName != null and  semiMate.oemSuppName != '' ">
+	    		and (r.supp_name like concat(concat('%',#{semiMate.oemSuppName}),'%')
+	    			or r.supp_numb like concat(concat('%',#{semiMate.oemSuppName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.mateName != null and  semiMate.mateName != '' ">
+	    		and (m.mate_numb like concat(concat('%',#{semiMate.mateName}),'%')
+	    			or m.prod_name like concat(concat('%',#{semiMate.mateName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.packName != null and  semiMate.packName != '' ">
+	    		and (opm.pack_code like concat(concat('%',#{semiMate.packName}),'%')
+	    			or opm.pack_name like concat(concat('%',#{semiMate.packName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.startDate != null or  semiMate.endDate != null ">
+	    		and r.sube_date between #{semiMate.startDate,jdbcType=VARCHAR}
+				and #{semiMate.endDate,jdbcType=VARCHAR}
+	    	</if>
+	    </where>
+	</select>
+	
+	
+	<select id="getSemimatePacks" parameterType="Map" resultMap="semiMatePackMap">
+		select op.id,op.oem_order_code,op.status,r.sube_date as order_date,r.supp_name as oem_Sap_Id,
+	    r.supp_numb as oem_Supp_Name,m.mate_numb as mate_code,m.prod_name as mate_name,m.purc_quan,m.quan_mate,m.unpa_quan,
+	    opm.pack_code,opm.pack_name,opm.pack_total_num,opm.placed_num,opm.residue_num
+	    from bam_orde_rele r 
+	    right join bam_order_pack op 
+	    on op.oem_order_code = r.cont_orde_numb
+	    left join bam_orde_mate m 
+	    on r.cont_orde_numb = m.main_id
+	    left join bam_order_pack_mess opm
+	    on op.id = opm.order_pack_id
+	    and opm.mate_code = m.mate_numb
+	    and opm.frequency = m.frequency
+	    <where>
+	    	op.status = '已提交'
+	    	<if test="semiMate.oemOrderCode != null and  semiMate.oemOrderCode != '' ">
+	    		and op.oem_order_code = #{semiMate.oemOrderCode}
+	    	</if>
+	    	<if test="semiMate.oemSuppName != null and  semiMate.oemSuppName != '' ">
+	    		and (r.supp_name like concat(concat('%',#{semiMate.oemSuppName}),'%')
+	    			or r.supp_numb like concat(concat('%',#{semiMate.oemSuppName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.mateName != null and  semiMate.mateName != '' ">
+	    		and (m.mate_numb like concat(concat('%',#{semiMate.mateName}),'%')
+	    			or m.prod_name like concat(concat('%',#{semiMate.mateName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.packName != null and  semiMate.packName != '' ">
+	    		and (opm.pack_code like concat(concat('%',#{semiMate.packName}),'%')
+	    			or opm.pack_name like concat(concat('%',#{semiMate.packName}),'%')
+	    		)
+	    	</if>
+	    	<if test="semiMate.startDate != null or  semiMate.endDate != null ">
+	    		and r.sube_date between #{semiMate.startDate,jdbcType=VARCHAR}
+				and #{semiMate.endDate,jdbcType=VARCHAR}
+	    	</if>
+	    </where>
+	    order by op.oem_order_code,m.mate_numb
+	</select>
+	
+	
+	
+	
+	<resultMap type="com.faujor.entity.rm.CutMatePack" id="cutMatePackMap">
+		<result property="cutMonth" column="cut_Month"/>
+		<result property="mateCode" column="mate_code2"/>
+		<result property="mateName" column="mate_name2"/>
+		<result property="version" column="version2"/>
+		<result property="boxNumber" column="box_number2"/>
+		<result property="sumOutNum" column="sum_out_num"/>
+		<result property="outNum" column="out_num"/>
+		<result property="sumInveNum" column="sum_inve_num"/>
+		<result property="inveNum" column="inve_num"/>
+		<result property="fields" column="fields2"/>
+		<result property="headerFields" column="header_fields"/>
+		<result property="baoFields" column="bao_fields"/>
+		<result property="oemSuppId" column="oem_supp_id"/>
+		<result property="oemSapId" column="oem_sap_id"/>
+		<result property="oemSuppName" column="oem_supp_name" />
+		<result property="liaiId" column="liai_Id"/>
+		<result property="baoLiaiId" column="bao_Liai_Id"/>
+		<result property="baoSuppId" column="bao_supp_id"/>
+		<result property="baoSapId" column="bao_sap_id"/>
+		<result property="baoSuppName" column="bao_supp_name"/>
+	</resultMap>
+	<select id="getCutMatePackListByPage" parameterType="Map" resultMap="cutMatePackMap">
+	     select a1.mate_code2,a1.mate_name2,a1.version2,a1.box_number2,a1.sum_out_num,
+      a1.out_num,a1.sum_inve_num,a1.inve_num,a1.is_special2,a1.fields2,a1.cut_month,
+      a1.supp_id as oem_supp_id,a1.sap_id as oem_sap_id,a1.supp_name as oem_supp_name,a1.header_fields,
+      a1.fields_blob2,a2.fields as bao_fields,a2.bao_supp_id,a2.bao_sap_id,a2.bao_supp_name,
+      a2.fields_blob as bao_fields_blob,a1.liai_id,a2.bao_liai_id
+       from (
+        select clm.mate_code as mate_code2,clm.mate_name as mate_name2,nvl(clm.version,'WWW') as version2,clm.box_number as box_number2,
+        nvl(clm.sum_out_num,0) as sum_out_num,nvl(clm.out_num,0) as out_num,nvl(clm.sum_inve_num,0) as sum_inve_num,nvl(clm.inve_num,0) as inve_num,clm.is_special as is_special2 ,
+        clm.fields as fields2,
+        cl.cut_month,cl.supp_id,s.sap_id,cl.supp_name,cl.fields as header_fields ,cl.fields_blob as fields_blob2,cl.liai_id
+         from bam_cut_liai_mate clm right join bam_cut_liai cl
+        on clm.liai_id = cl.liai_id
+        left join mdm_qual_supp s 
+        on cl.supp_id = s.supp_id
+        where cl.cut_month = #{cutMateForm.cutMonth}
+        and cl.status = '已确认'
+        )a1
+      left join (
+       select bm.mate_code,bm.mate_name,nvl(bm.version,'WWW') AS version,bm.fields,
+      bm.oem_supp_code as oem_sap_id,bm.oem_supp_name,b.cut_month,b.supp_id as bao_supp_id,s.sap_id as bao_sap_id,
+      b.supp_name as bao_supp_name,b.fields_blob,bm.is_special,b.liai_id as bao_liai_id
+       from bam_cut_baocai_mate bm right join bam_cut_baocai b
+      on bm.liai_id= b.liai_id
+       left join mdm_qual_supp s 
+       on b.supp_id = s.supp_id
+      where b.cut_month =#{cutMateForm.cutMonth}
+      and b.status = '已提交'
+      )a2 on a1.mate_code2 = a2.mate_code
+      and a1.version2 = a2.version
+      and a1.sap_id = a2.oem_sap_id
+      	<if test="userList != null">
+      		inner join (
+              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+             on m.mate_id = bsm.mate_id
+             where m.mate_id is not null and 
+              bsm.buyer_id in 
+                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item.id}
+	    		</foreach>       
+         	)mate  on mate.mate_code =  a1.mate_code2
+      	</if>
+      <where>
+      	<if test="mateCodeList != null ">
+      		and a1.mate_code2  in 
+      		<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item}
+	    	</foreach>
+      	</if>
+      	<if test="judge != null and judge != '' ">
+	    	and a1.mate_code2 = #{judge}
+	    </if>
+      </where>
+      order by a1.mate_code2,a1.sap_id
+	</select>
+	
+	<select id="getCutMatePackListByPageCount" parameterType="Map" resultType="Int">
+		select count(*)
+	     from (
+	      select clm.mate_code as mate_code2,clm.mate_name as mate_name2,nvl(clm.version,'WWW') as version2,clm.box_number as box_number2,
+	      nvl(clm.sum_out_num,0) as sum_out_num,nvl(clm.out_num,0) as out_num,nvl(clm.sum_inve_num,0) as sum_inve_num,nvl(clm.inve_num,0) as inve_num,clm.is_special as is_special2 ,
+	      clm.fields as fields2,
+	      cl.cut_month,cl.supp_id,cl.supp_name,cl.fields as header_fields ,cl.fields_blob as fields_blob2
+	       from bam_cut_liai_mate clm right join bam_cut_liai cl
+	      on clm.liai_id = cl.liai_id
+	      where cl.cut_month = #{cutMateForm.cutMonth}
+	       and cl.status = '已确认'
+	      )a1
+	    left join (
+	     select bm.mate_code,bm.mate_name,nvl(bm.version,'WWW') AS version,bm.fields,
+	    concat('s',bm.oem_supp_code) as oem_supp_id,bm.oem_supp_code as oem_sap_id,bm.oem_supp_name,b.cut_month,b.supp_id as bao_supp_id,
+	    b.supp_name as bao_supp_name,b.fields_blob,bm.is_special
+	     from bam_cut_baocai_mate bm right join bam_cut_baocai b
+	    on bm.liai_id= b.liai_id
+	    where b.cut_month=#{cutMateForm.cutMonth}
+	    and b.status = '已提交'
+	    )a2 on a1.mate_code2 = a2.mate_code
+	    and a1.version2 = a2.version
+	    and a1.supp_id = a2.oem_supp_id
+	    left join mdm_qual_supp s 
+    	on a2.bao_supp_id = s.supp_id
+	</select>
+	
+	<select id="getCutMatePackList" parameterType="Map" resultMap="cutMatePackMap">
+		select a1.mate_code2,a1.mate_name2,a1.version2,a1.box_number2,a1.sum_out_num,
+      a1.out_num,a1.sum_inve_num,a1.inve_num,a1.is_special2,a1.fields2,a1.cut_month,
+      a1.supp_id as oem_supp_id,a1.sap_id as oem_sap_id,a1.supp_name as oem_supp_name,a1.header_fields,
+      a1.fields_blob2,a2.fields as bao_fields,a2.bao_supp_id,a2.bao_sap_id,a2.bao_supp_name,
+      a2.fields_blob as bao_fields_blob,a1.liai_id,a2.bao_liai_id
+       from (
+        select clm.mate_code as mate_code2,clm.mate_name as mate_name2,nvl(clm.version,'WWW') as version2,clm.box_number as box_number2,
+        nvl(clm.sum_out_num,0) as sum_out_num,nvl(clm.out_num,0) as out_num,nvl(clm.sum_inve_num,0) as sum_inve_num,nvl(clm.inve_num,0) as inve_num,clm.is_special as is_special2 ,
+        clm.fields as fields2,
+        cl.cut_month,cl.supp_id,s.sap_id,cl.supp_name,cl.fields as header_fields ,cl.fields_blob as fields_blob2,cl.liai_id
+         from bam_cut_liai_mate clm right join bam_cut_liai cl
+        on clm.liai_id = cl.liai_id
+        left join mdm_qual_supp s 
+        on cl.supp_id = s.supp_id
+        where cl.cut_month = #{cutMateForm.cutMonth}
+         and cl.status = '已确认'
+        )a1
+      left join (
+       select bm.mate_code,bm.mate_name,nvl(bm.version,'WWW') AS version,bm.fields,
+      bm.oem_supp_code as oem_sap_id,bm.oem_supp_name,b.cut_month,b.supp_id as bao_supp_id,s.sap_id as bao_sap_id,
+      b.supp_name as bao_supp_name,b.fields_blob,bm.is_special,b.liai_id as bao_liai_id
+       from bam_cut_baocai_mate bm right join bam_cut_baocai b
+      on bm.liai_id= b.liai_id
+       left join mdm_qual_supp s 
+       on b.supp_id = s.supp_id
+      where b.cut_month =#{cutMateForm.cutMonth}
+       and b.status = '已提交'
+      )a2 on a1.mate_code2 = a2.mate_code
+      and a1.version2 = a2.version
+      and a1.sap_id = a2.oem_sap_id
+      <if test="userList != null">
+      		inner join (
+              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+             on m.mate_id = bsm.mate_id
+             where m.mate_id is not null and 
+              bsm.buyer_id in 
+                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item.id}
+	    		</foreach>       
+         	)mate  on mate.mate_code =  a1.mate_code2
+      	</if>
+      <where>
+      	<if test="mateCodeList != null ">
+      		and a1.mate_code2  in 
+      		<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item}
+	    	</foreach>
+      	</if>
+      	<if test="judge != null and judge != '' ">
+	    	and a1.mate_code2 = #{judge}
+	    </if>
+      	<if test="cutMateForm.mateName != null and cutMateForm.mateName != '' ">
+      		and (
+      			a1.mate_code2 like '%${cutMateForm.mateName}%'
+      			or a1.mate_name like '%${cutMateForm.mateName}%'
+      		)
+      	</if>
+      	<if test="cutMateForm.oemSuppName != null and cutMateForm.oemSuppName != '' ">
+      		and (
+      			a1.sap_id like '%${cutMateForm.oemSuppName}%'
+      			or a1.supp_name like '%${cutMateForm.oemSuppName}%'
+      		)
+      	</if>
+      	<if test="cutMateForm.baoSuppName != null and cutMateForm.baoSuppName != '' ">
+      		and (
+      			a2.bao_sap_id like '%${cutMateForm.baoSuppName}%'
+      			or a2.bao_supp_name like '%${cutMateForm.baoSuppName}%'
+      		)
+      	</if>
+      </where>
+      order by a1.mate_code2,a1.sap_id
+	</select>
+	
+	<resultMap type="com.faujor.entity.rm.PackOrderVO" id="packOrderVOMap">
+		<result property="orderDate" column="order_Date"/>
+		<result property="packOrderCode" column="pack_Order_Code"/>
+		<result property="oemSapId" column="oem_Sap_Id"/>
+		<result property="oemSuppName" column="oem_Supp_Name"/>
+		<result property="mateCode" column="mate_Code"/>
+		<result property="mateName" column="mate_Name"/>
+		<result property="packCode" column="pack_Code"/>
+		<result property="packName" column="pack_Name"/>
+		<result property="pruchNum" column="pruch_Num"/>
+		<result property="baoSapId" column="bao_Sap_Id"/>
+		<result property="baoSuppName" column="bao_Supp_Name"/>
+		<result property="packOrderNum" column="pack_Order_Num"/>
+		<result property="completeNum" column="complete_Num"/>
+		<result property="residueNum" column="residue_Num"/>
+		<result property="invenNum" column="inven_Num"/>
+	</resultMap>
+	<select id="getPackOrderListByPage" parameterType="Map" resultMap="packOrderVOMap">
+	select main.* from(
+	select h.*,rownum rn from (
+	select bao.oem_sap_id,bao.oem_supp_name,bao.order_date,bao.pack_order_code,bao.mate_code,bao.mate_name,
+	bao.pack_code,bao.pack_name,bao.pruch_num,bao.bao_supp_name,cap.bao_sap_id,cap.version,cap.pack_order_num,
+	cap.complete_num,cap.residue_num,cap.inven_num
+	 from(
+	     select r.supp_name as oem_sap_id,r.supp_numb as oem_supp_name,opm.order_date,opm.order_code as pack_order_code,opm.mate_code,opm.mate_name,
+	     opm.pack_code,opm.pack_name,nvl(opm.pack_num,0) as pruch_Num,opm.pack_supp as bao_supp_name
+	     from bam_order_pack_mate opm right join bam_order_pack op 
+	    on opm.order_pack_id = op.id
+	    left join bam_orde_rele r
+	    on op.oem_order_code =  r.cont_orde_numb
+	    where op.status = '已提交'
+	    )bao
+	    left join (
+	    select * from (
+	    select a.*,rank() over(partition by a.mate_code,a.version,a.bao_sap_id,a.pack_order_code,
+	    a.oem_supp_name order by a.rep_month desc) as rank from (
+	    select cr.supp_no as bao_sap_id,cr.supp_name as bao_supp_name,cr.rep_month,
+	    ro.mate_code,ro.mate_desc as mate_name,ro.version,nvl(ro.order_num,0) as pack_order_num,
+	    nvl(ro.finished_num,0) as complete_num,nvl(ro.order_num-ro.finished_num,0) as residue_num ,ro.order_no as pack_order_code,
+	    ro.order_side as oem_supp_name,nvl(rs.stock_num,0) as inven_num
+	     from ps_cap_rep_order ro right join ps_cap_rep cr
+	    on ro.main_id = cr.id
+	    left join ps_cap_rep_stock rs on rs.main_id = cr.id
+	    and rs.mate_code = ro.mate_code
+	    where cr.status='已提交')a)b
+	    where b.rank=1
+	    )cap
+	    on bao.bao_supp_name = cap.bao_supp_name
+	    and bao.oem_supp_name = cap.oem_supp_name
+	    and bao.pack_order_code = cap.pack_order_code
+	    and bao.mate_code = cap.mate_code
+	    <if test="userList != null">
+      		inner join (
+              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+             on m.mate_id = bsm.mate_id
+             where m.mate_id is not null and 
+              bsm.buyer_id in 
+                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item.id}
+	    		</foreach>       
+         	)mate  on mate.mate_code =  bao.mate_code
+      	</if>
+	    <where>
+		    <if test="mateCodeList != null ">
+	      		and bao.mate_code  in 
+	      		<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+		    			#{item}
+		    	</foreach>
+	      	</if>
+	      	<if test="judge != null and judge != '' ">
+		    	and bao.mate_code = #{judge}
+		    </if>
+	    	<if test="oemSapId != null and oemSapId != '' ">
+	    		and bao.oem_sap_id = #{oemSapId}
+	    	</if>
+	    	<if test="packOrderForm.packOrderCode != null and packOrderForm.packOrderCode != '' ">
+	    		and bao.pack_order_code = #{packOrderForm.packOrderCode}
+	    	</if>
+	    	<if test="packOrderForm.mateName != null and packOrderForm.mateName != '' ">
+	    		and (
+	    			bao.mate_code like'%${packOrderForm.mateName}%'
+	    			or bao.mate_name like'%${packOrderForm.mateName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.packName != null and packOrderForm.packName != '' ">
+	    		and (
+	    			bao.pack_Name like'%${packOrderForm.packName}%'
+	    			or bao.pack_code like'%${packOrderForm.packName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.oemSuppName != null and packOrderForm.oemSuppName != '' ">
+	    		and (
+	    			bao.oem_sap_id like'%${packOrderForm.oemSuppName}%'
+	    			or bao.oem_supp_name like'%${packOrderForm.oemSuppName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.baoSuppName != null and packOrderForm.baoSuppName != '' ">
+	    		and (
+	    			bao.bao_supp_name like'%${packOrderForm.baoSuppName}%'
+	    			or cap.bao_sap_id like'%${packOrderForm.baoSuppName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.startDate != null or packOrderForm.endDate != null ">
+				and bao.order_date between #{packOrderForm.startDate,jdbcType=VARCHAR}
+				and #{packOrderForm.endDate,jdbcType=VARCHAR}
+			</if>
+	    </where>
+	    order by bao.order_date desc,bao.mate_code
+	    )h
+	    <![CDATA[ where rownum<=#{end})main]]>
+	     <![CDATA[where main.rn>=#{start}]]>
+	</select>
+	
+	<select id="getPackOrderListByPageCount" parameterType="Map" resultType="Int">
+		select count(*)
+	    from(
+	     select r.supp_name as oem_sap_id,r.supp_numb as oem_supp_name,opm.order_date,opm.order_code as pack_order_code,opm.mate_code,opm.mate_name,
+	     opm.pack_code,opm.pack_name,nvl(opm.pack_num,0) as pruch_Num,opm.pack_supp as bao_supp_name
+	     from bam_order_pack_mate opm right join bam_order_pack op 
+	    on opm.order_pack_id = op.id
+	    left join bam_orde_rele r
+	    on op.oem_order_code =  r.cont_orde_numb
+	    where op.status = '已提交'
+	    )bao
+	    left join (
+	    select * from (
+	    select a.*,rank() over(partition by a.mate_code,a.version,a.bao_sap_id,a.pack_order_code,
+	    a.oem_supp_name order by a.rep_month desc) as rank from (
+	    select cr.supp_no as bao_sap_id,cr.supp_name as bao_supp_name,cr.rep_month,
+	    ro.mate_code,ro.mate_desc as mate_name,ro.version,nvl(ro.order_num,0) as pack_order_num,
+	    nvl(ro.finished_num,0) as complete_num,nvl(ro.order_num-ro.finished_num,0) as residue_num ,ro.order_no as pack_order_code,
+	    ro.order_side as oem_supp_name,nvl(rs.stock_num,0) as inven_num
+	     from ps_cap_rep_order ro right join ps_cap_rep cr
+	    on ro.main_id = cr.id
+	    left join ps_cap_rep_stock rs on rs.main_id = cr.id
+	    and rs.mate_code = ro.mate_code
+	    where cr.status='已提交')a)b
+	    where b.rank=1
+	    )cap
+	    on bao.bao_supp_name = cap.bao_supp_name
+	    and bao.oem_supp_name = cap.oem_supp_name
+	    and bao.pack_order_code = cap.pack_order_code
+	    and bao.mate_code = cap.mate_code
+	    <if test="userList != null">
+      		inner join (
+              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+             on m.mate_id = bsm.mate_id
+             where m.mate_id is not null and 
+              bsm.buyer_id in 
+                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item.id}
+	    		</foreach>       
+         	)mate  on mate.mate_code =  bao.mate_code
+      	</if>
+	    <where>
+	    	<if test="mateCodeList != null ">
+	      		and bao.mate_code  in 
+	      		<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+		    			#{item}
+		    	</foreach>
+	      	</if>
+	      	<if test="judge != null and judge != '' ">
+		    	and bao.mate_code = #{judge}
+		    </if>
+	    	<if test="oemSapId != null and oemSapId != '' ">
+	    		and bao.oem_sap_id = #{oemSapId}
+	    	</if>
+	    	<if test="packOrderForm.packOrderCode != null and packOrderForm.packOrderCode != '' ">
+	    		and bao.pack_order_code = #{packOrderForm.packOrderCode}
+	    	</if>
+	    	<if test="packOrderForm.mateName != null and packOrderForm.mateName != '' ">
+	    		and (
+	    			bao.mate_code like'%${packOrderForm.mateName}%'
+	    			or bao.mate_name like'%${packOrderForm.mateName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.packName != null and packOrderForm.packName != '' ">
+	    		and (
+	    			bao.pack_Name like'%${packOrderForm.packName}%'
+	    			or bao.pack_code like'%${packOrderForm.packName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.oemSuppName != null and packOrderForm.oemSuppName != '' ">
+	    		and (
+	    			bao.oem_sap_id like'%${packOrderForm.oemSuppName}%'
+	    			or bao.oem_supp_name like'%${packOrderForm.oemSuppName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.baoSuppName != null and packOrderForm.baoSuppName != '' ">
+	    		and (
+	    			bao.bao_supp_name like'%${packOrderForm.baoSuppName}%'
+	    			or cap.bao_sap_id like'%${packOrderForm.baoSuppName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.startDate != null or packOrderForm.endDate != null ">
+				and bao.order_date between #{packOrderForm.startDate,jdbcType=VARCHAR}
+				and #{packOrderForm.endDate,jdbcType=VARCHAR}
+			</if>
+	    </where>
+	</select>
+	
+	
+	<select id="getPackOrderList" parameterType="Map" resultMap="packOrderVOMap">
+		select bao.oem_sap_id,bao.oem_supp_name,bao.order_date,bao.pack_order_code,bao.mate_code,bao.mate_name,
+	bao.pack_code,bao.pack_name,bao.pruch_num,bao.bao_supp_name,cap.bao_sap_id,cap.version,cap.pack_order_num,
+	cap.complete_num,cap.residue_num,cap.inven_num
+	 from(
+	     select r.supp_name as oem_sap_id,r.supp_numb as oem_supp_name,opm.order_date,opm.order_code as pack_order_code,opm.mate_code,opm.mate_name,
+	     opm.pack_code,opm.pack_name,nvl(opm.pack_num,0) as pruch_Num,opm.pack_supp as bao_supp_name
+	     from bam_order_pack_mate opm right join bam_order_pack op 
+	    on opm.order_pack_id = op.id
+	    left join bam_orde_rele r
+	    on op.oem_order_code =  r.cont_orde_numb
+	    where op.status = '已提交'
+	    )bao
+	    left join (
+	    select * from (
+	    select a.*,rank() over(partition by a.mate_code,a.version,a.bao_sap_id,a.pack_order_code,
+	    a.oem_supp_name order by a.rep_month desc) as rank from (
+	    select cr.supp_no as bao_sap_id,cr.supp_name as bao_supp_name,cr.rep_month,
+	    ro.mate_code,ro.mate_desc as mate_name,ro.version,nvl(ro.order_num,0) as pack_order_num,
+	    nvl(ro.finished_num,0) as complete_num,nvl(ro.order_num-ro.finished_num,0) as residue_num ,ro.order_no as pack_order_code,
+	    ro.order_side as oem_supp_name,nvl(rs.stock_num,0) as inven_num
+	     from ps_cap_rep_order ro right join ps_cap_rep cr
+	    on ro.main_id = cr.id
+	    left join ps_cap_rep_stock rs on rs.main_id = cr.id
+	    and rs.mate_code = ro.mate_code
+	    where cr.status='已提交')a)b
+	    where b.rank=1
+	    )cap
+	    on bao.bao_supp_name = cap.bao_supp_name
+	    and bao.oem_supp_name = cap.oem_supp_name
+	    and bao.pack_order_code = cap.pack_order_code
+	    and bao.mate_code = cap.mate_code
+	    <if test="userList != null">
+      		inner join (
+              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+             on m.mate_id = bsm.mate_id
+             where m.mate_id is not null and 
+              bsm.buyer_id in 
+                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+	    			#{item.id}
+	    		</foreach>       
+         	)mate  on mate.mate_code =  bao.mate_code
+      	</if>
+	    <where>
+	    	<if test="mateCodeList != null ">
+	      		and bao.mate_code  in 
+	      		<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+		    			#{item}
+		    	</foreach>
+	      	</if>
+	      	<if test="judge != null and judge != '' ">
+		    	and bao.mate_code = #{judge}
+		    </if>
+	    	<if test="oemSapId != null and oemSapId != '' ">
+	    		and bao.oem_sap_id = #{oemSapId}
+	    	</if>
+	    	<if test="packOrderForm.packOrderCode != null and packOrderForm.packOrderCode != '' ">
+	    		and bao.pack_order_code = #{packOrderForm.packOrderCode}
+	    	</if>
+	    	<if test="packOrderForm.mateName != null and packOrderForm.mateName != '' ">
+	    		and (
+	    			bao.mate_code like'%${packOrderForm.mateName}%'
+	    			or bao.mate_name like'%${packOrderForm.mateName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.packName != null and packOrderForm.packName != '' ">
+	    		and (
+	    			bao.pack_Name like'%${packOrderForm.packName}%'
+	    			or bao.pack_code like'%${packOrderForm.packName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.oemSuppName != null and packOrderForm.oemSuppName != '' ">
+	    		and (
+	    			bao.oem_sap_id like'%${packOrderForm.oemSuppName}%'
+	    			or bao.oem_supp_name like'%${packOrderForm.oemSuppName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.baoSuppName != null and packOrderForm.baoSuppName != '' ">
+	    		and (
+	    			bao.bao_supp_name like'%${packOrderForm.baoSuppName}%'
+	    			or cap.bao_sap_id like'%${packOrderForm.baoSuppName}%'
+	    		)
+	    	</if>
+	    	<if test="packOrderForm.startDate != null or packOrderForm.endDate != null ">
+				and bao.order_date between #{packOrderForm.startDate,jdbcType=VARCHAR}
+				and #{packOrderForm.endDate,jdbcType=VARCHAR}
+			</if>
+	    </where>
+	    order by bao.order_date desc,bao.mate_code
+	</select>
+</mapper>

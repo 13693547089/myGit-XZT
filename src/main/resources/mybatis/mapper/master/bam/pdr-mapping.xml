@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.PdrMapper">
+	<resultMap id="pdrMap" type="com.faujor.entity.bam.psm.Pdr">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="pdrCode" column="PDR_CODE"/>
+			<result property="produceDate" column="PRODUCE_DATE"/>
+			<result property="suppName" column="SUPP_NAME"/>
+			<result property="suppCode" column="SUPP_CODE"/>
+			<result property="status" column="STATUS"/>
+			<result property="crtDate" column="CRT_DATE"/>
+			<result property="crtUser" column="CRT_USER"/>
+			<result property="uptDate" column="UPT_DATE"/>
+			<result property="uptUser" column="UPT_USER"/>
+			<result property="remark" column="REMARK"/>
+			<result property="syncFlag" column="SYNC_FLAG"/>
+	</resultMap>
+	
+	<resultMap id="pdrDetailMap" type="com.faujor.entity.bam.psm.PdrDetail">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="matUnit" column="MAT_UNIT"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="pdcPlanQty" column="PDC_PLAN_QTY"/>
+			<result property="currNeedQty" column="CURR_NEED_QTY"/>
+			<result property="preCompQty" column="PRE_COMP_QTY"/>
+			<result property="currCompQty" column="CURR_COMP_QTY"/>
+			<result property="compScale" column="COMP_SCALE"/>
+			<result property="actPdcQty" column="ACT_PDC_QTY"/>
+			<result property="actDevQty" column="ACT_DEV_QTY"/>
+			<result property="stockQty" column="STOCK_QTY"/>
+			<result property="batch" column="BATCH"/>
+			<result property="remark" column="REMARK"/>
+			<result property="qcStock" column="QC_STOCK"/>
+			<result property="unQcStock" column="UN_QC_STOCK"/>
+			<result property="beginStock" column="BEGIN_STOCK"/>
+			<result property="theoryStock" column="THEORY_STOCK"/>
+			<result property="diffStock" column="DIFF_STOCK"/>
+			<result property="preSumDev" column="PRE_SUM_DEV"/>
+			<result property="devPlanQty" column="DEV_PLAN_QTY"/>
+			<result property="devCompScale" column="DEV_COMP_SCALE"/>
+			<result property="currSumDev" column="CURR_SUM_DEV"/>
+	</resultMap>
+	
+	<resultMap id="pdrItemMap" type="com.faujor.entity.bam.psm.PdrItem">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="itemType" column="ITEM_TYPE"/>
+			<result property="batchNo" column="BATCH_NO"/>
+			<result property="qty" column="QTY"/>
+			<result property="remark" column="REMARK"/>
+			<result property="qcQty" column="QC_QTY"/>
+			<result property="unQcQty" column="UN_QC_QTY"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="boardName" column="BOARD_NAME"/>
+	</resultMap>
+	
+	<select id="getPdrByPage" resultMap="pdrMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select pdr.* from PS_PDR pdr 
+				  where 1=1 
+					<if test="pdrCode!=null and pdrCode!=''">
+						and pdr.PDR_CODE like '%'||#{pdrCode}||'%'
+					</if>
+					<if test="suppName!=null and suppName!=''">
+						and pdr.SUPP_NAME like '%'||#{suppName}||'%'
+					</if>
+					<if test="status!=null and status!=''">
+						and pdr.STATUS = #{status}
+					</if>
+					<if test="produceDateStart!=null and produceDateStart!=''">
+						and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt;= #{produceDateStart}
+					</if>
+					<if test="produceDateEnd!=null and produceDateEnd!=''">
+						and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &lt;= #{produceDateEnd}
+					</if>
+					<if test="crtDateStart!=null and crtDateStart!=''">
+						and pdr.CRT_DATE &gt;= #{crtDateStart}
+					</if>
+					<if test="crtDateEnd!=null and crtDateEnd!=''">
+						and pdr.CRT_DATE &lt;= #{crtDateEnd}
+					</if>
+					<if test="crtUser!=null and crtUser!=''">
+						and pdr.CRT_USER = #{crtUser}
+					</if>
+					<if test="suppCode!=null and suppCode!=''">
+						and pdr.SUPP_CODE = #{suppCode}
+					</if>
+				order by pdr.PDR_CODE desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getPdrCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from PS_PDR pdr  
+		where 1=1 
+		<if test="pdrCode!=null and pdrCode!=''">
+			and pdr.PDR_CODE like '%'||#{pdrCode}||'%'
+		</if>
+		<if test="suppName!=null and suppName!=''">
+			and pdr.SUPP_NAME like '%'||#{suppName}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and pdr.STATUS = #{status}
+		</if>
+		<if test="produceDateStart!=null and produceDateStart!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt;= #{produceDateStart}
+		</if>
+		<if test="produceDateEnd!=null and produceDateEnd!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &lt;= #{produceDateEnd}
+		</if>
+		<if test="crtDateStart!=null and crtDateStart!=''">
+			and pdr.CRT_DATE &gt;= #{crtDateStart}
+		</if>
+		<if test="crtDateEnd!=null and crtDateEnd!=''">
+			and pdr.CRT_DATE &lt;= #{crtDateEnd}
+		</if>
+		<if test="crtUser!=null and crtUser!=''">
+			and pdr.CRT_USER = #{crtUser}
+		</if>
+		<if test="suppCode!=null and suppCode!=''">
+			and pdr.SUPP_CODE = #{suppCode}
+		</if>
+		
+		<!-- 判断是否存在相同生产日期的条件 -->
+		<!-- 生产日期  、 供应商 、 ID -->
+		<if test="produceDate!=null and produceDate!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') = #{produceDate}
+		</if>
+		<if test="nonId!=null and nonId!=''">
+			and pdr.ID != #{nonId}
+		</if>
+	</select>
+	
+	<select id="getPdrByMap" resultMap="pdrMap" parameterType="Map">
+		select pdr.* from PS_PDR pdr 
+		where 1=1 
+		<if test="id!=null and id!=''">
+			and pdr.ID = #{id}
+		</if>
+		<if test="syncFlag!=null and syncFlag!=''">
+			and pdr.SYNC_FLAG = #{syncFlag}
+		</if>
+		<if test="status!=null and status!=''">
+			and pdr.STATUS = #{status}
+		</if>
+		
+		<if test="suppCode !=null and suppCode !=''">
+			and pdr.SUPP_CODE = #{suppCode}
+		</if>
+		<if test="currPdcDate !=null and currPdcDate !=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt; #{currPdcDate}
+		</if>
+		
+		<if test="isPdcOrder == 1">
+			order by pdr.produce_date
+		</if>
+	</select>
+	
+	<delete id="delPdrById" parameterType="String">
+		delete from PS_PDR where ID=#{id}
+	</delete>
+	
+	<insert id="savePdr" parameterType="com.faujor.entity.bam.psm.Pdr">
+		insert into PS_PDR (id,sn,PDR_CODE,PRODUCE_DATE,SUPP_NAME,SUPP_CODE,status,
+  		crt_date,crt_user,remark,SYNC_FLAG)
+		values
+		(#{id},#{sn},#{pdrCode},#{produceDate},#{suppName},#{suppCode},
+		#{status},#{crtDate},#{crtUser},#{remark},#{syncFlag})
+	</insert>
+	
+	<update id="updatePdr" parameterType="com.faujor.entity.bam.psm.Pdr">
+		update PS_PDR set
+			sn=#{sn},PDR_CODE=#{pdrCode},
+			PRODUCE_DATE=#{produceDate},SUPP_NAME=#{suppName},SUPP_CODE=#{suppCode}, 
+			status=#{status},upt_date=#{uptDate},upt_user=#{uptUser},remark=#{remark},
+			SYNC_FLAG=#{syncFlag}
+		where id=#{id}
+	</update>
+	
+	<update id="updatePdrStatus" >
+		update PS_PDR set
+		  status=#{status}
+		where id=#{id}
+	</update>
+	
+	<select id="getPdrDetailPage" resultMap="pdrDetailMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select pdrDetail.* from PS_PDR_DETAIL pdrDetail 
+				  where 1=1 and pdrDetail.MAIN_ID = #{mainId} 
+				order by pdrDetail.sn asc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getPdrDetailListByMainId" resultMap="pdrDetailMap" parameterType="String">
+		select detail.id,detail.sn,detail.main_id,detail.mat_code,detail.mat_name,detail.mat_unit,
+		m.SERIES_EXPL as prod_series,detail.PDC_PLAN_QTY,detail.CURR_NEED_QTY,detail.PRE_COMP_QTY,detail.CURR_COMP_QTY,
+		detail.COMP_SCALE,detail.ACT_PDC_QTY,detail.ACT_DEV_QTY,detail.CURR_SUM_DEV,
+  		detail.STOCK_QTY,m.board_name as BATCH,detail.REMARK,detail.QC_STOCK,detail.UN_QC_STOCK,
+  		detail.BEGIN_STOCK,detail.THEORY_STOCK,detail.DIFF_STOCK,detail.PRE_SUM_DEV,detail.DEV_PLAN_QTY,detail.DEV_COMP_SCALE 
+  		from PS_PDR_DETAIL detail
+		left join mdm_mate m on nvl(m.is_delete,'1') != 'X' and detail.mat_code=m.mate_code
+		where detail.MAIN_ID=#{mainId}
+		order by detail.mat_code
+	</select>
+	
+	<select id="getPdrDetailCount" resultType="java.lang.Integer" parameterType="String">
+		select count(1) from PS_PDR_DETAIL 
+		where MAIN_ID=#{mainId}
+	</select>
+	
+	<insert id="savePdrDetailList" parameterType="java.util.List">
+		<!-- <selectKey keyProperty="id" resultType="String" order="BEFORE">
+	        select sys_guid() from dual
+	    </selectKey> -->
+		insert into PS_PDR_DETAIL (id,sn,main_id,mat_code,mat_name,mat_unit,prod_series,
+  		PDC_PLAN_QTY,CURR_NEED_QTY,PRE_COMP_QTY,CURR_COMP_QTY,COMP_SCALE,ACT_PDC_QTY,ACT_DEV_QTY,CURR_SUM_DEV,
+  		STOCK_QTY,BATCH,REMARK,QC_STOCK,UN_QC_STOCK,BEGIN_STOCK,THEORY_STOCK,DIFF_STOCK,PRE_SUM_DEV,DEV_PLAN_QTY,DEV_COMP_SCALE) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode},
+	        #{item.matName},
+	        #{item.matUnit},
+	        #{item.prodSeries},
+	        #{item.pdcPlanQty},
+	        #{item.currNeedQty},
+	        #{item.preCompQty},
+	        #{item.currCompQty},
+	        #{item.compScale},
+	        #{item.actPdcQty},
+	        #{item.actDevQty},
+	        #{item.currSumDev},
+	        #{item.stockQty},
+	        #{item.batch},
+	        #{item.remark},
+	        #{item.qcStock},
+	        #{item.unQcStock},
+	        #{item.beginStock},
+	        #{item.theoryStock},
+	        #{item.diffStock},
+	        #{item.preSumDev},
+	        #{item.devPlanQty},
+	        #{item.devCompScale}
+   		FROM dual 
+    	</foreach>
+    	) A 
+	</insert>
+	
+	<delete id="delPdrDetailByMainId" parameterType="String">
+		delete from PS_PDR_DETAIL where MAIN_ID=#{mainId}
+	</delete>
+	
+	<select id="getPdrItemListByMainId" resultMap="pdrItemMap" parameterType="Map">
+		select rownum as sn,a.* from (select item.id,rownum as sn,item.main_id,item.mat_code,item.mat_name,item.item_type,item.batch_no,
+		item.qty,item.remark,item.QC_QTY,item.UN_QC_QTY,m.SERIES_EXPL as PROD_SERIES,m.BOARD_NAME as BOARD_NAME	
+		from PS_PDR_ITEM item
+		left join mdm_mate m on nvl(m.is_delete,'1') != 'X' and item.mat_code=m.mate_code
+		where item.MAIN_ID=#{mainId}
+		<if test="itemType!=null and itemType!=''">
+			and item.ITEM_TYPE = #{itemType}
+		</if>
+		order by item.mat_code,item.batch_no) a
+	</select>
+	
+	<select id="getPdrItemCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from PS_PDR_ITEM 
+		where MAIN_ID=#{mainId}
+		<if test="itemType!=null and itemType!=''">
+			and ITEM_TYPE = #{itemType}
+		</if>
+	</select>
+	
+	<insert id="savePdrItemList" parameterType="java.util.List">
+		insert into PS_PDR_ITEM (id,sn,main_id,mat_code,mat_name,item_type,batch_no,
+  		qty,remark,QC_QTY,UN_QC_QTY) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode},
+	        #{item.matName},
+	        #{item.itemType},
+	        #{item.batchNo},
+	        #{item.qty},
+	        #{item.remark},
+	        #{item.qcQty},
+	        #{item.unQcQty}
+   		FROM dual 
+    	</foreach>
+    	) A 
+	</insert>
+	
+	<delete id="delPdrItemByMainId" parameterType="String">
+		delete from PS_PDR_ITEM where MAIN_ID=#{mainId}
+	</delete>
+	
+	<select id="getPdrDetailBySuppMateDate" parameterType="Map" resultMap="pdrDetailMap">
+		select t1.*
+		  from ps_pdr_detail t1
+		  left join ps_pdr t2
+		    on t1.main_id = t2.id
+		 where t1.mat_code = #{mateCode}
+		   and t2.supp_code = #{suppNo}
+		   and t2.status='已提交'
+		   and t2.produce_date =
+		       (select max(t2.produce_date) maxday
+		          from ps_pdr_detail t1
+		          left join ps_pdr t2
+		            on t1.main_id = t2.id
+		         where t1.mat_code = #{mateCode}
+		           and t2.supp_code = #{suppNo}
+		           and t2.status='已提交'
+		           and t2.produce_date &lt; #{planMonth})
+	</select>
+	
+	<!-- batch 保存产能类型 -->
+	<select id="getPdrDetailListFromSuppProd" resultMap="pdrDetailMap" >
+		select #{mainId} as MAIN_ID,b.mate_code as MAT_CODE,b.mate_desc as MAT_NAME,mat.proc_unit as MAT_UNIT,mat.series_expl as PROD_SERIES,
+		nvl(b.PROD_PLAN,0) as PDC_PLAN_QTY,nvl(b.DELIVERY_PLAN,0) as DEV_PLAN_QTY,nvl(needComp.plan_sum_qty,0) as CURR_NEED_QTY,nvl(comp.SUM_PDC_QTY,0) as PRE_COMP_QTY,
+		nvl(comp.SUM_PDC_QTY,0) as CURR_COMP_QTY,case when nvl(b.PROD_PLAN,0)=0 then '' else ROUND(nvl(comp.SUM_PDC_QTY,0)*100/b.PROD_PLAN,2) ||'%' end as COMP_SCALE,
+		0 as ACT_PDC_QTY,0 as ACT_DEV_QTY,nvl(prePdr.STOCK_QTY,0) as STOCK_QTY,mat.board_name as BATCH,
+		nvl(prePdr.QC_STOCK,0) as QC_STOCK,nvl(prePdr.UN_QC_STOCK,0) as UN_QC_STOCK,
+		nvl(comp.SUM_DEV_QTY,0) as PRE_SUM_DEV,nvl(comp.SUM_DEV_QTY,0) as CURR_SUM_DEV,
+		nvl(b.BEGIN_STOCK,0) as BEGIN_STOCK,
+		case when nvl(b.DELIVERY_PLAN,0)=0 then '' else ROUND(nvl(comp.SUM_DEV_QTY,0)*100/b.DELIVERY_PLAN,2) ||'%' end as DEV_COMP_SCALE,
+		ROUND(nvl(b.BEGIN_STOCK,0)+nvl(comp.SUM_PDC_QTY,0)-nvl(comp.SUM_DEV_QTY,0),2) as THEORY_STOCK,
+		ROUND(ROUND(nvl(b.BEGIN_STOCK,0)+nvl(comp.SUM_PDC_QTY,0)-nvl(comp.SUM_DEV_QTY,0),2)-nvl(prePdr.STOCK_QTY,0),2) as DIFF_STOCK
+		 from ps_supp_prod_plan a 
+		inner join ps_supp_prod b on a.main_id = b.id 
+		left join mdm_mate mat on nvl(mat.is_delete,'1') !='X' and b.mate_code=mat.mate_code 
+		left join (
+		select MAIN_ID,sum(nvl(plan_num,0)) as plan_sum_qty from ps_supp_prod_plan where to_char(plan_date,'yyyy-MM-dd') &gt;= #{firstDate}  
+		and to_char(plan_date,'yyyy-MM-dd') &lt;= #{productDate} 
+		group by MAIN_ID
+		) needComp on needComp.MAIN_ID = b.id 
+		left join 
+		(select sum(nvl(a.ACT_PDC_QTY,0)) as SUM_PDC_QTY,a.MAT_CODE,
+		 sum(nvl(a.ACT_DEV_QTY,0)) as SUM_DEV_QTY from ps_pdr_detail a 
+		inner join ps_pdr b on a.main_id = b.id 
+		where to_char(b.produce_date,'yyyy-MM-dd') &gt;= #{firstDate} 
+		and to_char(b.produce_date,'yyyy-MM-dd') &lt;= #{preDate} 
+		and b.supp_code = #{suppCode}
+		and b.status = '已提交'
+		GROUP BY a.MAT_CODE ) comp on b.mate_code = comp.MAT_CODE 
+		left join (select mat_code,stock_qty,qc_stock,un_qc_stock from ps_pdr_detail where main_id =
+   (select id from ps_pdr where to_char(PRODUCE_DATE,'yyyy-MM-dd') = #{preDate}  and SUPP_CODE = #{suppCode}) )
+    prePdr on prePdr.mat_code = b.mate_code
+		where b.supp_no = #{suppCode} 
+		and to_char(a.plan_date,'yyyy-MM-dd') = #{productDate} 
+		and b.status = '已确认'
+	</select>
+	
+	<select id="getPdrItemListFromPreItem" resultMap="pdrItemMap" parameterType="Map">
+		select currItem.sn,currItem.main_id,currItem.mat_code,currItem.mat_name,currItem.ITEM_TYPE,
+		preItem.BATCH_NO,preItem.qty,preItem.remark,preItem.QC_QTY,preItem.UN_QC_QTY from 
+		(
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	        #{item.sn} as sn,
+	        #{item.mainId} as main_id,
+	        #{item.matCode} as mat_code,
+	        #{item.matName} as mat_name,
+	        #{item.itemType} as ITEM_TYPE,
+	        #{item.batchNo} as BATCH_NO,
+	        #{item.qty} as qty,
+	        #{item.remark} as remark,
+	        #{item.qcQty} as QC_QTY,
+	        #{item.unQcQty} as UN_QC_QTY
+   		FROM dual 
+    	</foreach>
+		) currItem
+		left join
+		(select mat_code,batch_no,remark,qty,qc_qty,un_qc_qty from ps_pdr_item 
+		where main_id = (select id from ps_pdr where supp_code=#{suppCode} 
+		and to_char(produce_date,'yyyy-mm-dd')=#{produceDate})
+		<if test="itemType != null  and itemType!=''">
+			and item_type=#{itemType}
+		</if>
+		) preItem on currItem.mat_code = preItem.mat_code
+	</select>
+	
+	<update id="updateDetailCalcInfoByItem" parameterType="String">
+		  	merge into ps_pdr_detail detail
+			using (select a.*,b.sumqcqty,b.sumunqcqty from (select * from 
+			    (select mat_code,item_type,sum(nvl(qty,0)) as sumqty from ps_pdr_item 
+			    where main_id = #{mainId}
+			    group by mat_code,item_type) 
+			    pivot (sum(sumqty) for item_type in ('pi' as pi,'po' as po,'pd' as pd))) a
+			    left join (select mat_code,sum(nvl(qc_qty,0)) as sumqcqty,sum(nvl(un_qc_qty,0)) as sumunqcqty from ps_pdr_item 
+          where main_id = #{mainId}
+          and item_type = 'po'
+          group by mat_code) b on a.mat_code=b.mat_code) item
+			on (detail.mat_code = item.mat_code and detail.main_id = #{mainId})
+			when matched then
+			update set 
+			detail.act_pdc_qty = nvl(item.pi,0),
+			detail.stock_qty = nvl(item.po,0),
+			detail.act_dev_qty = nvl(item.pd,0),
+			detail.curr_comp_qty = detail.pre_comp_qty+nvl(item.pi,0),
+			detail.QC_STOCK = nvl(item.sumqcqty,0),
+			detail.UN_QC_STOCK = nvl(item.sumunqcqty,0),
+			detail.comp_scale =case when nvl(detail.pdc_plan_qty,0)=0 then '' else ROUND((detail.pre_comp_qty+nvl(item.pi,0))*100/detail.pdc_plan_qty,2) ||'%' end,
+      		detail.theory_stock = detail.begin_stock+detail.PRE_COMP_QTY+nvl(item.pi,0)-detail.PRE_SUM_DEV-nvl(item.pd,0),
+      		detail.diff_stock = (detail.begin_stock+detail.PRE_COMP_QTY+nvl(item.pi,0)-detail.PRE_SUM_DEV-nvl(item.pd,0))-nvl(item.po,0),
+			detail.DEV_COMP_SCALE = case when nvl(detail.DEV_PLAN_QTY,0)=0 then '' else ROUND((detail.PRE_SUM_DEV+nvl(item.pd,0))*100/detail.DEV_PLAN_QTY,2) ||'%' end,
+			detail.CURR_SUM_DEV = detail.PRE_SUM_DEV+nvl(item.pd,0) 
+	</update>
+	
+	<!-- 查看 -->
+	<select id="getPdrViewByPage" resultMap="pdrMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select pdr.* from PS_PDR pdr 
+				  inner join (select distinct c.sap_id as suppcode from mdm_buyer_supp a
+					inner join (
+						<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+						    SELECT #{item} as userid FROM dual 
+					    </foreach>
+					) b on a.buyer_id = b.userid
+					inner join mdm_qual_supp c on a.supp_id=c.supp_id) supp 
+					on pdr.supp_code = supp.suppcode 
+				  where 1=1 
+					<if test="pdrCode!=null and pdrCode!=''">
+						and pdr.PDR_CODE like '%'||#{pdrCode}||'%'
+					</if>
+					<if test="suppName!=null and suppName!=''">
+						and pdr.SUPP_NAME like '%'||#{suppName}||'%'
+					</if>
+					<if test="status!=null and status!=''">
+						and pdr.STATUS = #{status}
+					</if>
+					<if test="produceDateStart!=null and produceDateStart!=''">
+						and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt;= #{produceDateStart}
+					</if>
+					<if test="produceDateEnd!=null and produceDateEnd!=''">
+						and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &lt;= #{produceDateEnd}
+					</if>
+					<if test="crtDateStart!=null and crtDateStart!=''">
+						and pdr.CRT_DATE &gt;= #{crtDateStart}
+					</if>
+					<if test="crtDateEnd!=null and crtDateEnd!=''">
+						and pdr.CRT_DATE &lt;= #{crtDateEnd}
+					</if>
+					<if test="crtUser!=null and crtUser!=''">
+						and pdr.CRT_USER = #{crtUser}
+					</if>
+					<if test="suppCode!=null and suppCode!=''">
+						and pdr.SUPP_CODE = #{suppCode}
+					</if>
+				order by pdr.PDR_CODE desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getPdrViewCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from PS_PDR pdr 
+		 inner join (select distinct c.sap_id as suppcode from mdm_buyer_supp a
+			inner join (
+				<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+				    SELECT #{item} as userid FROM dual 
+			    </foreach>
+			) b on a.buyer_id = b.userid
+			inner join mdm_qual_supp c on a.supp_id=c.supp_id) supp 
+			on pdr.supp_code = supp.suppcode 
+		where 1=1 
+		<if test="pdrCode!=null and pdrCode!=''">
+			and pdr.PDR_CODE like '%'||#{pdrCode}||'%'
+		</if>
+		<if test="suppName!=null and suppName!=''">
+			and pdr.SUPP_NAME like '%'||#{suppName}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and pdr.STATUS = #{status}
+		</if>
+		<if test="produceDateStart!=null and produceDateStart!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt;= #{produceDateStart}
+		</if>
+		<if test="produceDateEnd!=null and produceDateEnd!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &lt;= #{produceDateEnd}
+		</if>
+		<if test="crtDateStart!=null and crtDateStart!=''">
+			and pdr.CRT_DATE &gt;= #{crtDateStart}
+		</if>
+		<if test="crtDateEnd!=null and crtDateEnd!=''">
+			and pdr.CRT_DATE &lt;= #{crtDateEnd}
+		</if>
+		<if test="crtUser!=null and crtUser!=''">
+			and pdr.CRT_USER = #{crtUser}
+		</if>
+		<if test="suppCode!=null and suppCode!=''">
+			and pdr.SUPP_CODE = #{suppCode}
+		</if>
+	</select>
+	
+	<select id="getSumInveNumByMateDate" parameterType="Map" resultType="Double">
+		select nvl(sum(t1.stock_qty),0)
+		  from ps_pdr_detail t1
+		  left join ps_pdr t2
+		    on t1.main_id = t2.id
+		 where t1.mat_code = #{mateCode}
+		   
+		   and t2.status='已提交'
+		   and t2.produce_date =
+		       (select max(t2.produce_date) maxday
+		          from ps_pdr_detail t1
+		          left join ps_pdr t2
+		            on t1.main_id = t2.id
+		         where t1.mat_code = #{mateCode}
+		           
+		           and t2.status='已提交'
+		           and t2.produce_date &lt; #{planMonth})
+	</select>
+	
+	<update id="updatePdrSyncFlag" >
+		update PS_PDR set
+		  SYNC_FLAG=#{syncFlag}
+		where id=#{id}
+	</update>
+	
+	<!-- 更新产能上报的计算数据 -->
+	<update id="updatePdrCalcData" parameterType="Map">
+		merge into ps_pdr_detail detail
+	    using (select b.MAT_CODE,nvl(c.SUM_PDC_QTY,0) as SUM_PDC_QTY,nvl(c.SUM_DEV_QTY,0) as SUM_DEV_QTY from ps_pdr_detail b
+		left join 
+		(select sum(nvl(a.ACT_PDC_QTY,0)) as SUM_PDC_QTY,a.MAT_CODE,
+	     sum(nvl(a.ACT_DEV_QTY,0)) as SUM_DEV_QTY from ps_pdr_detail a 
+	    inner join ps_pdr b on a.main_id = b.id 
+	    where to_char(b.produce_date,'yyyy-MM-dd') &gt;= #{firstDate} 
+	    and to_char(b.produce_date,'yyyy-MM-dd') &lt; #{currDate} 
+	    and b.supp_code = #{suppCode}
+	    and b.status = '已提交'
+	    GROUP BY a.MAT_CODE) c on b.MAT_CODE = c.MAT_CODE where b.main_id = #{mainId}) comp
+	    on (detail.mat_code = comp.mat_code and detail.main_id = #{mainId})
+	    when matched then
+	      update set 
+	      detail.PRE_SUM_DEV = nvl(comp.SUM_DEV_QTY,0),
+	      detail.CURR_SUM_DEV = nvl(comp.SUM_DEV_QTY,0) + detail.act_dev_qty,
+	      detail.DEV_COMP_SCALE = case when nvl(detail.DEV_PLAN_QTY,0)=0 then '' else ROUND(( nvl(comp.SUM_DEV_QTY,0)+ detail.act_dev_qty)*100/detail.DEV_PLAN_QTY,2) ||'%' end,
+	      detail.PRE_COMP_QTY = nvl(comp.SUM_PDC_QTY,0),
+	      detail.CURR_COMP_QTY = nvl(comp.SUM_PDC_QTY,0) + detail.act_pdc_qty,
+	      detail.COMP_SCALE =case when nvl(detail.pdc_plan_qty,0)=0 then '' else ROUND((nvl(comp.SUM_PDC_QTY,0) + detail.act_pdc_qty)*100/detail.pdc_plan_qty,2) ||'%' end,
+	      detail.theory_stock = detail.begin_stock+nvl(comp.SUM_PDC_QTY,0)+detail.act_pdc_qty-nvl(comp.SUM_DEV_QTY,0)-detail.act_dev_qty,
+	      detail.diff_stock = (detail.begin_stock+nvl(comp.SUM_PDC_QTY,0)+detail.act_pdc_qty-nvl(comp.SUM_DEV_QTY,0)-detail.act_dev_qty)-detail.stock_qty
+	</update>
+	
+	<!-- *********************产能上报供应商库存报表******************************* -->
+	<resultMap id="pdrStockReportMap" type="com.faujor.entity.bam.psm.PdrStockReport">
+			<result property="suppCode" column="supp_code"/>
+			<result property="suppName" column="supp_name"/>
+			<result property="produceDate" column="produce_date"/>
+			<result property="series" column="series_expl"/>
+			<result property="matCode" column="mat_code"/>
+			<result property="matName" column="mat_name"/>
+			<result property="productType" column="board_name"/>
+			<result property="batchNo" column="batch_no"/>
+			<result property="qcQty" column="QC_QTY"/>
+			<result property="unQcQty" column="UN_QC_QTY"/>
+			<result property="qty" column="QTY"/>
+			<result property="remark" column="REMARK"/>
+	</resultMap>
+	
+	<select id="getPdrStockReportInfo" parameterType="Map" resultMap="pdrStockReportMap">
+		select item.mat_code,item.mat_name,item.batch_no,item.qty,item.remark,m.series_expl,m.board_name,
+		item.qc_qty,item.un_qc_qty,pdr.supp_name,pdr.supp_code,to_char(pdr.produce_date,'yyyy-mm-dd') as produce_date from ps_pdr_item item
+		inner join ps_pdr pdr on item.main_id = pdr.id
+		left join mdm_mate m on nvl(m.is_delete,'1') != 'X' and item.mat_code=m.mate_code
+		where item_type = 'po' 
+		<if test="suppName!=null and suppName!=''">
+			and pdr.supp_name like '%'||#{suppName}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and pdr.status = #{status}
+		</if>
+		<if test="prodDateStart!=null and prodDateStart!=''">
+			and to_char(pdr.produce_date,'yyyy-mm-dd') &gt;= #{prodDateStart}
+		</if>
+		<if test="prodDateEnd!=null and prodDateEnd!=''">
+			and to_char(pdr.produce_date,'yyyy-mm-dd') &lt;= #{prodDateEnd}
+		</if>
+		<if test="series!=null and series!=''">
+			and m.series_expl like '%'||#{series}||'%'
+		</if>
+		<if test="matName!=null and matName!=''">
+			and item.mat_name like '%'||#{matName}||'%'
+		</if>
+		<if test="matType!=null and matType!=''">
+			and m.board_name like '%'||#{matType}||'%'
+		</if>
+		
+		order by pdr.supp_code,pdr.produce_date desc,item.mat_code
+	</select>
+	
+
+	<select id="getPdrDetailBySapIdAndMonthAndMateCode" parameterType="Map" resultMap="pdrDetailMap">
+		  select t1.*
+		  from ps_pdr_detail t1
+		  left join ps_pdr t2
+		   on t1.main_id = t2.id
+		   where t1.mat_code = #{mateCode}
+		   and t2.supp_code = #{suppNo}
+		   and t2.status='已提交'
+		   and t2.produce_date =#{time}
+	</select>
+
+	<!-- 获取采购列表（采购员） -->
+	<select id="getPdrSpecialByPage" resultMap="pdrMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select pdr.* from PS_PDR pdr 
+				inner join (
+					<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+				    	SELECT #{item.name} as UserName FROM dual 
+			    	</foreach>
+				) usr on usr.UserName = pdr.CRT_USER
+				  where 1=1 
+					<if test="pdrCode!=null and pdrCode!=''">
+						and pdr.PDR_CODE like '%'||#{pdrCode}||'%'
+					</if>
+					<if test="suppName!=null and suppName!=''">
+						and pdr.SUPP_NAME like '%'||#{suppName}||'%'
+					</if>
+					<if test="status!=null and status!=''">
+						and pdr.STATUS = #{status}
+					</if>
+					<if test="produceDateStart!=null and produceDateStart!=''">
+						and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt;= #{produceDateStart}
+					</if>
+					<if test="produceDateEnd!=null and produceDateEnd!=''">
+						and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &lt;= #{produceDateEnd}
+					</if>
+					<if test="crtDateStart!=null and crtDateStart!=''">
+						and pdr.CRT_DATE &gt;= #{crtDateStart}
+					</if>
+					<if test="crtDateEnd!=null and crtDateEnd!=''">
+						and pdr.CRT_DATE &lt;= #{crtDateEnd}
+					</if>
+					<if test="crtUser!=null and crtUser!=''">
+						and pdr.CRT_USER = #{crtUser}
+					</if>
+					<if test="suppCode!=null and suppCode!=''">
+						and pdr.SUPP_CODE = #{suppCode}
+					</if>
+				order by pdr.PDR_CODE desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getPdrSpecialCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from PS_PDR pdr  
+		inner join (
+					<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+				    	SELECT #{item.name} as UserName FROM dual 
+			    	</foreach>
+				) usr on usr.UserName = pdr.CRT_USER
+		where 1=1 
+		<if test="pdrCode!=null and pdrCode!=''">
+			and pdr.PDR_CODE like '%'||#{pdrCode}||'%'
+		</if>
+		<if test="suppName!=null and suppName!=''">
+			and pdr.SUPP_NAME like '%'||#{suppName}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and pdr.STATUS = #{status}
+		</if>
+		<if test="produceDateStart!=null and produceDateStart!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &gt;= #{produceDateStart}
+		</if>
+		<if test="produceDateEnd!=null and produceDateEnd!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') &lt;= #{produceDateEnd}
+		</if>
+		<if test="crtDateStart!=null and crtDateStart!=''">
+			and pdr.CRT_DATE &gt;= #{crtDateStart}
+		</if>
+		<if test="crtDateEnd!=null and crtDateEnd!=''">
+			and pdr.CRT_DATE &lt;= #{crtDateEnd}
+		</if>
+		<if test="crtUser!=null and crtUser!=''">
+			and pdr.CRT_USER = #{crtUser}
+		</if>
+		<if test="suppCode!=null and suppCode!=''">
+			and pdr.SUPP_CODE = #{suppCode}
+		</if>
+		
+		<!-- 判断是否存在相同生产日期的条件 -->
+		<!-- 生产日期  、 供应商 、 ID -->
+		<if test="produceDate!=null and produceDate!=''">
+			and to_char(pdr.PRODUCE_DATE,'yyyy-MM-dd') = #{produceDate}
+		</if>
+		<if test="nonId!=null and nonId!=''">
+			and pdr.ID != #{nonId}
+		</if>
+	</select>
+	
+
+</mapper>

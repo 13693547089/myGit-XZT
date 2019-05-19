@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+</head>
+<body>
+	<div class="layui-row" style="padding-top: 10px;">
+		<div class="layui-col-md4">
+			<div class="layui-input-inline">
+				<input type="text" name="mateType" id="mateType" class="layui-input">
+				<input type="text" name="selected" id="selected"
+					th:value="${selectedRows}" class="layui-hide"> <input
+					type="text" name="type" id="type" th:value="${type}"
+					class="layui-hide">
+			</div>
+		</div>
+	</div>
+	<div>
+		<table id="toChooseTable" lay-filter="mateFilter"></table>
+	</div>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/chooseMate.js}"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader"></head>
+<body class='fau-body-list'>
+	<form class="layui-form" id="searchForm" action="" method="post">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">同步任务</label>
+					<div class="layui-input-block">
+						<input type="text" id="asyncName" name="asyncName"
+							placeholder="同步任务" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">任务状态</label>
+					<div class="layui-input-block">
+						<input type="text" id="asyncStatus" name="asyncStatus"
+							placeholder="任务状态" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">操作人</label>
+					<div class="layui-input-block">
+						<input type="text" id="asyncUserName" name="asyncUserName"
+							placeholder="操作人" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md3">
+				<div class="layui-form-item">
+					<label class="layui-form-label">开始时间</label>
+					<div class="layui-input-block">
+						<input type="date" id="dateStr" name="dateStr" placeholder="开始时间"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid divMargin">
+		<div class="layui-row">
+			<div class="layui-col-md3">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="serachInfo">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="reset">重置</button>
+			</div>
+			<div class="layui-col-md3">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="createBtn">创建</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="noticesTable" lay-filter="noticesFilter">
+		</table>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<div th:include="include::websocketJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/basic/notices/notice.js}"></script>
+</body>
+</html>

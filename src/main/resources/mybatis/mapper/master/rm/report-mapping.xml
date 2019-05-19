@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.rm.ReportMapper">
+	<resultMap type="com.faujor.entity.rm.BillReport" id="billReportMap">
+		<result column="purchase_order_num" property="purchaseOrderNum" />
+		<result column="purchase_order_details_num" property="purchaseOrderDetailsNum" />
+	</resultMap>
+	
+	<select id="countPurchaseOrderNum" parameterType="com.faujor.entity.rm.SqlParams" resultMap="billReportMap">
+		 SELECT COUNT(1) AS purchase_order_num, SUM(details_num) AS purchase_order_details_num 
+		 FROM(SELECT t1.CONT_ORDE_NUMB, COUNT(1) AS details_num 
+		 	FROM BAM_ORDE_RELE t1 LEFT JOIN BAM_ORDE_MATE t2 
+		 	ON t1.CONT_ORDE_NUMB = t2.MAIN_ID 
+		 	<where> 
+		 		AND t2.FID IS NOT NULL AND TO_CHAR(t1.SUBE_DATE, 'yyyy-MM-dd') >= '2018-05-01' 
+		 		AND t1.ORTYPE = 'NB' AND t1.PURCH_ORG = '2000'
+		 		<if test="start_date != null and start_date != ''">
+		 			and to_char(t1.sube_date, 'yyyy-MM') <![CDATA[>=]]> #{start_date}
+		 		</if>
+		 		<if test="end_date != null and end_date != ''">
+		 			and to_char(t1.sube_date, 'yyyy-MM') <![CDATA[<=]]> #{end_date}
+		 		</if>
+		 	</where>
+		 	GROUP BY t1.CONT_ORDE_NUMB)
+	</select>	
+	
+	<select id="countMainData" parameterType="com.faujor.entity.rm.SqlParams" resultType="Integer">
+		select count(1) as count from ${main_table_name} 
+		<where>
+			<if test="start_date != null and start_date != ''">
+				<if test="date_formate == 'date'">
+					and TO_CHAR(${where_column}, 'yyyy-MM') <![CDATA[>=]]> #{start_date}
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						and ${where_column} <![CDATA[>=]]> #{start_date}
+					</if>
+					<if test="date_type == 'day'">
+						and TO_CHAR(TO_DATE(${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') <![CDATA[>=]]> #{start_date}
+					</if>
+				</if>
+			</if>
+			<if test="end_date != null and end_date != ''">
+				<if test="date_formate == 'date'">
+					and TO_CHAR(${where_column}, 'yyyy-MM') <![CDATA[<=]]> #{end_date}
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						and ${where_column} <![CDATA[<=]]> #{end_date}
+					</if>
+					<if test="date_type == 'day'">
+						and TO_CHAR(TO_DATE(${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') <![CDATA[<=]]> #{end_date}
+					</if>
+				</if>
+			</if>
+			<if test="main_filter != null and main_filter != ''">
+				and #{main_filter}
+			</if>
+			<if test="add_where_column != null and add_where_column !=''">
+				and ${add_where_column}  = 'CG' 
+			</if>
+		</where>
+	</select>
+	
+	<select id="countDetailsData" parameterType="com.faujor.entity.rm.SqlParams" resultType="Integer">
+		select count(1) as count from ${main_table_name} t1
+		left join ${details_table_name} t2 on ${on_condition}
+		<where>
+			<if test="start_date != null and start_date != ''">
+				<if test="date_formate == 'date'">
+					and TO_CHAR(t1.${where_column}, 'yyyy-MM') <![CDATA[>=]]> #{start_date}
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						and t1.${where_column} <![CDATA[>=]]> #{start_date}
+					</if>
+					<if test="date_type == 'day'">
+						and TO_CHAR(TO_DATE(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') <![CDATA[>=]]> #{start_date}
+					</if>
+				</if>
+				
+			</if>
+			<if test="end_date != null and end_date != ''">
+				<if test="date_formate == 'date'">
+					and TO_CHAR(t1.${where_column}, 'yyyy-MM') <![CDATA[<=]]> #{end_date}
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						and t1.${where_column} <![CDATA[<=]]> #{end_date}
+					</if>
+					<if test="date_type == 'day'">
+						and TO_CHAR(TO_DATE(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') <![CDATA[<=]]> #{end_date}					
+					</if>
+				</if>
+			</if>
+			<if test="add_where_column != null and add_where_column != ''">
+				and t1.${add_where_column}  = 'CG' 
+			</if>
+		</where>
+	</select>
+	
+	<resultMap type="com.faujor.entity.rm.BillReportDetails" id="detailsMap">
+		<result column="model_status" property="modelStatus" />
+		<result column="first_month" property="firstMonth" />
+		<result column="second_month" property="secondMonth" />
+		<result column="third_month" property="thirdMonth" />
+		<result column="d_first_month" property="d_firstMonth" />
+		<result column="d_second_month" property="d_secondMonth" />
+		<result column="d_third_month" property="d_thirdMonth" />
+		
+	</resultMap>
+	
+	<select id="findModelDetailsData" parameterType="com.faujor.entity.rm.SqlParams" resultMap="detailsMap">
+		select * from 
+			(select * from 
+			(select t.${status_column} as model_status, 
+				<if test="date_formate == 'date'">
+					to_char(t.${where_column}, 'yyyy-MM') as month_str,
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						t.${where_column} as month_str,
+					</if>
+					<if test="date_type == 'day'">
+						to_char(to_date(t.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') as month_str,
+					</if>
+				</if>
+				count(1) as model_num
+			from ${main_table_name} t 
+			<where>
+				<if test="date_formate == 'date'">
+					and (to_char(t.${where_column}, 'yyyy-MM') = #{firstMonth}  
+					or to_char(t.${where_column}, 'yyyy-MM') = #{secondMonth} 
+					or to_char(t.${where_column}, 'yyyy-MM') = #{thirdMonth}) 
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						and (t.${where_column} = #{firstMonth}
+						or t.${where_column} = #{secondMonth}
+						or t.${where_column} = #{thirdMonth})
+					</if>
+					<if test="date_type == 'day'">
+						and (to_char(to_date(t.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') = #{firstMonth}
+						or to_char(to_date(t.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') = #{secondMonth}
+						or to_char(to_date(t.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') = #{thirdMonth})
+					</if>
+				</if>
+				<if test="add_where_column != null and add_where_column != ''">
+					and ${add_where_column}
+				</if>
+			</where>
+			group by (t.${status_column}, 
+				<if test="date_formate == 'date'">
+					to_char(t.${where_column}, 'yyyy-MM')
+				</if>
+				<if test="date_formate == 'string'">
+					<if test="date_type == 'month'">
+						t.${where_column}
+					</if>
+					<if test="date_type == 'day'">
+						to_char(to_date(t.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM')					
+					</if>
+				</if>
+				)
+			order by t.${status_column}
+			)
+			pivot(max(model_num) for month_str in 
+				('${firstMonth}' as first_month, '${secondMonth}' as second_month, '${thirdMonth}' as third_month))) q1
+		<if test="details_table_name != null and details_table_name != ''">
+			left join (
+				select * from (
+					select t1.${status_column} as model_status, 
+					<if test="date_formate == 'date'">
+						to_char(t1.${where_column}, 'yyyy-MM') as month_str,
+					</if>
+					<if test="date_formate == 'string'">
+						<if test="date_type == 'month'">
+							t1.${where_column} as month_str,
+						</if>
+						<if test="date_type == 'day'">
+							to_char(to_date(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') as month_str,
+						</if>
+					</if>
+					count(1) as model_num
+					from ${main_table_name} t1 left join ${details_table_name} t2 on ${on_condition}
+					<where>
+						<if test="date_formate == 'date'">
+							and (to_char(t1.${where_column}, 'yyyy-MM') = #{firstMonth}  
+							or to_char(t1.${where_column}, 'yyyy-MM') = #{secondMonth} 
+							or to_char(t1.${where_column}, 'yyyy-MM') = #{thirdMonth}) 
+						</if>
+						<if test="date_formate == 'string'">
+							<if test="date_type == 'month'">
+								and (t1.${where_column} = #{firstMonth}
+								or t1.${where_column} = #{secondMonth}
+								or t1.${where_column} = #{thirdMonth})
+							</if>
+							<if test="date_type == 'day'">
+								and (to_char(to_date(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') = #{firstMonth}
+								or to_char(to_date(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') = #{secondMonth}
+								or to_char(to_date(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM') = #{thirdMonth})
+							</if>
+						</if>
+						<if test="add_detials_where_column != null and add_detials_where_column != ''">
+							and ${add_detials_where_column}
+						</if>
+					</where>
+					group by (t1.${status_column}, 
+						<if test="date_formate == 'date'">
+							to_char(t1.${where_column}, 'yyyy-MM')
+						</if>
+						<if test="date_formate == 'string'">
+							<if test="date_type == 'month'">
+								t1.${where_column}
+							</if>
+							<if test="date_type == 'day'">
+								to_char(to_date(t1.${where_column}, 'yyyy-MM-dd'), 'yyyy-MM')
+							</if>
+						</if>
+						)
+					order by t1.${status_column}
+				)
+				pivot(max(model_num) for month_str in 
+					('${firstMonth}' as d_first_month, '${secondMonth}' as d_second_month, '${thirdMonth}' as d_third_month))) q2
+					on q1.model_status = q2.model_status
+		</if>	
+	</select>
+	
+	<resultMap type="com.faujor.entity.rm.LoginReport" id="loginMap">
+		<result column="month_date" property="monthDate" />
+		<result column="login_count" property="loginCount" />
+		<result column="operate_count" property="operateCount" />
+	</resultMap>
+	
+	<select id="findLoginReportRatio" parameterType="com.faujor.entity.rm.SqlParams" resultMap="loginMap">
+		SELECT q1.month_date, q1.login_count, q2.operate_count FROM 
+			(SELECT TO_CHAR(t.CREATE_TIME, 'yyyy-MM') AS month_date, COUNT(1) AS login_count 
+				FROM SYS_LOG t WHERE t.OPERATION = '登录系统' 
+				and (TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{firstMonth}
+					or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{secondMonth}
+					or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{thirdMonth}
+					or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{fourMonth})
+				GROUP BY TO_CHAR(t.CREATE_TIME, 'yyyy-MM')) q1 
+		LEFT JOIN
+			(SELECT TO_CHAR(t.CREATE_TIME, 'yyyy-MM') AS month_date, COUNT(1) AS operate_count 
+				FROM SYS_LOG t WHERE t.OPERATION <![CDATA[<>]]> '登录系统'
+				and (TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{firstMonth}
+					or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{secondMonth}
+					or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{thirdMonth}
+					or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{fourMonth})
+				GROUP BY TO_CHAR(t.CREATE_TIME, 'yyyy-MM')) q2 
+		ON q1.month_date = q2.month_date
+		order by q1.month_date asc
+	</select>
+	
+	<resultMap type="com.faujor.entity.rm.LoginFrequence" id="frequenceMap">
+		<result column="month_date" property="month_date" />
+		<result column="inner_login_count" property="inner_login_count" />
+		<result column="inner_operate_count" property="inner_operate_count" />
+		<result column="outer_login_count" property="outer_login_count" />
+		<result column="outer_operate_count" property="outer_operate_count" />
+		<result column="user_name" property="user_name" />
+		<result column="user_count" property="user_count" />
+	</resultMap>
+	<select id="findLoginOperateFrequence" parameterType="com.faujor.entity.rm.SqlParams" resultMap="frequenceMap">
+		SELECT * FROM(
+			SELECT CONCAT( t.user_type, CONCAT('_', t.operation)) AS u_t_p, TO_CHAR(t.CREATE_TIME, 'yyyy-MM') AS month_date, 
+				COUNT(1) AS count_num 
+			FROM v_login_operate t 
+			<where>
+				<if test="firstMonth != null and secondMonth != null and thirdMonth != null and fourMonth != null and fiveMonth != null and sixMonth != null">
+					and (TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{firstMonth}
+						or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{secondMonth}
+						or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{thirdMonth}
+						or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{fourMonth}
+						or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{fiveMonth}
+						or TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{sixMonth})
+				</if>
+				
+				<if test="paramsList != null">
+					and t.user_id not in 
+					<foreach collection="paramsList" index="index" item="item" open="(" separator="," close=")">
+						#{item.userId}
+					</foreach>
+				</if>
+			</where>
+			GROUP BY t.user_type, t.operation, TO_CHAR(t.CREATE_TIME, 'yyyy-MM')) 
+		PIVOT(MAX(count_num) FOR u_t_p IN
+			('user_operate' AS inner_operate_count, 'user_login' AS inner_login_count, 
+			'supplier_operate' AS outer_operate_count, 'supplier_login' AS outer_login_count))
+		ORDER BY month_date ASC
+	</select>
+	
+	<select id="findTopTenInfo" parameterType="com.faujor.entity.rm.SqlParams" resultMap="frequenceMap">
+		SELECT * FROM(
+			SELECT t.NAME AS user_name, COUNT(1) AS user_count 
+			FROM v_login_operate t 
+			<where>
+				<if test="paramsList != null">
+					and t.user_id not in 
+					<foreach collection="paramsList" index="index" item="item" open="(" separator="," close=")">
+						#{item.userId}
+					</foreach>
+				</if>
+				<if test="date_str != null and date_str != ''">
+					and TO_CHAR(t.CREATE_TIME, 'yyyy-MM') = #{date_str}
+				</if>
+				<if test="user_type != null and user_type != ''">
+					and t.user_type = #{user_type}
+				</if>
+				<if test="operate_type != null and operate_type != ''">
+					and t.operation = #{operate_type}
+				</if>
+			</where>
+			GROUP BY t.NAME 
+			ORDER BY COUNT(1) ${sort_type}
+			)
+		<where>
+			and ROWNUM <![CDATA[<]]> 11
+		</where>
+	</select>
+	
+	
+	<resultMap type="com.faujor.entity.rm.PurchaseOrderVO" id="poMap">
+		<result column="month_date" property="monthDate" />
+		<result column="po_count" property="poCount" />
+		<result column="po_item_count" property="poItemCount" />
+	</resultMap>
+	<select id="findPODataByMonth" parameterType="String" resultMap="poMap">
+		SELECT q1.month_date, q1.po_count, q2.po_item_count 
+		FROM(SELECT TO_CHAR(t.SUBE_DATE, 'yyyy-MM') AS month_date, COUNT(1) AS po_count 
+			FROM BAM_ORDE_RELE t 
+			<where>
+				AND t.ORTYPE = 'NB' AND t.PURCH_ORG = '2000' 
+				AND TO_CHAR(t.SUBE_DATE, 'yyyy-MM-dd') <![CDATA[>=]]> '2018-05-01'
+				AND TO_CHAR(t.SUBE_DATE, 'yyyy-MM') = #{dateStr}
+			</where>
+			GROUP BY TO_CHAR(t.SUBE_DATE, 'yyyy-MM')) q1 
+		LEFT JOIN(SELECT TO_CHAR(t1.SUBE_DATE, 'yyyy-MM') AS month_date, COUNT(1) AS po_item_count 
+				FROM BAM_ORDE_RELE t1 LEFT JOIN BAM_ORDE_MATE t2 ON t2.MAIN_ID = t1.CONT_ORDE_NUMB 
+				<where>
+					AND t1.ORTYPE = 'NB' AND t1.PURCH_ORG = '2000' 
+					AND TO_CHAR(t1.SUBE_DATE, 'yyyy-MM-dd') <![CDATA[>=]]> '2018-05-01'
+					AND TO_CHAR(t1.SUBE_DATE, 'yyyy-MM') = #{dateStr}
+				</where>
+				GROUP BY TO_CHAR(t1.SUBE_DATE, 'yyyy-MM')) q2 
+		ON q1.month_date = q2.month_date
+	</select>
+	
+	<resultMap type="com.faujor.entity.rm.ProductMarketVO" id="pmMap">
+		<result column="pad_count" property="pad_count" />
+		<result column="sip_count" property="sip_count" />
+		<result column="pdr_count" property="pdr_count" />
+	</resultMap>
+	<select id="findProductMarkerByMonth" parameterType="String" resultMap="pmMap">
+		SELECT q1.pad_count, q2.sip_count, q3.pdr_count FROM(
+			SELECT t1.PLAN_MONTH AS month_date, COUNT(1) AS pad_count 
+			FROM PS_PAD_PLAN t1 LEFT JOIN PS_PAD_PLAN_DETAIL t2 ON t2.MAIN_ID = t1.ID 
+			WHERE t1.PLAN_MONTH = #{dateStr}
+			GROUP BY t1.PLAN_MONTH) q1 
+		FULL JOIN(
+			SELECT TO_CHAR(t1.PLAN_MONTH, 'yyyy-MM') AS month_date, COUNT(1) AS sip_count 
+			FROM PS_SUPP_INVEN_PLAN t1 LEFT JOIN PS_SUPP_PROD t2 ON t2.MAIN_ID = t1.ID 
+			WHERE TO_CHAR(t1.PLAN_MONTH, 'yyyy-MM') = #{dateStr}
+			GROUP BY TO_CHAR(t1.PLAN_MONTH, 'yyyy-MM')) q2 
+		ON q1.month_date = q2.month_date FULL JOIN(
+			SELECT TO_CHAR(t1.PRODUCE_DATE, 'yyyy-MM') AS month_date, COUNT(1) AS pdr_count 
+			FROM PS_PDR t1 LEFT JOIN PS_PDR_DETAIL t2 ON t1.ID = t2.MAIN_ID 
+			WHERE TO_CHAR(t1.PRODUCE_DATE, 'yyyy-MM') = #{dateStr}
+			GROUP BY TO_CHAR(t1.PRODUCE_DATE, 'yyyy-MM')) q3 
+		ON (q1.month_date = q3.month_date or q2.month_date = q3.month_date)
+	</select>
+	
+	
+	<resultMap type="com.faujor.entity.rm.LoginOperateVO" id="loginOperateMap">
+		<result column="user_id" property="userId" />
+		<result column="real_name" property="realName" />
+		<result column="username" property="username" />
+		<result column="user_type" property="userType" />
+		<result column="user_dept" property="userDept" />
+		<result column="date_str" property="dateStr" />
+		<result column="operate_num" property="operateNum" />
+		<result column="login_num" property="loginNum" />
+	</resultMap>
+	<select id="findLoginList" parameterType="map" resultMap="loginOperateMap">
+		SELECT a1.user_id, MAX(a1.username) AS username, MAX(a1.user_type) AS user_type, 
+			MAX(a1.real_name) AS real_name, SUM(a1.operate_count) AS operate_num, SUM(a1.login_count) AS login_num 
+		FROM(
+			SELECT * FROM(
+				SELECT t.user_id, MAX(t.USER_NAME) AS username, MAX(t.USER_TYPE) AS USER_TYPE, MAX(t. NAME) AS real_name, 
+						t.OPERATION, TO_CHAR(t.CREATE_TIME, 'yyyy-MM-dd') AS date_str, COUNT(1) AS c_num 
+				FROM V_LOGIN_OPERATE t 
+				<where>
+					<if test="startDay != null and startDay != ''">
+						and to_char(t.CREATE_TIME, 'yyyy-MM-dd') <![CDATA[>=]]> #{startDay}
+					</if>
+					<if test="endDay != null and endDay != ''">
+						and to_char(t.CREATE_TIME, 'yyyy-MM-dd') <![CDATA[<=]]> #{endDay}
+					</if>
+					<if test="userIds != null">
+						and t.user_id in 
+						<foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
+							#{item.userId}
+						</foreach>
+					</if>
+				</where>
+				GROUP BY t.user_id, TO_CHAR(t.CREATE_TIME, 'yyyy-MM-dd'), t.OPERATION) 
+			PIVOT(MAX(c_num) FOR OPERATION IN( 'operate' AS operate_count, 'login' AS login_count))
+			) a1 
+			GROUP BY a1.user_id
+			ORDER BY max(a1.user_type) desc, a1.user_id asc
+	</select>
+	
+	<select id="findLoginDetails" parameterType="map" resultMap="loginOperateMap">
+		SELECT * FROM(
+			SELECT t.user_id, MAX(t.USER_NAME) AS username, MAX(t.USER_TYPE) AS USER_TYPE, MAX(t.NAME) AS real_name, 
+				t.OPERATION, TO_CHAR(t.CREATE_TIME, 'yyyy-MM-dd') AS date_str, COUNT(1) AS c_num 
+			FROM V_LOGIN_OPERATE t
+			<where>
+				<if test="username != null and username != ''">
+					and t.user_name = #{username}
+				</if>
+				<if test="startDay != null and startDay != ''">
+					and to_char(t.CREATE_TIME, 'yyyy-MM-dd') <![CDATA[>=]]> #{startDay}
+				</if>
+				<if test="endDay != null and endDay != ''">
+					and to_char(t.CREATE_TIME, 'yyyy-MM-dd') <![CDATA[<=]]> #{endDay}
+				</if>
+			</where>
+			GROUP BY t.user_id, TO_CHAR(t.CREATE_TIME, 'yyyy-MM-dd'), t.OPERATION) 
+		PIVOT(MAX(c_num) FOR OPERATION IN('operate' AS operate_num, 'login' AS login_num)) 
+		ORDER BY DATE_STR DESC
+	</select>
+</mapper>

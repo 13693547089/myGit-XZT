@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.sync.SyncMasterMapper">
+	
+	<insert id="saveCxjhMatList" parameterType="java.util.Map">
+		insert into T_ORA_CXJH (year,month,matnr,zabc,zxspj,zsykc,
+  		zsjsc,zbyxl,crttime,ZYJRK,ZYGXL) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.year},
+	        #{item.month},
+	        #{item.matnr},
+	        #{item.zabc},
+	        #{item.zxspj},
+	        #{item.zsykc},
+	        #{item.zsjsc},
+	        #{item.zbyxl},
+	        #{crtTime},
+	        #{item.zyjrk},
+	        #{item.zygxl}
+   		FROM dual 
+    	</foreach>
+    	) A 
+	</insert>
+	
+	<select id="getCxjhMatCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(1) from T_ORA_CXJH where 1=1 
+		<if test="year!=null and year!=''">
+			and YEAR = #{year}
+		</if>
+		<if test="month!=null and month!=''">
+			and MONTH = #{month}
+		</if>
+	</select>
+	
+	<delete id="delCxjhMatByCondition" parameterType="java.util.Map">
+		delete from T_ORA_CXJH where 1=1 
+		<if test="year!=null and year!=''">
+			and YEAR = #{year}
+		</if>
+		<if test="month!=null and month!=''">
+			and MONTH = #{month}
+		</if>
+	</delete>
+	
+</mapper>

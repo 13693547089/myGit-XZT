@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head >
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>&nbsp; </title>
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/larryMS/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+</head>
+<style>
+body{color:black !important;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;}
+.comName{text-align:center;}
+.bills{text-align:center;}
+input{padding-left:0px !important;}
+.layui-input-block{margin-left:82px !important;}
+.layui-table-cell{padding:0px !important;font-size:10px;}
+.layui-table-box, .layui-table-view{width:800px;}
+.inputHeight{height:19px;font-size:10px !important;}
+.padMarg{padding:0px;margin:0px;font-size:10px !important;}
+.layui-table-view .layui-table td, .layui-table-view .layui-table th{padding:0px 0px !important;}
+.layui-table-cell{word-wrap: break-word;height: auto;line-height: 23px; white-space: normal;}
+.blueHollow {
+  background: #fff;
+  border: 1px solid #458ffc;
+  color: #458ffc; }
+
+.blueHollow:hover {
+  background: #458ffc; }
+ .layui-table-cell{font-family: inherit;font-size: inherit;font-style: inherit;color:black !important;}
+</style>
+<body>
+		
+	 <div class='BttonDiv'>
+	<button class="layui-btn layui-btn-xs blueHollow" id="affirmBut">确定</button>
+	<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>
+		
+	<br/>
+
+
+	 <form class="layui-form" action="" method="post" id="deliveryForm" enctype="multipart/form-data">
+	  <input type="text" name="receId" id="receId" style="display: none;" th:value="${rece.receId}"/>
+	  <input type="text" name="suppId" id="suppId" style="display: none;"/>
+	  <input type="text" name="truckNum" id="truckNum" style="display: none;" />
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item" style='height:32px;'>
+			    <label class="layui-form-label" style="width: 75px;padding: 0px;padding-top: 8px;">收货单号:</label>
+			    <div class="layui-input-block" style='height:100%;'>
+			      <input type="text" name="receCode" style="border: 0px;" readonly="readonly"   class="layui-input" th:value="${rece.receCode}" style="height:100%;border:none;">
+			    </div>
+			  </div>
+		  </div> 
+	  </div>
+	  <div class="layui-row" style='height:86px;width:700px'>
+		  	  <div style='width:90%;float:left;'>
+		  	  		<div class="layui-row">
+		  	  			<div class="layui-col-md12 comName">
+						  <span th:text="${rece.suppName}" ></span>
+						 </div> 
+					</div>
+					<div class="layui-row" style="margin-top: 5px;">
+		  	  			<div class="layui-col-md12 bills" >
+						    <h2>收货单</h2>
+						</div> 
+					</div>
+			  </div>
+		  	  <div class="layui-col-md2 " style="height:80px;width:10%;float:left;">
+				  <img th:src='${qrurl == null ? "/img/wenhao.jpg" : qrurl}' style="height:100%;width:86px;" id='Img'>
+			  </div>
+		  </div>
+
+	  <div style='width:800px'>
+	  	  <div style='width:30%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 75px;padding-right:0px;">收货单位:</label>
+			    <div class="layui-input-block inputHeight" style='width:130px;'>
+			      <input type="text" name="receUnit" style="border: 0px;" id="receUnit"   readonly="readonly"   class="layui-input disa inputHeight" style='height:18px!important;border:none;'th:value="${rece.receUnit}">
+			    </div>
+			  </div>
+		  </div>  
+	  	   <div style='width:30%;float:left;visibility:hidden;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 47px;padding-right:0px;">地址:</label>
+			    <div class="layui-input-block inputHeight" style='width:181px'>
+			      <input type="text" name="receAddr" style="border: 0px;" id="receAddr"  readonly="readonly"   class="layui-input disa inputHeight" >
+			    </div>
+			  </div>
+		  </div>
+		  
+		  <div style='width:21%;float:left;margin-left:19%;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg"style="width: 75px;padding-right:0px;">收货日期:</label>
+			    <div class="layui-input-block inputHeight" style='width:130px;'>
+			      <input type="date" name="receDate" style="border: 0px;width:150px;" id="receDate" readonly="readonly"     class="layui-input inputHeight" th:value="${rece.receDate == null ? '' : #dates.format(rece.receDate,'yyyy-MM-dd')}">
+			    </div>
+			  </div>
+		  </div>  
+		  <div style='clear:both;'></div>
+	  </div>
+	<div class=" panel-default " ><!-- page-break-before:always -->
+		<div class=" btn-padding">
+			<table id="receMateTable" lay-filter="receMateTableEvent" style='width:800px;margin-left:1%;'></table>
+		</div>
+	</div>
+	  <div style='width:800px'>
+	  	  <div  style='width:20%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 46px;text-align:left;padding-right: 0px;">数量/箱</label>
+			    <div class="layui-input-block inputHeight" style='margin-left: 48px !important;'>
+			      <input type="text" name="receNumber" style="border: 0px;"style="border: 0px;" id="receNumber" readonly="readonly"  class="layui-input inputHeight" th:value="${rece.receNumber}">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div  style='width:20%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 78px;white-space:pre;">总体积/立方</label>
+			    <div class="layui-input-block inputHeight" style='margin-left:83px !important;'>
+			      <input type="text" name="receAmount" style="border: 0px;" id="receAmount" readonly="readonly"  class="layui-input inputHeight" th:value="${rece.receAmount}">
+			    </div>
+			  </div>
+		  </div> 
+		   <div style='width:20%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 53px;">制单人:</label>
+			    <div class="layui-input-block inputHeight">
+			      <input type="text" name="contact" style="border: 0px;" id="contact"  readonly="readonly"   class="layui-input disa inputHeight" >
+			    </div>
+			  </div>
+		  </div>  
+		  <div  style='width:20%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 65px;">货物签收:</label>
+			    <div class="layui-input-block inputHeight">
+			      <input type="text" name="phone" style="border: 0px;" id="phone" readonly="readonly"  class="layui-input disa inputHeight" >
+			    </div>
+			  </div>
+		  </div>
+		  <div style='width:20%;float:left;'>
+			   <div class="layui-form-item inputHeight">
+    		      <label class="layui-form-label padMarg" style="width: 65px;">获取承运:</label>
+    			    <div class="layui-input-block inputHeight">
+				     <input type="text" name="affirmDate" style="border: 0px;" id="affirmDate" readonly="readonly"   class="layui-input inputHeight" >
+    			  </div>
+ 			   </div>
+		  </div>  
+	  </div>
+	</form>
+
+
+<div th:include="include::layuiJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/receive/receivePrint.js}"></script>	
+
+</body>
+</html>
+		 

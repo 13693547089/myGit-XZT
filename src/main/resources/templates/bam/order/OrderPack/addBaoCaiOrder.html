@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+	<title>添加物料版本</title>
+	<!-- <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+    <link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+
+</head>
+<style type="text/css">
+	.red{color:red;}
+	.center{text-align: center;}
+	input{height:30px;}
+	.layui-table, .layui-table-view{width:100% !important;margin-left:1%;}
+	td:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+	th:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+	.margin-top{margin-top:10px;}
+
+</style>
+<body >
+<form class="layui-form" action="" method="post" id="paperForm">
+	<input type="hidden" name="asseCodeNameList" id="asseCodeNameList" th:value="${asseCodeNameList}"/>
+	<input type="hidden" name="type" id="type" th:value="${type}"/>
+	<div class="demoTable">
+		<div class="layui-row" style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md10">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i class="red xinghao" >*</i>半成品</label>
+					<div class="layui-input-block">
+						<!--<input type="text" name="mateCode" id="mateCode" class="layui-input disa must" >-->
+						<select name="mateCode" lay-search="" lay-filter="mateCode"  id="mateCode">
+							<option value=""></option>
+							<!--<option th:each="mateNumbList:${mateNumbList}" th:value="${mateNumbList}" th:text="${mateNumbList}"></option>-->
+							<option th:each="mateNumbNameList:${mateNumbNameList}" th:value="${mateNumbNameList?.mateNumb}"
+									th:text="${mateNumbNameList?.mateNumb} + ' ' + ${mateNumbNameList?.mateName}"></option>
+						</select>
+						<input name="prodName" id="prodName" type="hidden">
+					</div>
+				</div>
+			</div>
+			<!--<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">品名</label>
+					<div class="layui-input-block">
+						<input type="text" name="prodName" id="prodName" class="layui-input" readonly="readonly">
+					</div>
+				</div>
+			</div>-->
+		</div>
+		<div class="layui-row" style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md10">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i class="red xinghao">*</i>包材</label>
+					<div class="layui-input-block">
+						<!--<input type="text" name="baoCaiName" id="baoCaiName"     class="layui-input disa must" >-->
+						<select name="baoCaiName" lay-search="" lay-filter="baoCaiName" id="baoCaiName"
+                                class="layui-input disa must" >
+							<option id="" value=""></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row" style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md10">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i class="red xinghao">*</i>包材供应商</label>
+					<div class="layui-input-block">
+						<input type="text" name="baocaiSupp" id="baocaiSupp"   class="layui-input disa must" >
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row" style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md5">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i class="red xinghao">*</i>包材数量</label>
+					<div class="layui-input-block">
+						<input type="text" name="baoCaiNumb" id="baoCaiNumb"   class="layui-input disa must" >
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md5">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i class="red xinghao">*</i>包材订单编码</label>
+					<div class="layui-input-block">
+						<input type="text" name="orderCode" id="orderCode"     class="layui-input disa must">
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--<div class="layui-row" style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i class="red xinghao">*</i>包材名称</label>
+					<div class="layui-input-block">
+						&lt;!&ndash;<input type="text" name="baoCaiName" id="baoCaiName"     class="layui-input disa must" >&ndash;&gt;
+						<select name="baoCaiName" lay-search="" lay-filter="baoCaiName" id="baoCaiName" class="layui-input disa must">
+							<option id="" value=""></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>-->
+		<div class="layui-row" style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md5">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">下单日期</label>
+					<div class="layui-input-block">
+						<input type="text" name="orderDate" id="orderDate"  placeholder="yyyy-MM-dd"   class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">交货日期</label>
+					<div class="layui-input-inline" style='display:flex;'>
+						<input type="text" name="deliDate" id="deliDate"   placeholder="yyyy-MM-dd"  class="layui-input" >
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row"style='margin-top:10px;margin-right: 10px;'>
+			<div class="layui-col-md10">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">订单附件</label>
+					<div class="layui-input-block">
+						<input type="file" name="file" id="file" style="width: 50%" class="layui-input" >
+                        <span id="fileName" style="height:38px;line-height: 30px;font-size:14px;cursor: pointer;margin-left: 9px;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript"
+		src="/larryMS/js/appjs/bam/order/orderPack/addBaoCaiOrder.js"></script>
+</body>
+</html>

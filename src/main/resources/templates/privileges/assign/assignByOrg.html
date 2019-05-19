@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader"> </head>
+<body>
+	<div class="layui-fluid" style="padding-top: 10px">
+		<div class="layui-row">
+			<div class="layui-col-sm3">
+				<div style="width: 80%;">
+					<input id="orgName" name="orgName" class="layui-input"
+						placeholder="组织名称和编码搜索" type="text">
+				</div>
+			</div>
+			<div class="layui-col-sm9">
+				<div class="layui-btn-group">
+					<button class="layui-btn layui-btn-sm" id="addBtn">添加</button>
+					<button class="layui-btn layui-btn-sm" id="delBtn">删除</button>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-sm3">
+				<div id="orgTree"></div>
+			</div>
+			<div class="layui-col-sm9 tableCont">
+				<table class="layui-hide" id="assignTable">
+				</table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::layuiJS"></div>
+	<script th:src="@{/larryMS/js/appjs/privileges/assign/assignByOrg.js}"></script>
+</body>
+</html>

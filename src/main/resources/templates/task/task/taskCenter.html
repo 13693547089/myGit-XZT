@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8">
+<title>layui</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/style.css" media="all">
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/cssCommon/Common.css}"> -->
+</head>
+<style>
+div .layui-input-block {
+	margin-left: 120px;
+}
+</style>
+<body class="fau-body">
+	<form class="layui-form">
+		<div style="padding-top: 10px">
+			<div class="layui-row">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">提交人</label>
+						<div class="layui-input-block">
+							<input type="text" id="creatorName" name="creatorName"
+								placeholder="提交人编码/名称" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-block">
+							<select name="status" lay-search="" lay-filter="status">
+								<option value="">请选择...</option>
+								<option th:each="status:${statusList}" th:value="${status}"
+									th:text="${status}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<label class="layui-form-label">提交日期</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" id="submitDateStr"
+							placeholder=" ~ ">
+					</div>
+				</div>
+				<div class="layui-col-md3" style="padding: 8px;">
+					<button class="layui-btn layui-btn-xs yellowSolid" id="serachInfo">搜索</button>
+					<button class="layui-btn layui-btn-xs yellowHollow" id="reset">重置</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<button class="layui-btn layui-btn-xs yellowHollow" id="backBtn"
+		style="float: right; margin-top: -30px; z-index: 9; position: relative;">返回</button>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<input id="centerType" th:value="${centerType}" class="layui-hide" />
+		<table class="layui-table" lay-filter="taskTable" id="taskTable">
+		</table>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+			<a class="layui-btn layui-btn-xs blueInline" lay-event="deal" >处理</a>
+  			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="detail" >查看</a>
+		</script>
+		<script type="text/html" id="operateBar1">
+  			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="detail" >查看</a>
+		</script>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript">
+		layui.use([ "form", "table", "laydate" ], function() {
+			var form = layui.form;
+			var table = layui.table;
+			var laydate = layui.laydate;
+			var $ = layui.$;
+			// 渲染日期组件
+			laydate.render({
+				elem : '#submitDateStr',
+				format : 'yyyy-MM-dd',
+				range : '~'
+			});
+
+			var centerType = $("#centerType").val();
+			var bar = "#operateBar1";
+			if (centerType == "undo")
+				bar = '#operateBar';
+			var tableIns = table.render({
+				elem : "#taskTable",
+				url : "/task/taskCenterList",
+				where : {
+					centerType : centerType
+				},
+				page : true,
+				cols : [ [
+						{
+							field : 'taskName',
+							title : '流程名称',
+							align : 'left'
+						},
+						{
+							field : 'processName',
+							title : '任务类型',
+							align : 'left'
+						},
+						{
+							field : 'status',
+							title : '状态',
+							align : 'left'
+						},
+						{
+							field : 'creatorName',
+							title : '提交人',
+							align : 'left'
+						},
+						{
+							field : 'createTime',
+							title : '提交时间',
+							align : 'left',
+							templet : function(d) {
+								return formatTime(d.createTime,
+										'yyyy-MM-dd hh:mm:ss');
+							}
+						},
+						{
+							field : 'completeName',
+							title : '执行人',
+							align : 'left'
+						},
+						{
+							field : 'completeTime',
+							title : '执行时间',
+							align : 'left',
+							templet : function(d) {
+								return formatTime(d.completeTime,
+										'yyyy-MM-dd hh:mm:ss');
+							}
+						}, {
+							fixed : 'right',
+							title : '操作',
+							width : 100,
+							align : 'center',
+							toolbar : bar
+						} ] ]
+			});
+
+			// 监听操作事件
+			table.on('tool(taskTable)', function(obj) {
+				debugger;
+				var layEvent = obj.event;
+				var data = obj.data;
+				var url = data.actionUrl;
+				var taskName = encodeURIComponent(obj.data.taskName);
+				if (layEvent == "deal") {
+					if (url != null) {
+						window.location.href = url + "?sdata1="
+								+ obj.data.sdata1 + "&taskName=" + taskName
+								+ "&processCode=" + obj.data.processCode
+								+ "&pagePattern=write";
+					} else {
+						layer.msg("数据错误！");
+					}
+				} else if (layEvent == "detail") {
+					if (url != null) {
+						window.location.href = url + "?sdata1="
+								+ obj.data.sdata1 + "&taskName=" + taskName
+								+ "&processCode=" + obj.data.processCode
+								+ "&pagePattern=read";
+					} else {
+						layer.msg("数据错误！");
+					}
+				}
+			});
+			// 查询
+			$("#serachInfo").on('click', function() {
+				var creatorName = $("#creatorName").val();
+				var status = $("#status").val();
+				var submitDateStr = $("#submitDateStr").val();
+				tableIns.reload({
+					where : { //设定异步数据接口的额外参数，任意设
+						centerType : centerType,
+						creatorName : creatorName,
+						status : status,
+						submitDateStr : submitDateStr
+					},
+					page : {
+						curr : 1
+					//重新从第 1 页开始
+					}
+				});
+			});
+			// 重置
+			$("#reset").on('click', function() {
+				$("#creatorName").val("");
+				$("#status").val("");
+				$("#submitDateStr").val("");
+				tableIns.reload({
+					where : { //设定异步数据接口的额外参数，任意设
+						centerType : centerType,
+						creatorName : "",
+						status : "",
+						submitDateStr : ""
+					},
+					page : {
+						curr : 1
+					//重新从第 1 页开始
+					}
+				});
+			});
+
+			// 返回
+			$("#backBtn").on('click', function() {
+				window.history.back(-1);
+			});
+		});
+	</script>
+</body>
+</html>

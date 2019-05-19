@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader"></head>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+td:nth-child(1) {
+	border-right: none !important;
+}
+
+th:nth-child(1) {
+	border-right: none !important;
+}
+
+.layui-table-cell {
+	padding: 0px !important;
+}
+
+html,body {
+	overflow: auto !important;
+}
+
+.appoStatusSpan {
+	margin-right: -1%;
+	margin-left: 3%;
+}
+
+.uncheck {
+	margin-left: 20px
+}
+
+.checked {
+	margin-left: 20px
+}
+
+.status {
+	cursor: pointer;
+}
+</style>
+<body>
+	<form class="layui-form" action="" method="post">
+		<div class="demoTable">
+			<!--日期状态选择框 -->
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label"> <i
+							class="red xinghao">*</i>采购订单号
+						</label>
+						<div class="layui-input-block">
+							<input type="text" id="orderNo" name="orderNo"
+								placeholder="采购订单号" class="layui-input must">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label"> <i class="red xinghao">*</i>物料编码
+						</label>
+						<div class="layui-input-inline" >
+							<input type="text" id="mateCode" name="mateCode"
+								placeholder="物料编码" class="layui-input must">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label" > <i
+							class="red xinghao">*</i>物料未交数量
+						</label>
+						<div class="layui-input-block">
+							<input type="text" id="unpaNumber" name="unpaNumber"
+								placeholder="未交数量" class="layui-input must">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;"><i
+							class="red xinghao">*</i>供应商子范围编码</label>
+						<div class="layui-input-block">
+							<input type="text" id="suppRange" name="suppRange"
+								placeholder="供应商子范围编码" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">订单物料可用量</label>
+						<div class="layui-input-block">
+							<input type="text" id="calculNumber" name="calculNumber"
+								readonly="readonly" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3" style="margin-left: 30px;">
+					<button class="layui-btn layui-btn-xs yellowSolid" type="button"
+						id="serachBut" style="margin-top: 5px;">查询</button>
+					<button class="layui-btn layui-btn-xs yellowHollow" type="reset"
+						id="resetBut" style="margin-top: 5px;">重置</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="occupyTable" lay-filter="occupyTable">
+		</table>
+	</div>
+
+
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/bam/count/countCalculNum.js}"></script>
+
+</body>
+</html>

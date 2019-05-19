@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>财务稽核确认详情</title>
+<!-- <meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style>
+ #ExhiImg{   
+ display:none;
+  position: absolute;
+    top: 31%;
+    width: 60%;
+    height: auto;
+    border: 1px solid #ccc;
+    background: white;
+    margin-left: 20%;
+    padding: 5px;
+    }
+</style>
+<body class='fau-body'>
+	<div>
+		<button class="layui-btn layui-btn-xs displayBtn blueHollow" id="confirmBtn">确认</button>
+		<button class="layui-btn layui-btn-xs displayBtn blueHollow" id="rejectBtn">退回</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+	</div>
+	<input id="approve" th:value="${approve}" class="layui-hide" />
+	<form class="layui-form" action="" id="signForm">
+		<input type="text" id="id" name="id" th:value="${ao.id}"
+			class="layui-hide" /><input type="text" id="type" th:value="${type}"
+			class="layui-hide" />
+		<div class="layui-row" style="margin-top: 15px;">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">稽核单号</label>
+					<div class="layui-input-inline">
+						<input type="text" id="auditCode" name="auditCode"
+							th:value="${ao.auditCode}" class="layui-input" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">状态</label>
+					<div class="layui-input-inline">
+						<input type="text" name="auditStatus" id="auditStatus"
+							th:value="${ao.auditStatus}" class="layui-input" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">创建日期</label>
+					<div class="layui-input-inline">
+						<input type="text" name="createTime" id="createTime"
+							th:value="${ao.createTime== null} ? '':${#dates.format(ao.createTime, 'yyyy-MM-dd')} "
+							class="layui-input" readonly>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">供应商</label>
+					<div class="layui-input-inline">
+						<input type="text" th:value="${ao.suppName}" class="layui-input"
+							readonly />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table id="mateTable" lay-filter="mateTable"></table>
+	</div>
+	<button id="uploadBtn" class="layui-hide"></button>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table id="mouldTable" lay-filter="mouldTable"></table>
+	</div>
+
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table id="approveTable" lay-filter="approveTable"></table>
+	</div>
+	<div id='ExhiImg'>
+		<div><button type='button' class='Close layui-btn layui-btn-xs blueHollow'>关闭</button></div>
+	</div>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/fam/audit/confirmDetails.js}"></script>
+</body>
+</html>

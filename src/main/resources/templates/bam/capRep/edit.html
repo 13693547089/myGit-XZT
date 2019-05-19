@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>产能月报</title>
+</head>
+<style type="text/css">
+#suppDiv {
+	width: 78% ! important;
+}
+.downLoadSpan{cursor: pointer;}
+.layui-form-label {
+	width: 100px;
+}
+
+.main-body {
+	margin: 10px 15px;
+}
+
+.marginLeft5 {
+	margin-left: 5%;
+}
+
+.margin-top20 {
+	margin-top: 10px;
+}
+
+.blueHollow {
+	border: 1px #458ffc solid;
+	background: white;
+	color: #458ffc;
+}
+
+.blueHollow:hover {
+	background: #458ffc;
+	color: #fff;
+}
+
+.centerBtn {
+	margin-top: 2%;
+	margin-left: 4%;
+}
+
+.layui-btn-xs {
+	height: 22px;
+	line-height: 22px;
+	font-size: 12px;
+	padding: 0px 5px
+}
+
+.bold {
+	font-weight: bold
+}
+
+.red {
+	color: red
+}
+
+.green {
+	color: green
+}
+.panel-body{padding:10px !important;} 
+</style>
+<body>
+	<div class="layui-row main-body ">
+		<div class="layui-row">
+			<div class="layui-col-md6 ">
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn" id="submitBtn">提交</button>
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn" id="saveBtn">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow " th:if="${capRep.status=='已提交' && type=='3' && userType!='supplier'}" sec:authorize="hasRole('ROLE_CAP_RETURN')" id="refuseBtn">退回</button>
+				<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+			</div>
+		</div>
+		<form class="layui-form" action="" id="capRep-form">
+			<input type="hidden" id="id" name="id" th:value="${capRep.id}" />
+			<input type="hidden" id="suppName" name="suppName" th:value="${capRep.suppName}" />
+			 <input type="hidden" id="type" name="type" th:value="${type}" />
+			<div class="layui-row margin-top20">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">计划单号</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" id="capCode"
+								name="capCode" th:value="${capRep.capCode}" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="status" id="status"
+								th:value="${capRep.status}" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item ">
+						<label class="layui-form-label">月份</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="repMonth"
+								id="repMonth"
+								th:value="${capRep.repMonth}"
+								class="layui-input must">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">包材供应商</label>
+						<div class="layui-input-inline">
+							<select name="suppNo" id="suppNo" lay-filter="suppNo" lay-verify="required" lay-search="" class="must">
+								<option value="">直接选择或搜索选择</option>
+								<option th:each="supp:${suppList}"  th:value="${supp.sapId}" th:text="${supp.sapId}+${supp.suppName}" th:selected="${supp.sapId==capRep.suppNo}">layer</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">创建日期</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="createTime"
+								id="createTime"
+								th:value="${capRep.createTime== null} ? '':${#dates.format(capRep.createTime, 'yyyy-MM-dd')}"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- 物料信息 -->
+		<div class="layui-row " >
+			<div class=" panel-default ">
+				<div class=" btn-padding sumMat">
+					<a class="btn " data-toggle="collapse" href="#collapseMate"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物料信息
+					</a>
+					<div id="collapseMate" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<div class="layui-row">
+								<div class="layui-fluid tableCont" style='padding:0px;'>
+									<table id="mate-table" class="layui-table" lay-filter="mate-table"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 订单信息 -->
+		<div class="layui-row " >
+			<div class=" panel-default ">
+				<div class=" btn-padding sumMat">
+					<a class="btn " data-toggle="collapse" href="#collapseOrder"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;订单信息
+					</a>
+					<div class="pull-right">
+						<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="addOrderBtn">添加</button>
+						<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="delOrderBtn">删除</button>
+					</div>
+					<div id="collapseOrder" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<div class="layui-row">
+								<div class="layui-fluid tableCont" style='padding:0px;'>
+									<table id="order-table" class="layui-table" lay-filter="order-table"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 库存信息 -->
+		<div class="layui-row " >
+			<div class=" panel-default ">
+				<div class=" btn-padding sumMat">
+					<a class="btn " data-toggle="collapse" href="#collapseStock"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;库存信息
+					</a>
+					<div class="pull-right">
+						<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="addStockBtn">添加</button>
+						<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="delStockBtn">删除</button>
+					</div>
+					<div id="collapseStock" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<div class="layui-row">
+								<div class="layui-fluid tableCont" style='padding:0px;'>
+									<table id="stock-table" class="layui-table" lay-filter="stock-table"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		src="/larryMS/js/appjs/task/taskCommon.js"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/capRep/capRepEdit.js}"></script>
+		<script type="text/javascript" th:src="@{/larryMS/js/jquery.serializejson.min.js}"></script>
+	
+</body>
+</html>

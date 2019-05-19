@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.QuotePriceMapper">
+	<resultMap id="quotePriceMap" type="com.faujor.entity.bam.QuotePrice">
+			<id property="id" column="id"/>
+			<result property="quoteCode" column="quote_Code"/>
+			<result property="quoteMateId" column="quote_Mate_Id"/>
+			<result property="mateNo" column="mate_No"/>
+			<result property="segmCode" column="segm_Code"/>
+			<result property="segmName" column="segm_Name"/>
+			<result property="asseCode" column="asse_Code"/>
+			<result property="asseName" column="asse_Name"/>
+			<result property="mateCode" column="mate_Code"/>
+			<result property="detailPrice" column="detail_Price"/>
+			<result property="detailsNum" column="detail_Num"/>
+			<result property="detailUnit" column="detail_Unit"/>
+			<result property="standard" column="standard"/>
+			<result property="material" column="material"/>
+			<result property="remark" column="remark"/>
+			<result property="unitPrice" column="unit_Price"/>
+			<result property="matePrice" column="mate_Price"/>
+			<result property="mateUnit" column="mate_Unit"/>
+	</resultMap>
+	<insert id="saveQuotePrice" parameterType="com.faujor.entity.bam.QuotePrice">
+		insert into bam_quote_price
+		(id,quote_Code,quote_Mate_Id,mate_No,segm_Code,
+		segm_Name,asse_Code,asse_Name,mate_Code,detail_Price,detail_Num,
+		detail_Unit,standard,material,remark,unit_Price,mate_Price,mate_Unit)
+		values
+		(#{id},#{quoteCode},#{quoteMateId},#{mateNo},#{segmCode},
+		#{segmName},#{asseCode},#{asseName},#{mateCode},#{detailPrice},#{detailsNum},
+		#{detailUnit},#{standard},#{material},#{remark},#{unitPrice},#{matePrice},#{mateUnit})
+	</insert>
+	<select id="getPricesByMateId" parameterType="Map" resultMap="quotePriceMap">
+		select * from bam_quote_price where quote_Mate_Id=#{quoteMateId} order by segm_Code,asse_Code 
+	</select>
+	<delete id="delQuotePriceByMateId" parameterType="String">
+		delete from bam_quote_price where quote_Mate_Id=#{quoteMateId} 
+	</delete>
+	<delete id="delQuoteMateByQuoteCode" parameterType="String">
+		delete from bam_quote_price where quote_Code=#{quoteCode}
+	</delete>
+	<select id="getSubTotalByQuoteMateId" parameterType="String" resultMap="quotePriceMap">
+		select t1.segm_code,nvl(sum(t1.unit_price*t1.detail_num),0) detail_price
+		  from bam_quote_price t1
+		 where t1.quote_mate_id = #{quoteMateId}
+		 group by t1.segm_code
+	</select>
+	<select id="getPricesBySegmCode" parameterType="String" resultMap="quotePriceMap">
+		select * from bam_quote_price t1 where t1.quote_mate_id = #{quoteMateId} and t1.segm_code = #{segmCode}
+	</select>
+</mapper>

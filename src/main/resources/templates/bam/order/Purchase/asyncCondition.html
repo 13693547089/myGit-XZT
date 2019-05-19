@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8">
+<title>layui</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/style.css" media="all">
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/cssCommon/Common.css}"> -->
+</head>
+<body style="padding-top: 10px">
+	<form class="layui-form" action="" id="signForm">
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">采购订单号：</label>
+				<div class="layui-input-inline">
+					<input type="text" id="orderNo" name="orderNo" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">日期：</label>
+				<div class="layui-input-inline">
+					<input type="date" name="asyncDate" id="asyncDate"
+						class="layui-input">
+				</div>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript">
+		layui.use([ "form", "laydate" ], function() {
+			var $ = layui.$;
+			var form = layui.form;
+			var laydate = layui.laydate;
+
+			window.getData = function() {
+				var orderNo = $("#orderNo").val();
+				var asyncDate = $("#asyncDate").val();
+				if (orderNo == "" && asyncDate == "") {
+					return "error";
+				} else {
+					var signForm = $("#signForm").serialize();
+					return signForm;
+				}
+			}
+		})
+	</script>
+</body>
+</html>

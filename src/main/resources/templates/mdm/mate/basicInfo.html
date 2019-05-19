@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>物料详情</title>
+</head>
+<body>
+	<div style="padding-top: 10px;">
+		<form class="layui-form" action="" method="post" id="mateForm">
+			<input type="text" name="mateId" id="mateId"
+				th:value="${mate.mateId}" class="layui-hide" />
+			<div class="layui-row">
+				<div class="layui-col-md5">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">物料编码</label>
+						<div class="layui-input-block">
+							<input type="text" name="mateCode" th:value="${mate.mateCode}"
+								style="width: 70%" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">物料名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="mateType" th:value="${mate.mateName}"
+								style="width: 70%" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div style="padding-left: 10px;">
+			<button class="layui-btn layui-btn-xs blueHollow" id="addBtn">添加</button>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table id="basicInfo" lay-filter="basicInfoFilter"></table>
+	</div>
+	<script type="text/html" id="operateBar">
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/mate/basicInfo.js}"></script>
+</body>
+</html>

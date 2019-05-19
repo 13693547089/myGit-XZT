@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.DeliveryMapper">
+
+	<resultMap type="com.faujor.entity.bam.Delivery" id="delivery">
+		<result property="deliId" column="deli_id" />
+		<result property="status" column="status" />
+		<result property="deliCode" column="deli_code" />
+		<result property="deliDate" column="deli_date" />
+		<result property="affirmDate" column="affirm_date" />
+		<result property="suppId" column="supp_id" />
+		<result property="suppName" column="supp_name" />
+		<result property="deliNumber" column="deli_number" />
+		<result property="deliAmount" column="deli_amount" />
+		<result property="truckNum" column="truck_num" />
+		<result property="createId" column="create_id" />
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="deliType" column="deli_type" />
+		<result property="mapgCode" column="mapg_code" />
+		<result property="receUnit" column="rece_unit" />
+		<result property="receAddr" column="rece_addr" />
+		<result property="contact" column="contact" />
+		<result property="phone" column="phone" />
+		<result property="signerId" column="signer_id" />
+		<result property="signer" column="signer" />
+		<result property="signDate" column="sign_date" />
+		<result property="appoNumber" column="appo_number" />
+		<result property="qrurl" column="qrurl" />
+		<result property="post" column="post" />
+		<result property="suppRange" column="supp_range" />
+		<result property="suppRangeDesc" column="supp_range_desc" />
+	</resultMap>
+	<select id="queryDeliveryByPage" parameterType="Map" resultMap="delivery">
+		select d2.* from(
+		select d1.*,rownum rn from(
+		select d.* from
+		bam_delivery d
+		where 1=1
+		<if test="createId != null and createId != '' ">
+			and d.create_id=#{createId}
+		</if>
+		<if test="postId != null and postId != '' ">
+			and d.post = #{postId}
+		</if>
+		<if test="deli.status != null and deli.status != '' ">
+			and d.status = #{deli.status}
+		</if>
+		<if test="deli.suppName != null and deli.suppName != '' ">
+			and d.supp_name like '%${deli.suppName}%'
+		</if>
+		<if test="deli.mapgCode != null and deli.mapgCode != '' ">
+			and d.mapg_code like '%${deli.mapgCode}%'
+		</if>
+		<if test="deli.qrurl != null and deli.qrurl != '' ">
+			and d.create_date like to_date(#{deli.qrurl},'yyyy/mm/dd')
+		</if>
+		<if test="deli.deliCode != null and deli.deliCode != '' ">
+			and d.deli_code like '%${deli.deliCode}%'
+		</if>
+		<if test="deli.deliType != null and deli.deliType != '' ">
+			and d.deli_type = #{deli.deliType}
+		</if>
+		<if test="deli.receUnit != null and deli.receUnit != '' ">
+			and d.rece_unit like '%${deli.receUnit}%'
+		</if>
+		<if test="deli.startDate != null or deli.endDate != null ">
+			and d.deli_date between #{deli.startDate,jdbcType=VARCHAR}
+			and #{deli.endDate,jdbcType=VARCHAR}
+		</if>
+		order by d.deli_code desc ,d.create_date desc)d1)d2
+		<![CDATA[where d2.rn>=#{start} and d2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryDeliveryByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_delivery d
+		where 1=1
+		<if test="createId != null and createId != '' ">
+			and d.create_id=#{createId}
+		</if>
+		<if test="postId != null and postId != '' ">
+			and d.post = #{postId}
+		</if>
+		<if test="deli.status != null and deli.status != '' ">
+			and d.status = #{deli.status}
+		</if>
+		<if test="deli.suppName != null and deli.suppName != '' ">
+			and d.supp_name like '%${deli.suppName}%'
+		</if>
+		<if test="deli.mapgCode != null and deli.mapgCode != '' ">
+			and d.mapg_code like '%${deli.mapgCode}%'
+		</if>
+		<if test="deli.qrurl != null and deli.qrurl != '' ">
+			and d.create_date like to_date(#{deli.qrurl},'yyyy/mm/dd')
+		</if>
+		<if test="deli.deliCode != null and deli.deliCode != '' ">
+			and d.deli_code like '%${deli.deliCode}%'
+		</if>
+		<if test="deli.deliType != null and deli.deliType != '' ">
+			and d.deli_type = #{deli.deliType}
+		</if>
+		<if test="deli.receUnit != null and deli.receUnit != '' ">
+			and d.rece_unit like '%${deli.receUnit}%'
+		</if>
+		<if test="deli.startDate != null or deli.endDate != null ">
+			and d.deli_date between #{deli.startDate,jdbcType=VARCHAR}
+			and #{deli.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<delete id="deleteDeliveryBydeliId">
+		delete from bam_delivery d where d.deli_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<delete id="deleteDeliMateBydeliId">
+		delete from bam_deli_mate dm where dm.deli_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<insert id="insertDelivery" parameterType="com.faujor.entity.bam.Delivery">
+		<selectKey keyProperty="deliId" resultType="java.lang.String"
+			order="BEFORE">
+			select lower(sys_guid()) from dual
+		</selectKey>
+		insert into bam_delivery values(#{deliId},#{status},#{deliCode},
+		#{deliDate},#{suppId},#{suppName},#{deliNumber},#{deliAmount},
+		#{truckNum},#{createId},#{creator},sysdate,#{deliType},
+		#{mapgCode},#{receUnit},#{receAddr},#{contact},#{phone},
+		'','',null,#{affirmDate},#{appoNumber},#{qrurl},#{post},#{suppRange},#{suppRangeDesc})
+	</insert>
+
+	<insert id="insertDeliMate" parameterType="com.faujor.entity.bam.DeliMate">
+		insert into
+		bam_deli_mate values(lower(sys_guid()),#{deliId},#{orderId},
+		#{mateCode},#{mateName},#{deliNumber},#{unit},#{prodPatchNum},#{remark},
+		#{frequency},#{subeDate},#{appoNumber},#{unpaNumber},#{sort},#{calculNumber},#{addCate})
+	</insert>
+
+	<select id="queryDeliveryByDeliId" parameterType="String"
+		resultMap="delivery">
+		select * from bam_delivery d where d.deli_id=#{deliId}
+	</select>
+
+	<resultMap type="com.faujor.entity.bam.DeliMate" id="deliMate">
+		<result property="id" column="id" />
+		<result property="deliId" column="deli_id" />
+		<result property="orderId" column="order_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="deliNumber" column="deli_number" />
+		<result property="unit" column="unit" />
+		<result property="prodPatchNum" column="prod_patch_num" />
+		<result property="remark" column="remark" />
+		<result property="frequency" column="frequency" />
+		<result property="subeDate" column="sube_date" />
+		<result property="appoNumber" column="appo_number" />
+		<result property="unpaNumber" column="unpa_number" />
+		<result property="calculNumber" column="calcul_number" />
+		<result property="sort" column="sort" />
+		<result property="addCate" column="add_cate" />
+	</resultMap>
+	<select id="queryDeliMateByDeliId" parameterType="String"
+		resultMap="deliMate">
+		select * from bam_deli_mate dm where dm.deli_id = #{deliId} order by dm.mate_code,dm.order_id
+	</select>
+
+	<update id="updateDeliveryByDeliId" parameterType="com.faujor.entity.bam.Delivery">
+		update bam_delivery d
+		<set>
+			<if test="status != null">
+				d.status=#{status},
+			</if>
+			<if test="suppId != null and suppId != '' ">
+				d.supp_id=#{suppId},
+			</if>
+			<if test="suppName != null and suppName != '' ">
+				d.supp_name=#{suppName},
+			</if>
+			<if test="deliNumber != null">
+				d.deli_number=#{deliNumber},
+			</if>
+			<if test="appoNumber != null">
+				d.appo_number=#{appoNumber},
+			</if>
+			<if test="deliAmount != null">
+				d.deli_amount=#{deliAmount},
+			</if>
+			<if test="truckNum != null">
+				d.truck_num=#{truckNum},
+			</if>
+			<if test="affirmDate != null and affirmDate != '' ">
+				d.affirm_date=#{affirmDate},
+			</if>
+			<if test="signDate != null">
+				d.sign_date = #{signDate},
+			</if>
+			d.mapg_code=#{mapgCode},
+			d.rece_unit=#{receUnit},
+			d.rece_addr=#{receAddr},
+			d.contact=#{contact},
+			d.phone=#{phone},
+			d.post=#{post},
+			d.supp_range = #{suppRange},
+			d.supp_range_desc = #{suppRangeDesc},
+		</set>
+		where d.deli_id=#{deliId}
+	</update>
+	<select id="queryDeliveryByDeliCode" parameterType="String"
+		resultMap="delivery">
+		select d.* from bam_delivery d
+		where ((d.deli_type
+		in('1','2') and d.status='已签到')
+		or (d.deli_type = '0'
+		and d.status
+		in('已发货','已签到')))
+		and d.deli_code=#{deliCode}
+	</select>
+	
+	<select id="queryOneDeliveryByDeliCode" parameterType="String" resultMap="delivery">
+		 select d.* from bam_delivery d where d.deli_code=#{deliCode}
+	</select>
+	<select id="findDeliveryByDeliCode" parameterType="String"
+		resultMap="delivery">
+		select d.* from bam_delivery d where d.deli_code=#{deliCode}
+	</select>
+
+	<select id="queryDeliMateByDeliCode" parameterType="String"
+		resultMap="deliMate">
+		select dm.* from bam_delivery d left join bam_deli_mate dm
+		on d.deli_id = dm.deli_id
+		where d.deli_code=#{deliCode}
+	</select>
+
+	<update id="updateDeliStatusByDeliCode" parameterType="Map">
+		update
+		bam_delivery d set d.status=#{status} where d.deli_code=#{deliCode}
+	</update>
+
+	<select id="findDeliveryByParams" resultMap="delivery"
+		parameterType="map">
+		select * from
+		bam_delivery
+	</select>
+
+	<select id="countDeliveryByParams" resultType="Integer"
+		parameterType="map">
+		select count(*)
+		from bam_delivery
+	</select>
+
+	<select id="queryDeliMateBySuppIdAndMateCode" parameterType="Map"
+		resultMap="deliMate">
+		select dm.* from bam_delivery d left join bam_deli_mate dm
+		on d.deli_id
+		= dm.deli_id
+		where d.supp_id=#{suppId} 
+		and dm.mate_code=#{mateCode}
+		<if test="deliCode != null and deliCode != '' ">
+			and d.deli_code !=#{deliCode}
+		</if>
+		<if test="orderId != null and orderId != '' ">
+			and dm.order_id = #{orderId}
+		</if>
+		and d.status in
+		<foreach collection="statusList" item="item" index="index"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="queryDeliveryBySuppIdAndMateCode" parameterType="Map"
+		resultMap="delivery">
+		select d.* from bam_delivery d left join bam_deli_mate dm
+		on d.deli_id
+		= dm.deli_id
+		where d.supp_id=#{suppId} 
+		and dm.mate_code=#{mateCode}
+		<if test="deliCode != null and deliCode != '' ">
+			and d.deli_code !=#{deliCode}
+		</if>
+		and d.status in
+		<foreach collection="statusList" item="item" index="index"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="queryDeliBySuppIdAndMateCode">
+		select dm.* from bam_delivery d left join
+		bam_deli_mate dm
+		on d.deli_id = dm.deli_id
+		where d.supp_id=#{0} and
+		dm.mate_code= #{1}
+		and
+		d.status in('已发货','已签到','待收货')
+	</select>
+
+	<select id="findDeliDetailsByParams" parameterType="com.faujor.entity.bam.DeliMate"
+		resultMap="deliMate">
+		select t1.deli_number, t1.unpa_number, t1.calcul_number from
+		BAM_DELI_MATE t1 left join bam_delivery t2 on t1.deli_id = t2.deli_id
+		WHERE t1.mate_code = #{mateCode} and t1.order_id = #{orderId} and
+		t2.status in ('已发货','已签到','待收货') order by t1.calcul_number asc
+	</select>
+
+	<update id="updateDeliDate" parameterType="com.faujor.entity.bam.Appoint">
+		update bam_delivery d
+		set d.deli_date =#{appoDate} ,d.affirm_date =#{affirmDate}
+		where
+		d.mapg_code=#{appoCode}
+	</update>
+	<update id="updateDeliDate2" parameterType="com.faujor.entity.bam.StraMessage">
+		update bam_delivery d
+		set d.deli_date =#{arriDate}
+		where d.mapg_code=#{messCode}
+	</update>
+	
+	<select id="queryNumOfOrderId" parameterType="Map" resultType="int">
+		select nvl(rn,0) as count from (
+   	    select a.*,rownum rn from (
+		select * from
+		bam_orde_rele bor left
+		join bam_orde_mate bom on
+		bor.cont_orde_numb =
+		bom.main_id
+		where
+		bor.supp_name=#{sapId} and
+		bom.mate_numb=#{mateCode} and
+		bom.unpa_quan is not null
+		and bom.unpa_quan !='0'
+		<if test="suppRange != null and suppRange != '' ">
+			and bom.supp_Range = #{suppRange}
+		</if>
+		<if test="suppRange == null or suppRange == '' ">
+			and (bom.supp_Range is null or bom.supp_Range = '')
+		</if>
+		order by bor.sube_date)a)d
+        where d.cont_orde_numb = #{orderId}
+	</select>
+	
+	<select id="getDeliveryListByAppoCode" parameterType="String" resultMap="delivery">
+		select *
+ 		from bam_delivery d where d.mapg_code =#{code}
+	</select>
+	
+	<select id="queryDeliveryListByReceCode" parameterType="String" resultMap="delivery">
+		select * from bam_delivery d where d.deli_code=(
+	  select  r.deli_code from bam_receive r where r.rece_code=#{code}
+	  )
+	</select>
+</mapper>

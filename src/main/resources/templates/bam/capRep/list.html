@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<title>产能月报</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.layui-col-md9{border: 1px solid white;}
+</style>
+<body class='fau-body-list'>
+	<form class="layui-form  " id="searchForm" action="" method="post">
+		<input type="text" id="userType" name="userType" th:value="${userType}" class="layui-input layui-hide">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"  >产能月报</label>
+					<div class="layui-input-block">
+						<input type="text" id="capCode" name="capCode" placeholder="月报编号"   class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item ">
+					<label class="layui-form-label">计划状态</label>
+					<div class="layui-input-block">
+						<select name="status" id="status" lay-verify="" lay-search="" lay-filter="status">
+							<option value="">请选择</option>
+							<option th:each="dic:${statusList}" th:value="${dic.dicName}" th:text="${dic.dicName}">已保存</option>			
+						</select>
+					</div>
+				</div>
+			</div>			
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">创建日期</label>
+					<div class="layui-input-inline" style='display:flex;'>
+						<input type="text" id="startDate" name="startDate" placeholder="yyyy-MM-dd" class="layui-input"  >
+						<div style='padding:0px 10px;line-height:38px;'>-</div>
+						<input type="text" id="endDate" name="endDate" placeholder="yyyy-MM-dd" class="layui-input"  >
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">月份</label>
+					<div class="layui-input-inline">
+						<input type="text" id="repMonth" name="repMonth" placeholder="yyyy-MM" class="layui-input"  >
+					</div>
+				</div>
+			</div>			
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"  >创建人</label>
+					<div class="layui-input-block">
+						<input type="text" id="suppName" name="suppName" placeholder="请输入供应商名称"   class="layui-input">
+					</div>
+				</div>
+			</div>			
+		</div>
+	</form>
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<div  class="layui-col-md9" >
+				<span class="margin_right10" id="createSpan" >
+					<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CAP_ADD')"  id="addBtn">创建</button>
+				</span>
+				<span class="margin_right10">
+					<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CAP_DEL')"  style="margin-left: 10px"  id="delBtn">删除</button>
+				</span>
+			</div>
+			<div class="layui-col-md3  textRight">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="capRepTable" lay-filter="capRepTable">
+		</table>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view">查看</a>
+ 			<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+		</script>
+		<script type="text/html" id="operateBar1">
+			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view">查看</a>
+		</script>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/capRep/capRepIndex.js}"></script>
+		<script type="text/javascript" th:src="@{/larryMS/js/jquery.serializejson.min.js}"></script>
+	
+</body>
+</html>

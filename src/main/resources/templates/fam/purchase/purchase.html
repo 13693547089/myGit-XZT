@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<!-- <meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+<title>采购对账列表</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.date{width:45%}
+	div.textRight{text-align:right;}
+</style>
+<body class='fau-body-list'>
+	<form class="layui-form" id="searchForm" action="" method="post">
+		<input type="text" id="id" name="id" class="layui-input layui-hide">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">供应商</label>
+					<div class="layui-input-block">
+						<input type="text" id="suppName" name="suppName"
+							placeholder="供应商名称或者编码" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" >对账单号</label>
+					<div class="layui-input-block">
+						<input type="text" id="reconCode" name="reconCode" placeholder="对账单号"  class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item ">
+					<label class="layui-form-label">计划状态</label>
+					<div class="layui-input-block ">
+						<select name="status" id="status" lay-verify="" lay-search="" lay-filter="status">
+							<option value="">请选择</option>
+							<option value="YBC">已保存</option>
+							<option value="YTJ">已提交</option>
+							<option value="DQR">待确认</option>
+							<option value="YQR">已确认</option>
+							<option value="YTH">已退回</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">对账日期</label>
+					<div class="layui-input-inline" style='display:flex;'>
+						<input  id="startDate" name="startDate"  placeholder="yyyy-MM-dd"   class="layui-input">
+						<div style='padding:0px 10px;line-height:38px;'>-</div>
+						 <input  id="endDate" name="endDate"   placeholder="yyyy-MM-dd"     class="layui-input">
+					</div>
+				</div>
+		  </div> 
+		</div>
+	</form>
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<div class="layui-col-sm9">
+		
+					<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_PURCHASE_ADD')" id="addBtn">新建</button>
+					<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_PURCHASE_SUBMIT')" id="submitBtn">提交</button>
+					<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_PURCHASE_REMOVE')" id="delBtn">删除</button>
+					<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_PURCHASE_EXPORT')" id="exportBtn">导出</button>
+		
+			</div>
+			<div class="layui-col-md3 textRight">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid">
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="reconTable" lay-filter="reconTable">
+		</table>
+	</div>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view">查看</a>
+ 			<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+		</script>
+	</div>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>	
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/fam/purchase/purchase.js}"></script>
+</body>
+</html>

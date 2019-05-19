@@ -1,0 +1,1320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.MaterialMapper">
+
+	<insert id="insertMaterial" parameterType="com.faujor.entity.mdm.Material">
+		insert into mdm_mate
+		values(lower(sys_guid()), #{mateCode}, #{skuTipto}, #{skuEnglish},
+		#{chinName}, #{mateType}, #{mateTypeExpl},
+		#{mateGroupCode},
+		#{mateGroupExpl}, #{barCode}, #{barCodeEngl}, #{barCodeChin},
+		#{repeUnit},
+		#{boxNumber}, #{finProMate},
+		#{finProSku}, #{abcIden},
+		#{busiCode}, #{busiExpl}, #{cateCode}, #{cateExpl},
+		#{bigCate},
+		#{bigCateName}, #{seriesCode}, #{seriesExpl},
+		#{bigItemCode},
+		#{bigItemExpl}, #{smallItemCode}, #{smallItemExpl}, #{mainProfCode},
+		#{mainProfExpl}, #{nextProfCode}, #{nextProfExpl},
+		#{boxCode},
+		#{isGift}, #{brandCode}, #{brandExpl}, #{childBrandCode},
+		#{childBrandExpl},
+		#{produCode}, #{produExpl}, #{chanCode},
+		#{chanExpl},
+		#{useChin}, #{useEngl}, #{mateStatus}, #{procUnit},
+		#{boxUnit}, #{branchUnit},
+		#{produUnit},
+		#{packNumber}, #{dimension},
+		#{produAbc}, #{barCodeAbc},
+		#{supply}, #{reveCateCode},
+		#{reveCateName}, #{expiDate}, #{guarUnit},
+		#{nationKey}, #{nationName},
+		#{provCode}, #{provName}, #{cityCode}, #{cityName},
+		#{mateLength},
+		#{mateWidth}, #{mateHigh}, #{mateBulk}, #{mateWeight}, #{status},
+		#{isDelete},
+		#{repeatedly},
+		#{updateDate}, #{finMateId}, #{mateName},
+		#{basicUnit},
+		#{isQuote})
+	</insert>
+
+	<resultMap type="com.faujor.entity.mdm.Material" id="mate">
+		<result property="mateId" column="mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="skuTiptop" column="sku_tiptop" />
+		<result property="skuEnglish" column="sku_english" />
+		<result property="chinName" column="chin_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="mateGroupCode" column="mate_group_code" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="barCode" column="bar_code" />
+		<result property="barCodeEngl" column="bar_code_engl" />
+		<result property="barCodeChin" column="bar_code_chin" />
+		<result property="repeUnit" column="repe_unit" />
+		<result property="boxNumber" column="box_number" />
+		<result property="finProMate" column="fin_pro_mate" />
+		<result property="finProSku" column="fin_pro_sku" />
+		<result property="abcIden" column="abc_iden" />
+		<result property="busiCode" column="busi_code" />
+		<result property="busiExpl" column="busi_expl" />
+		<result property="cateCode" column="cate_code" />
+		<result property="cateExpl" column="cate_expl" />
+		<result property="bigCate" column="big_cate" />
+		<result property="bigCateName" column="big_cate_name" />
+		<result property="seriesCode" column="series_code" />
+		<result property="seriesExpl" column="series_expl" />
+		<result property="bigItemCode" column="big_item_code" />
+		<result property="bigItemExpl" column="big_item_expl" />
+		<result property="smallItemCode" column="small_item_code" />
+		<result property="smallItemExpl" column="small_item_expl" />
+		<result property="mainProfCode" column="main_prof_code" />
+		<result property="mainProfExpl" column="main_prof_expl" />
+		<result property="nextProfCode" column="next_prof_code" />
+		<result property="nextProfExpl" column="next_prof_expl" />
+		<result property="boxCode" column="box_code" />
+		<result property="isGift" column="is_gift" />
+		<result property="brandCode" column="brand_code" />
+		<result property="brandExpl" column="brand_expl" />
+		<result property="childBrandCode" column="child_brand_code" />
+		<result property="childBrandExpl" column="child_brand_expl" />
+		<result property="produCode" column="produ_code" />
+		<result property="produExpl" column="produ_expl" />
+		<result property="chanCode" column="chan_code" />
+		<result property="chanExpl" column="chan_expl" />
+		<result property="useChin" column="use_chin" />
+		<result property="useEngl" column="use_engl" />
+		<result property="mateStatus" column="mate_status" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="boxUnit" column="box_unit" />
+		<result property="branchUnit" column="branch_unit" />
+		<result property="produUnit" column="produ_unit" />
+		<result property="packNumber" column="pack_number" />
+		<result property="dimension" column="dimension" />
+		<result property="produAbc" column="produ_abc" />
+		<result property="barCodeAbc" column="bar_code_abc" />
+		<result property="supply" column="supply" />
+		<result property="reveCateCode" column="reve_cate_code" />
+		<result property="reveCateName" column="reve_cate_name" />
+		<result property="expiDate" column="expi_date" />
+		<result property="guarUnit" column="guar_unit" />
+		<result property="nationKey" column="nation_key" />
+		<result property="nationName" column="nation_name" />
+		<result property="provCode" column="prov_code" />
+		<result property="provName" column="prov_name" />
+		<result property="cityCode" column="city_code" />
+		<result property="cityName" column="city_name" />
+		<result property="mateLength" column="mate_length" />
+		<result property="mateWidth" column="mate_width" />
+		<result property="mateHigh" column="mate_high" />
+		<result property="mateBulk" column="mate_bulk" />
+		<result property="mateWeight" column="mate_weight" />
+		<result property="status" column="status" />
+		<result property="isDelete" column="is_delete" />
+		<result property="repeatedly" column="repeatedly" />
+		<result property="updateDate" column="update_date" />
+		<result property="finMateId" column="fin_mate_id" />
+		<result property="mateName" column="mate_name" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="isQuote" column="is_quote" />
+		<result property="isMaintenance" column="is_maintenance" />
+	</resultMap>
+
+
+	<resultMap type="com.faujor.entity.mdm.MateDO" id="mateDoMap">
+		<id property="mateId" column="mate_id" />
+		<result property="finMateId" column="fin_mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="boxNumber" column="box_number" />
+		<result property="skuEnglish" column="sku_english" />
+		<result property="chinName" column="chin_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="seriesCode" column="series_code" />
+		<result property="seriesExpl" column="series_expl" />
+		<result property="isMaintenance" column="is_maintenance" />
+		<result property="itemCode" column="item_code" />
+		<result property="itemName" column="item_name" />
+		<result property="board" column="board" />
+		<result property="boardName" column="board_name" />
+		<result property="mateBulk" column="mate_bulk" />
+		<result property="bigItemCode" column="big_item_code" />
+		<result property="bigItemExpl" column="big_item_expl" />
+	</resultMap>
+	<select id="queryMaterialByPage" parameterType="Map" resultMap="mate">
+		select s2.* from(
+		select s1.*, rownum rn from(
+		select m.* from mdm_mate
+		m
+		where 1=1
+		and m.is_delete is null
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.sku_english
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		order by m.mate_type,m.mate_code )s1)s2
+		<![CDATA[where s2.rn>=#{start} and s2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryMaterialCount" parameterType="Map" resultType="int">
+		select count(*) from mdm_mate m
+		where 1=1
+		and m.is_delete is null
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+	</select>
+
+	<select id="queryOneMaterialByMateId" parameterType="String"
+		resultMap="mate">
+		select m.* from mdm_mate m
+		where m.mate_id =#{mateId} and
+		m.is_delete is null
+	</select>
+
+	<select id="queryMaterialOfUser" parameterType="Map" resultMap="mateDoMap">
+		select m2.* from (
+		select m1.*,rownum rn from (
+		select m.* from mdm_mate
+		m left join mdm_buyer_mate bm
+		on m.mate_id =
+		bm.mate_id
+		where 1=1
+		and
+		m.is_delete is null
+		and
+		bm.buyer_id=#{userId}
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.sku_english
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		order by m.mate_code)m1)m2
+   		<![CDATA[where m2.rn >=#{start} and m2.rn<=#{end}]]>
+	</select>
+	
+	<select id="findMaterialByUsers" parameterType="com.faujor.entity.privileges.UserDO" resultMap="mateDoMap">
+		select m.* from mdm_mate m left join mdm_buyer_mate bm
+		on m.mate_id = bm.mate_id
+		<where>
+			and m.is_delete is null
+			and bm.buyer_id in 
+			<foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+				#{item.id}
+			</foreach>
+		</where>
+	</select>
+
+	<select id="queryMaterialOfUserCount" parameterType="Map"
+		resultType="int">
+		select count(*) from mdm_mate m left join mdm_buyer_mate bm
+		on
+		m.mate_id =
+		bm.mate_id
+		where 1=1
+		and m.is_delete is null
+		and
+		bm.buyer_id=#{userId}
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.sku_english
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+	</select>
+	<delete id="deleteMaterialOfUser" parameterType="Map">
+		delete from mdm_buyer_mate bm
+		where bm.buyer_id =#{userId} and
+		bm.mate_id in
+		<foreach collection="mateIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteSuppMateOfUserByUserIdAndMateIdList" parameterType="Map">
+		delete from mdm_buyer_supp_mate bsm where bsm.buyer_id=#{userId}
+		and bsm.mate_id in 
+		<foreach collection="mateIds" open="(" close=")" separator="," index="index" item="item">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="queryMaterialOfUserAndSupp" parameterType="Map"
+		resultMap="mateDoMap">
+		select * from mdm_mate m left join mdm_buyer_supp_mate bsm
+		on m.mate_id
+		= bsm.mate_id
+		where 1=1
+		and bsm.supp_id=#{suppId}
+		<if test="userDO != null">
+			and bsm.buyer_id in
+			<foreach collection="userDO" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code = #{mate.mateInfo}
+			or m.mate_name like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		order by m.mate_code
+	</select>
+
+	<delete id="deleteMaterialOfUserAndSupp" parameterType="Map">
+		delete from mdm_buyer_supp_mate bsm
+		where bsm.buyer_id=#{userId} and
+		bsm.supp_id=#{suppId} and bsm.mate_id in
+		<foreach collection="mateIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<insert id="addMaterialForUserAndSupp" parameterType="com.faujor.entity.mdm.UserSuppMate">
+		insert into
+		mdm_buyer_supp_mate values(lower(sys_guid()),#{buyerId},#{suppId},
+		#{mateId},#{buyerRole},#{creator},sysdate,#{modifier},#{updateTime},#{version},
+		#{startTime},#{endTime},#{buyerId})
+	</insert>
+
+	<select id="queryAllMaterial" resultMap="mateDoMap">
+		select * from mdm_mate m
+		order by m.mate_code
+	</select>
+
+	<insert id="addMaterialOfUser" parameterType="com.faujor.entity.mdm.UserSuppMate">
+		insert into
+		mdm_buyer_mate values(lower(sys_guid()),#{buyerId},
+		#{mateId},#{buyerRole},#{creator},sysdate,#{modifier},#{updateTime},#{version},
+		#{startTime},#{endTime},#{buyerId})
+	</insert>
+
+	<select id="queryAllMaterialOfSupp" parameterType="String"
+		resultMap="mateDoMap">
+		select * from mdm_mate m left join mdm_buyer_supp_mate bsm
+		on m.mate_id = bsm.mate_id
+		where bsm.supp_id=#{suppId}
+		and m.is_delete
+		is null
+		order by
+		m.mate_code
+	</select>
+
+	<insert id="batchSaveMaterialFromEDI" parameterType="list">
+		insert all into mdm_mate (mate_id, mate_code, sku_tiptop, sku_english,
+		chin_name, mate_type, mate_group_code, mate_group_expl, bar_code,
+		bar_code_engl, bar_code_chin, repe_unit, box_number, fin_pro_mate,
+		fin_pro_sku, abc_iden, busi_code, busi_expl, cate_code, cate_expl,
+		big_cate, big_cate_name, series_code, series_expl, big_item_code,
+		big_item_expl, small_item_code, small_item_expl, main_prof_code,
+		main_prof_expl, next_prof_code, next_prof_expl, box_code, is_gift,
+		brand_code, brand_expl, child_brand_code, child_brand_expl,
+		produ_code, produ_expl, chan_code, chan_expl, use_chin, use_engl,
+		mate_status, proc_unit, box_unit, branch_unit, produ_unit,
+		pack_number, dimension, produ_abc, bar_code_abc, supply,
+		reve_cate_code, reve_cate_name, expi_date, guar_unit, nation_key,
+		nation_name, prov_code, prov_name, city_code, city_name, mate_length,
+		mate_width, mate_high, mate_bulk, mate_weight, status, is_delete,
+		repeatedly, update_date, fin_mate_id, mate_name, basic_unit, is_quote)
+		values
+		<foreach collection="list" index="index" item="item" open=""
+			close=""
+			separator="into mdm_mate (mate_id, mate_code, sku_tiptop, sku_english,
+		chin_name, mate_type, mate_group_code, mate_group_expl, bar_code,
+		bar_code_engl, bar_code_chin, repe_unit, box_number, fin_pro_mate,
+		fin_pro_sku, abc_iden, busi_code, busi_expl, cate_code, cate_expl,
+		big_cate, big_cate_name, series_code, series_expl, big_item_code,
+		big_item_expl, small_item_code, small_item_expl, main_prof_code,
+		main_prof_expl, next_prof_code, next_prof_expl, box_code, is_gift,
+		brand_code, brand_expl, child_brand_code, child_brand_expl, produ_code,
+		produ_expl, chan_code, chan_expl, use_chin, use_engl, mate_status,
+		proc_unit, box_unit, branch_unit, produ_unit, pack_number, dimension,
+		produ_abc, bar_code_abc, supply, reve_cate_code, reve_cate_name,
+		expi_date, guar_unit, nation_key, nation_name, prov_code, prov_name,
+		city_code, city_name, mate_length, mate_width, mate_high, mate_bulk, mate_weight, status,
+		is_delete, repeatedly, update_date, fin_mate_id, mate_name,
+		basic_unit, is_quote) values">
+			(#{item.mateId},#{item.mateCode},#{item.skuTiptop},#{item.skuEnglish},
+			#{item.chinName},#{item.mateType},
+			#{item.mateGroupCode},#{item.mateGroupExpl},#{item.barCode},#{item.barCodeEngl},#{item.barCodeChin},#{item.repeUnit},
+			#{item.boxNumber},#{item.finProMate},
+			#{item.finProSku},#{item.abcIden},#{item.busiCode},#{item.busiExpl},#{item.cateCode},#{item.cateExpl},#{item.bigCate},
+			#{item.bigCateName},#{item.seriesCode},#{item.seriesExpl},
+			#{item.bigItemCode},#{item.bigItemExpl},#{item.smallItemCode},#{item.smallItemExpl},#{item.mainProfCode},
+			#{item.mainProfExpl},#{item.nextProfCode},#{item.nextProfExpl},
+			#{item.boxCode},#{item.isGift},#{item.brandCode},#{item.brandExpl},#{item.childBrandCode},#{item.childBrandExpl},
+			#{item.produCode},#{item.produExpl},#{item.chanCode},#{item.chanExpl},
+			#{item.useChin},#{item.useEngl},#{item.mateStatus},#{item.procUnit},#{item.boxUnit},#{item.branchUnit},#{item.produUnit},
+			#{item.packNumber},#{item.dimension},#{item.produAbc},#{item.barCodeAbc},
+			#{item.supply},#{item.reveCateCode},#{item.reveCateName},#{item.expiDate},#{item.guarUnit},#{item.nationKey},#{item.nationName},
+			#{item.provCode},#{item.provName},#{item.cityCode},#{item.cityName},
+			#{item.mateLength},#{item.mateWidth},#{item.mateHigh},#{item.mateBulk},#{item.mateWeight},#{item.status},#{item.isDelete},#{item.repeatedly},
+			#{item.updateDate},#{item.finMateId},#{item.mateName},#{item.basicUnit},0)
+		</foreach>
+		select 1 from dual
+
+	</insert>
+
+	<select id="findMaterialList" resultMap="mate"
+		parameterType="com.faujor.entity.mdm.Material">
+		select * from mdm_mate where mate_type = #{mateType}
+	</select>
+
+	<update id="updateMaterialByEDI" parameterType="com.faujor.entity.cluster.mdm.MaterialDO">
+		update mdm_mate
+		set sku_tiptop = #{skuTiptop}, sku_english = #{skuEnglish}, chin_name
+		= #{chinName}, mate_type = #{mateType}, mate_group_code =
+		#{mateGroupCode}, mate_group_expl = #{mateGroupExpl}, bar_code =
+		#{barCode}, bar_code_engl = #{barCodeEngl}, bar_code_chin =
+		#{barCodeChin}, repe_unit = #{repeUnit}, box_number = #{boxNumber},
+		fin_pro_mate = #{finProMate}, fin_pro_sku = #{finProSku}, abc_iden =
+		#{abcIden}, busi_code = #{busiCode}, busi_expl = #{busiExpl},
+		cate_code = #{cateCode}, cate_expl = #{cateExpl}, big_cate =
+		#{bigCate}, big_cate_name = #{bigCateName}, series_code =
+		#{seriesCode}, series_expl = #{seriesExpl}, big_item_code =
+		#{bigItemCode}, big_item_expl = #{bigItemExpl}, small_item_code =
+		#{smallItemCode}, small_item_expl = #{smallItemExpl}, main_prof_code =
+		#{mainProfCode}, main_prof_expl = #{mainProfExpl}, next_prof_code =
+		#{nextProfCode}, next_prof_expl = #{nextProfExpl}, box_code =
+		#{boxCode}, is_gift = #{isGift}, brand_code = #{brandCode}, brand_expl
+		= #{brandExpl}, child_brand_code = #{childBrandCode} ,
+		child_brand_expl = #{childBrandExpl}, produ_code = #{produCode},
+		produ_expl = #{produExpl}, chan_code = #{chanCode},
+		chan_expl =
+		#{chanExpl}, use_chin = #{useChin}, use_engl = #{useEngl}, mate_status
+		= #{mateStatus}, proc_unit = #{procUnit}, box_unit = #{boxUnit},
+		branch_unit = #{branchUnit}, produ_unit = #{produUnit}, pack_number =
+		#{packNumber}, dimension = #{dimension}, produ_abc = #{produAbc},
+		bar_code_abc = #{barCodeAbc}, supply = #{supply}, reve_cate_code =
+		#{reveCateCode}, reve_cate_name = #{reveCateName}, expi_date =
+		#{expiDate}, guar_unit = #{guarUnit}, nation_key = #{nationKey},
+		nation_name = #{nationName}, prov_code = #{provCode}, prov_name =
+		#{provName}, city_code = #{cityCode}, city_name = #{cityName},
+		mate_length = #{mateLength}, mate_width = #{mateWidth}, mate_high =
+		#{mateHigh}, mate_bulk = #{mateBulk}, mate_weight = #{mateWeight},
+		status = #{status}, is_delete = #{isDelete}, repeatedly =
+		#{repeatedly}, update_date = #{updateDate}, fin_mate_id =
+		#{finMateId}, mate_name = #{mateName}, basic_unit = #{basicUnit} where
+		mate_id = #{mateId}
+	</update>
+
+	<select id="queryAllMaterialOfSuppBySapId" parameterType="String"
+		resultMap="mateDoMap">
+		select * from mdm_mate m left join mdm_buyer_supp_mate bsm
+		on m.mate_id = bsm.mate_id where bsm.supp_id=(
+		select qs.supp_id from
+		mdm_qual_supp qs where qs.sap_id=#{sapId}
+		)
+	</select>
+
+	<resultMap type="com.faujor.entity.mdm.MateUnit" id="mateUnit">
+		<result property="id" column="id" />
+		<result property="mateNumber" column="mate_number" />
+		<result property="mateId" column="mate_id" />
+		<result property="unitTypeId" column="unit_type_id" />
+		<result property="unitTypeName" column="unit_type_name" />
+		<result property="unit" column="unit" />
+		<result property="mole" column="mole" />
+		<result property="deno" column="deno" />
+		<result property="mateLength" column="mate_length" />
+		<result property="mateWidth" column="mate_width" />
+		<result property="mateHigh" column="mate_high" />
+		<result property="lwhUnit" column="lwh_unit" />
+		<result property="mateWeight" column="mate_weight" />
+		<result property="weightUnit" column="weight_unit" />
+		<result property="mateBulk" column="mate_bulk" />
+		<result property="bulkUnit" column="bulk_unit" />
+	</resultMap>
+	<select id="queryMateUnitOfMaterialByMateId" parameterType="String"
+		resultMap="mateUnit">
+		select * from mdm_unit u where u.mate_id=#{mateId}
+	</select>
+
+
+	<update id="updateMaterialUnti" parameterType="com.faujor.entity.cluster.mdm.MaterialUnitDO">
+		update mdm_unit
+		set mate_number = #{mateNumber}, mate_id = #{mateId}, unit_type_id =
+		#{unitTypeId}, unit_type_name = #{unitTypeName}, unit = #{unit}, mole
+		= #{mole}, deno = #{deno}, mate_length = #{mateLength}, mate_width =
+		#{mateWidth}, mate_high = #{mateHigh}, lwh_unit = #{lwhUnit},
+		mate_weight = ${mateWeight}, weight_unit = #{weightUnit}, mate_bulk =
+		#{mateBulk}, bulk_unit = #{bulkUnit} where id = #{id}
+	</update>
+
+	<insert id="batchSaveMaterialUnitFromEDI" parameterType="list">
+		insert all into mdm_unit (id, mate_number, mate_id, unit_type_id,
+		unit_type_name, unit, mole, deno, mate_length, mate_width, mate_high,
+		lwh_unit, mate_weight, weight_unit， mate_bulk, bulk_unit) values
+		<foreach collection="list" index="index" item="item" close=""
+			open=""
+			separator="into mdm_unit (id, mate_number, mate_id, unit_type_id,
+		unit_type_name, unit, mole, deno, mate_length, mate_width, mate_high,
+		lwh_unit, mate_weight, weight_unit， mate_bulk, bulk_unit) values ">
+			(#{item.id}, #{item.mateNumber}, #{item.mateId},
+			#{item.unitTypeId}, #{item.unitTypeName}, #{item.unit}, #{item.mole},
+			#{item.deno}, #{item.mateLength}, #{item.mateWidth},
+			#{item.mateHigh}, #{item.lwhUnit}, #{item.mateWeight},
+			#{item.weightUnit}, #{item.mateBulk}, #{item.bulkUnit})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<select id="findMateDO" resultMap="mateDoMap">
+		select s2.* from(
+		select s1.*, rownum rn from(
+		select m.* from mdm_mate
+		m
+		where 1=1
+		and m.is_delete is null
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+		order by m.mate_type asc,m.mate_code asc )s1)s2
+		<![CDATA[where s2.rn>=#{start} and s2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryMaterialByMateCode" parameterType="String"
+		resultMap="mate">
+		select * from mdm_mate m where m.mate_code=#{mateCode}
+	</select>
+
+	<update id="updateMaterial" parameterType="com.faujor.entity.mdm.Material">
+		update mdm_mate set
+		is_quote = #{isQuote}, is_maintenance = #{isMaintenance} where mate_id
+		= #{mateId}
+	</update>
+
+	<select id="findMaterialIsNotQuote" resultMap="mateDoMap"
+		parameterType="Long">
+		select t1.* from mdm_mate t1 left join mdm_quote_stru t2
+		on t2.mate_id = t1.mate_id left join mdm_buyer_mate t3 on t3.mate_id =
+		t1.mate_id where t2.id is null and t3.buyer_id = #{userId}
+	</select>
+
+	<select id="queryManyMaterialByMateCode" parameterType="String"
+		resultMap="mate">
+		select * from mdm_mate m where m.mate_code=#{mateCode}
+	</select>
+
+
+	<select id="findMateDOList" resultMap="mateDoMap" parameterType="com.faujor.entity.mdm.MateDO">
+		select * from mdm_mate where 1=1
+		<if test="mateType != null and mateType != ''">
+			and mate_type = #{mateType}
+		</if>
+		<if test="mateName!= null and mateName != ''">
+			and (mate_code like '%'||#{mateName}||'%' or mate_name
+			like '%'||#{mateName}||'%')
+		</if>
+		<if test="seriesExpl != null and seriesExpl != ''">
+			and series_expl like '%'||#{seriesExpl}||'%'
+		</if>
+		and is_delete is null
+		order by mate_code
+	</select>
+	<select id="findMateListOfSupp" resultMap="mateDoMap"
+		parameterType="map">
+		select m.* from mdm_mate m left join mdm_buyer_supp_mate bsm
+		on
+		m.mate_id = bsm.mate_id where 1=1
+		<if test="suppId != null and suppId != ''">
+			and bsm.supp_id=#{suppId}
+		</if>
+		<if test="mate != null">
+			<if test="mate.mateCode != null and mate.mateCode != ''">
+				and (m.mate_code like concat('%',
+				concat(#{mate.mateCode}, '%')) or m.mate_name like concat('%',
+				concat(#{mate.mateCode}, '%')))
+			</if>
+			<if test="mate.mateGroupExpl != null and mate.mateGroupExpl != ''">
+				and m.mate_group_expl like
+				concat('%',
+				concat(#{mate.mateGroupExpl}, '%'))
+			</if>
+			<if test="mate.mateType != null and mate.mateType!=''">
+				and m.mate_type = #{mate.mateType}
+			</if>
+		</if>
+		order by m.mate_code
+	</select>
+
+	<resultMap type="com.faujor.entity.mdm.MateBasicInfo" id="basicInfo">
+		<id property="id" column="id" />
+		<result property="mateId" column="mate_id" />
+		<result property="basicName" column="basic_name" />
+		<result property="standard" column="standard" />
+		<result property="unit" column="unit" />
+	</resultMap>
+
+	<select id="findMateBasicListByMateId" parameterType="String"
+		resultMap="basicInfo">
+		select * from mdm_mate_basic where mate_id = #{mateId}
+	</select>
+
+	<update id="updateBasicInfo" parameterType="com.faujor.entity.mdm.MateBasicInfo">
+		update mdm_mate_basic
+		set basic_name = #{basicName}, standard = #{standard}, unit=#{unit}
+		where id = #{id}
+	</update>
+
+	<delete id="batchRemoveBasicInfoByIDs" parameterType="list">
+		delete from mdm_mate_basic where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<insert id="batchSaveBasicInfo" parameterType="list">
+		insert all into
+		mdm_mate_basic (id, mate_id, basic_name, standard,
+		unit) values
+		<foreach collection="list" item="item" index="index"
+			separator="into mdm_mate_basic (id, mate_id, basic_name, standard, unit) values">
+			(#{item.id}, #{item.mateId}, #{item.basicName},
+			#{item.standard}, #{item.unit})
+		</foreach>
+		select 1 from dual
+	</insert>
+	<select id="findMateById" parameterType="String" resultMap="mate">
+		select * from mdm_mate where mate_id = #{mateId}
+	</select>
+
+	<select id="queryAllMaterialOfSuppBySapIdByPage" parameterType="Map"
+		resultMap="mateDoMap">
+		select m2.* from(
+		select m1.*,rownum rn from(
+		select m.* from mdm_mate m
+		left join
+		mdm_buyer_supp_mate bsm
+		on m.mate_id = bsm.mate_id
+		where 1=1
+		and m.is_delete is null
+		and bsm.supp_id=(
+		select qs.supp_id from
+		mdm_qual_supp qs where
+		qs.sap_id=#{sapId})
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like '%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+		order by m.mate_code)m1)m2
+        <![CDATA[where m2.rn >=#{start} and m2.rn<=#{end} ]]>
+	</select>
+
+	<select id="queryAllMaterialOfSuppBySapIdByPageCount"
+		parameterType="Map" resultType="int">
+		select count(*) from mdm_mate m left join mdm_buyer_supp_mate bsm
+		on
+		m.mate_id = bsm.mate_id
+		where 1=1
+		and m.is_delete is null
+		and
+		bsm.supp_id=(
+		select qs.supp_id from
+		mdm_qual_supp qs where
+		qs.sap_id=#{sapId})
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like '%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+	</select>
+	<select id="getMateSeriesByUserIds" parameterType="Long"
+		resultType="com.faujor.entity.common.BaseEntity">
+		SELECT distinct t1.series_code code, t1.series_expl name
+		from mdm_mate
+		t1
+		left join mdm_buyer_mate t2
+		on t1.mate_id = t2.mate_id
+		<where>
+			<if test="userIds!=null">
+				and t2.buyer_id in
+				<foreach collection="userIds" open="(" close=")" item="userId"
+					separator=",">
+					#{userId}
+				</foreach>
+			</if>
+		</where>
+		order by t1.series_code
+	</select>
+	<select id="queryMateOfSuppMateConfig" parameterType="Map"
+		resultMap="mateDoMap">
+		select s2.* from(
+		select s1.*, rownum rn from(
+		select distinct m2.* from
+		mdm_buyer_supp_mate bsm left join mdm_mate m
+		on bsm.mate_id = m.mate_id
+		inner join mdm_mate m2 on m.fin_mate_id = m2.mate_code
+		where 1=1
+		and
+		m.mate_type='0002'
+		and m.mate_id is not null
+		and m.is_delete is null
+		and
+		m2.is_delete is null
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m2.mate_code like '%${mate.mateInfo}%'
+			or m2.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m2.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m2.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m2.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m2.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m2.series_code like '%${mate.seriesInfo}%'
+			or
+			m2.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+		order by m2.mate_code asc )s1)s2
+		<![CDATA[where s2.rn>=#{start} and s2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryMateOfSuppMateConfigCount" parameterType="Map"
+		resultType="int">
+		select count(distinct m2.mate_code) from mdm_buyer_supp_mate bsm left
+		join mdm_mate m
+		on bsm.mate_id = m.mate_id inner join mdm_mate m2 on
+		m.fin_mate_id = m2.mate_code
+		where 1=1
+		and m.mate_type='0002'
+		and
+		m.mate_id is not null
+		and m.is_delete is null
+		and m2.is_delete is null
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m2.mate_code like '%${mate.mateInfo}%'
+			or m2.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m2.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m2.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m2.mate_type like '%${mate.mateTypeInfo}%'
+			or
+			m2.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m2.series_code like '%${mate.seriesInfo}%'
+			or
+			m2.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+	</select>
+
+	<select id="queryAllMaterialListOfUser" parameterType="String"
+		resultMap="mateDoMap">
+		select m.* from mdm_mate
+		m left join mdm_buyer_mate bm
+		on
+		m.mate_id =
+		bm.mate_id
+		where 1=1
+		and bm.buyer_id=#{userId}
+	</select>
+
+
+	<select id="getMatesByUserIds" parameterType="List" resultType="String">
+		select m.mate_code from mdm_mate
+		m left join mdm_buyer_mate bm
+		on
+		m.mate_id = bm.mate_id
+		where 1=1
+		<if test="userIds!=null">
+			and bm.buyer_id in
+			<foreach collection="userIds" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="queryAllMaterialListOfUsers" resultMap="mateDoMap">
+		select m.* from mdm_mate
+		m left join mdm_buyer_mate bm
+		on
+		m.mate_id =
+		bm.mate_id
+		where 1=1
+		<if test="userIds!=null">
+			and bm.buyer_id in
+			<foreach collection="userIds" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="findMateListOfPurcharor" resultMap="mateDoMap" parameterType="map">
+		select m.* from mdm_mate m left join mdm_buyer_mate bm
+		on m.mate_id = bm.mate_id
+		<where>
+			<if test="mate !=null">
+				<if test="mate.mateType != null and mate.mateType != ''">
+					and m.mate_type = #{mate.mateType}
+				</if>
+				<if test="mate.mateCode != null and mate.mateCode != ''">
+					and (m.mate_code like '%${mate.mateCode}%'
+						or m.mate_name like '%${mate.mateCode}%')
+				</if>
+			</if>
+			<if test="purcharor != null">
+				and bm.buyer_id in
+				<foreach collection="purcharor" open="(" close=")" item="item" separator=",">
+					#{item.id}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="findConcatColOfPurcharor" resultType="String" parameterType="map">
+		select ${concat_col} from mdm_mate m left join mdm_buyer_mate bm
+		on m.mate_id = bm.mate_id
+		<where>
+			<if test="mate !=null">
+				<if test="mate.mateType != null and mate.mateType != ''">
+					and m.mate_type = #{mate.mateType}
+				</if>
+			</if>
+			<if test="purcharor != null">
+				and bm.buyer_id in
+				<foreach collection="purcharor" open="(" close=")" item="item" separator=",">
+					#{item.id}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryPrdPlanMateListOfUsers" parameterType="Map"
+		resultMap="mateDoMap">
+		select m.* from mdm_mate
+		m left join mdm_buyer_mate bm
+		on
+		m.mate_id =
+		bm.mate_id
+		inner join ps_pad_plan_detail t1
+		on t1.mat_code=m.mate_code
+		inner join ps_pad_plan t2
+		on t1.main_id=t2.id
+		where 1=1
+		<if test="userIds!=null">
+			and bm.buyer_id in
+			<foreach collection="userIds" open="(" close=")" item="item"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="planMonth!=null and planMonth!=''">
+			and t2.plan_month=#{planMonth}
+		</if>
+		<if test="mateDesc!=null and mateDesc!=''">
+			and( m.mate_name like #{mateDesc} or m.mate_code like
+			#{mateDesc} )
+		</if>
+	</select>
+
+
+	<select id="getItemPage" parameterType="map" resultMap="mateDoMap">
+		select
+		t1.* from mdm_mate t1 left join mdm_buyer_mate t2 on t1.mate_id
+		= t2.mate_id where t2.buyer_id = #{userId}
+		<if test="mateType != null and mateType != ''">
+			and t1.mate_type = #{mateType}
+		</if>
+		<if test="mateCode != null and mateCode != ''">
+			and (t1.mate_code like #{mateCode} or t1.mate_name like
+			#{mateCode})
+		</if>
+	</select>
+
+	<select id="countItemPage" parameterType="map" resultType="Integer">
+		select count(*) from mdm_mate t1 left join mdm_buyer_mate t2 on
+		t1.mate_id = t2.mate_id where t2.buyer_id = #{userId}
+	</select>
+
+	<update id="updateMaterialByMateDO" parameterType="com.faujor.entity.mdm.MateDO">
+		update mdm_mate set
+		<if test="board != null and board != ''">
+			board = #{board}
+		</if>
+		<if test="itemCode != null and itemCode != ''">
+			item_code = #{itemCode}, item_name = #{itemName}
+		</if>
+		where 1=1 and mate_id = #{mateId}
+	</update>
+
+	<update id="updateMatPartByBatch" parameterType="java.util.List">
+		update mdm_mate a
+		set (a.item_code,a.item_name,a.board,a.board_name) =
+		(select b.itemCode,b.itemName,b.board,b.boardName from
+		(
+		<foreach collection="list" item="item" index="index"
+			separator="UNION ALL">
+			select
+			#{item.mateId} as mateId,
+			#{item.board} as board,
+			#{item.boardName} as boardName,
+			#{item.itemCode} as itemCode,
+			#{item.itemName} as itemName
+			from dual
+		</foreach>
+		) b where a.mate_id = b.mateId)
+		where exists (select 1 from (
+		<foreach collection="list" item="item" index="index"
+			separator="UNION ALL">
+			select
+			#{item.mateId} as mateId
+			from dual
+		</foreach>
+		) b where a.mate_id = b.mateId)
+	</update>
+
+	<select id="getCapacityPage" parameterType="map" resultMap="mateDoMap">
+		select tb1.* from (
+		select tb.*,rownum rn from
+		(select m1.* from
+		mdm_mate m1
+		left join mdm_buyer_mate m2 on m1.mate_id = m2.mate_id
+		where 1=1 and m2.buyer_id = #{userId}
+		<if test="matType != null and matType != ''">
+			and m1.mate_type = #{matType}
+		</if>
+		<if test="matInfo != null and matInfo != ''">
+			and (m1.mate_code like '%'||#{matInfo}||'%' or m1.mate_name like
+			'%'||#{matInfo}||'%')
+		</if>
+		order by m1.mate_code) tb
+		where rownum &lt;=#{page.to}) tb1
+		where tb1.rn
+		&gt; #{page.from}
+	</select>
+
+	<select id="getCapacityCount" parameterType="map" resultType="java.lang.Integer">
+		select count(m1.mate_code) from mdm_mate m1
+		left join mdm_buyer_mate m2
+		on m1.mate_id = m2.mate_id
+		where 1=1 and m2.buyer_id = #{userId}
+		<if test="matType != null and matType != ''">
+			and m1.mate_type = #{matType}
+		</if>
+		<if test="matInfo != null and matInfo != ''">
+			and (m1.mate_code like #{matInfo} or m1.mate_name like
+			#{matInfo})
+		</if>
+	</select>
+
+	<update id="updateUserSuppRelation" parameterType="Map">
+		update
+		mdm_buyer_supp set
+		buyer_id = #{tId}
+		where 1=1 and s_buyer_id = #{sId}
+	</update>
+	<update id="updateUserMatRelation" parameterType="Map">
+		update
+		mdm_buyer_mate set
+		buyer_id = #{tId}
+		where 1=1 and s_buyer_id = #{sId}
+	</update>
+	<update id="updateUserSuppMatRelation" parameterType="Map">
+		update
+		mdm_buyer_supp_mate set
+		buyer_id = #{tId}
+		where 1=1 and s_buyer_id =
+		#{sId}
+	</update>
+
+	<update id="updateUserSuppSID">
+		update mdm_buyer_supp a set
+		a.s_buyer_id = a.buyer_id
+		where a.buyer_id != nvl(a.s_buyer_id,0)
+	</update>
+	<update id="updateUserMatSID">
+		update mdm_buyer_mate a set
+		a.s_buyer_id = a.buyer_id
+		where a.buyer_id != nvl(a.s_buyer_id,0)
+	</update>
+	<update id="updateUserSuppMatSID">
+		update mdm_buyer_supp_mate a
+		set
+		a.s_buyer_id =
+		a.buyer_id
+		where a.buyer_id != nvl(a.s_buyer_id,0)
+	</update>
+
+	<update id="updateSemiMate">
+		UPDATE mdm_mate a1 SET a1.HAS_SEMI = 1 WHERE EXISTS(
+		SELECT 1 FROM MDM_MATE b WHERE b.MATE_TYPE = '0002' AND b.FIN_PRO_MATE
+		= a1.MATE_CODE)
+	</update>
+
+	<select id="queryAllMaterialOfSuppByParams" parameterType="Map"
+		resultMap="mateDoMap">
+		select * from mdm_mate m left join mdm_buyer_supp_mate bsm
+		on m.mate_id
+		= bsm.mate_id
+		where bsm.supp_id=#{suppId}
+		and m.is_delete is null
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.sku_english
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		order by
+		m.mate_code
+	</select>
+
+	<select id="findSemiMateListFromMate" parameterType="String"
+		resultMap="mateDoMap">
+		select t.* from mdm_mate t where t.FIN_MATE_ID = #{mateCode}
+	</select>
+	
+	<select id="queryFinMaterialByPage" parameterType="Map" resultMap="mateDoMap">
+		select s2.* from(
+		select s1.*, rownum rn from(
+		select m.* from mdm_mate
+		m
+		where 1=1
+		and m.is_delete is null
+		and m.mate_type='0005'
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+		order by m.mate_code asc )s1)s2
+		<![CDATA[where s2.rn>=#{start} and s2.rn<=#{end}]]>
+	</select>
+	
+	<select id="queryFinMaterialByPageCount" parameterType="Map" resultType="int">
+		select count(*) from mdm_mate
+		m
+		where 1=1
+		and m.is_delete is null
+		and m.mate_type='0005'
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+	</select>
+	
+	<select id="querySemiFinMateByMateCodes" resultMap="mateDoMap">
+		select * from mdm_mate m where m.is_delete is null 
+		and m.fin_mate_id in 
+		<foreach collection="list" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+		</foreach>
+	</select>
+	
+	<select id="queryFinMateOfSuppMateConfig" parameterType="Map" resultMap="mateDoMap">
+		 select s1.* from (
+	     select s.*, rownum rn from(
+	     select distinct m.* from mdm_buyer_supp_mate bsm left join mdm_mate m on bsm.mate_id = m.mate_id 
+	     left join mdm_mate m1 on m.mate_code = m1.fin_mate_id
+	     where m.mate_type='0005' and m1.mate_code is null
+	     <if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+	     order by m.mate_code 
+	     )s)s1
+	     <![CDATA[where s1.rn >=#{start} and s1.rn <=#{end}]]>
+	</select>
+	
+	<select id="queryFinMateOfSuppMateConfigCount" parameterType="Map" resultType="int">
+		select count(distinct m.mate_code) from mdm_buyer_supp_mate bsm left join mdm_mate m on bsm.mate_id = m.mate_id 
+	     left join mdm_mate m1 on m.mate_code = m1.fin_mate_id
+	     where m.mate_type='0005' and m1.mate_code is null
+	     <if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name
+			like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.seriesInfo != null and mate.seriesInfo != '' ">
+			and(
+			m.series_code like '%${mate.seriesInfo}%'
+			or
+			m.series_expl
+			like
+			'%${mate.seriesInfo}%'
+			)
+		</if>
+	</select>
+	
+	<select id="queryFinMateId" parameterType="String" resultType="String">
+		 select m.fin_mate_id from mdm_mate m where m.mate_code=#{mateCode}
+	</select>
+	
+	<select id="queryBuyerFromBuyerAndMateIdByMateId" parameterType="String" resultType="String">
+		select bm.buyer_id from mdm_buyer_mate  bm where bm.mate_id=#{mateId}
+	</select>
+	
+	<select id="findMaterialListByRB" resultMap="mate" parameterType="com.faujor.entity.mdm.MateDO">
+		select * from mdm_mate t
+		<where>
+			<if test="mateCode != null and mateCode !='' ">
+				and t.mate_code like '%${mateCode}%'
+			</if>
+			<if test="mateName != null and mateName !='' ">
+				and t.mate_name like '%${mateName}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="countMaterialListByRB" resultType="Integer" parameterType="com.faujor.entity.mdm.MateDO">
+		select count(1) from mdm_mate t
+		<where>
+			<if test="mateCode !=null and mateCode != ''">
+				and t.mate_code like '%${mateCode}%'
+			</if>
+			<if test="mateName != null and mateName !='' ">
+				and t.mate_name like '%${mateName}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="getMateCodeListByUsers" parameterType="list" resultType="String">
+		 select m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+		 on m.mate_id = bsm.mate_id
+		 where bsm.buyer_id in 
+		 <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
+		 	#{item.id}
+		 </foreach>
+	</select>
+</mapper>

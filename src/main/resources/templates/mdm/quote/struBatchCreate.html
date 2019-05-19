@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+<title>layui</title>
+</head>
+<body class='fau-body'>
+	<div class='divMargin divMargin1' style="float: left;">
+		<button class="layui-btn layui-btn-xs blueHollow" id="saveBtn">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+	</div>
+	<!-- <fieldset class="layui-elem-field layui-field-title"
+		style="margin-top: 20px;">
+		<legend>物料信息</legend>
+	</fieldset> -->
+	<div style="float: right; margin: 10px 15px;">
+		<button class="layui-btn layui-btn-xs blueHollow" id="addMateBtn">添加</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="delMateBtn">删除</button>
+	</div>
+	<div style="clear: both";></div>
+	<table id="mateTable"></table>
+	<form class="layui-form" action="" id="signForm">
+		<input type="text" id="tempList" th:value="${tempJson}" class="layui-hide" />
+		<input type="text" id="quoteTempId" name="quoteTempId" th:value="${qsd.quoteTempId}" class="layui-hide">
+		<input type="text" id="struList" name="struList" class="layui-hide">
+		<div class="layui-row">
+			<div class="layui-col-md8">
+				<div>
+					<label class="layui-form-label" style="width: 100px;">模板编码</label>
+					<div class="layui-input-inline" style="width: 73.5%">
+						<select name="tempCode" lay-verify="" lay-search="" lay-filter="tempSelected">
+							<option value="">请选择...</option>
+							<option th:each="temp:${tempList}" th:value="${temp.tempCode}" th:text="${temp.tempCode}"
+								th:selected="${temp.tempCode == qsd.tempCode}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">报价单位</label>
+					<div class="layui-input-inline">
+						<input type="text" name="quoteUnit" id="quoteUnit" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/struBatchCreate.js}"></script>
+</body>
+</html>

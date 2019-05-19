@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+</head>
+<style type="text/css">
+
+</style>
+<body>
+	<form action="" class="layui-form" style="margin-top: 10px;">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">月份</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" id="month_date" name="month_date" placeholder="yyyy-MM"> 
+						<input id="dateStr" class="layui-hide" th:value="${dateStr}"> 
+						<input id="currentDate" class="layui-hide" th:value="${currentDate}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-row" style="width: 100%; height: 400px; padding-top: 10px;" id="po_div">
+	</div>
+
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/echarts.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/rm/report/purchaseOrder.js}"></script>
+	
+</body>
+</html>

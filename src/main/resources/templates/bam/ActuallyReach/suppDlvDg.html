@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+</head>
+<style type="text/css">
+.margin-top20 {
+	margin-top: 20px;
+}
+
+.operateBtnGroup {
+	margin-left: 6%;
+}
+
+
+#searchBtn {
+    margin-left: 20px;
+    margin-top: 3px;
+}
+.btnDiv {
+	float: right;
+	margin-right: 40px;
+}
+</style>
+<body>
+	<form class="layui-form margin-top20" id="searchForm" action=""
+		method="post">
+		<input id="nextDevNum" type="hidden" th:value="${nextDevNum}" /> 
+		<input id="endDate" type="hidden" th:value="${endDate}" />
+		<div class="layui-row">
+			<div class=" layui-col-md4   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料编码</label>
+					<div class="layui-input-block">
+						<input type="text" id="mateCode" readonly="readonly"
+							th:value="${mateCode}" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md4   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料名称</label>
+					<div class="layui-input-block">
+						<input type="text" id="mateDesc" readonly="readonly"
+							th:value="${mateDesc}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class=" layui-col-md4   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">计划日期</label>
+					<div class="layui-input-inline" style='display:flex;'>
+						<input type="text" id="startDate" name="startDate" th:value="${startDate}" placeholder="yyyy-MM-dd" class="layui-input"  >
+						<div style='padding:0px 10px;line-height:38px;'>-</div>
+						<input type="text" id="endDate1" name="endDate" th:value="${endDate}" placeholder="yyyy-MM-dd" class="layui-input"  >
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md4   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">供应商</label>
+					<div class="layui-input-block">
+						<input type="text" id="suppName" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md2   layui-col-sm2">
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button" id="searchBtn">查询</button>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="pdrTable" lay-filter="pdrTable">
+		</table>
+	</div>
+	<div class="layui-row btnDiv">
+		<button class="layui-btn layui-btn-sm" id="cancleBtn">关闭</button>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/actuallyReach/suppDlvDg.js}"></script>
+</body>
+</html>

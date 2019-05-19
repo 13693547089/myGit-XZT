@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.bam.MatInfoMapper">
+	
+	<resultMap type="com.faujor.entity.sapcenter.bam.OraCxjhEntity" id="oraCxjhMap">
+		<result property="year" column="YEAR"/>
+		<result property="month" column="MONTH"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="zabc" column="ZABC"/>
+		<result property="zxspj" column="ZXSPJ"/>
+		<result property="zsntq" column="ZSNTQ"/>
+		<result property="zsykc" column="ZSYKC"/>
+		<result property="zbyjh" column="ZBYJH"/>
+		<result property="zsjsc" column="ZSJSC"/>
+		<result property="zbyxl" column="ZBYXL"/>
+	</resultMap>
+	
+	<resultMap id="padPlanMatMap" type="com.faujor.entity.sapcenter.bam.PadPlanMatDetail">
+			<result property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="prodSeriesCode" column="PROD_SERIES_CODE"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="rank" column="RANK"/>
+			<result property="threeAvgSales" column="THREE_AVG_SALES"/>
+			<result property="nationStock1" column="NATION_STOCK1"/>
+			<result property="nationStock2" column="NATION_STOCK2"/>
+			<result property="nationStock3" column="NATION_STOCK3"/>
+			<result property="padPlanQty" column="PAD_PLAN_QTY"/>
+			<result property="saleForeQty" column="SALE_FORE_QTY"/>
+			<result property="turnOverDays" column="TURN_OVER_DAYS"/>
+			<result property="nextSaleForeQty" column="NEXT_SALE_FORE_QTY"/>
+			<result property="estDeliQty" column="EST_DELI_QTY"/>
+			<result property="estSaleQty" column="EST_SALE_QTY"/>
+			<result property="actSaleQty" column="ACT_SALE_QTY"/>
+			<result property="actDeliQty" column="ACT_DELI_QTY"/>
+			<result property="actTurnOverDays" column="ACT_TURN_OVER_DAYS"/>
+			<result property="bigItemCode" column="BIG_ITEM_CODE"/>
+			<result property="bigItemExpl" column="BIG_ITEM_EXPL"/>
+	</resultMap>
+	
+	<resultMap id="tranPlanMatMap" type="com.faujor.entity.sapcenter.bam.TranPlanMatDetail">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="rank" column="RANK"/>
+			<result property="matUnit" column="MAT_UNIT"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="saleForeQty" column="SALE_FORE_QTY"/>
+			<result property="saleQty" column="SALE_QTY"/>
+			<result property="saleScale" column="SALE_SCALE"/>
+			<result property="planDevQty" column="PLAN_DEV_QTY"/>
+			<result property="actDevQty" column="ACT_DEV_QTY"/>
+			<result property="devScale" column="DEV_SCALE"/>
+			<result property="unDevQty" column="UN_DEV_QTY"/>
+			<result property="monQty" column="MON_QTY"/>
+			<result property="tueQty" column="TUE_QTY"/>
+			<result property="wedQty" column="WED_QTY"/>
+			<result property="thuQty" column="THU_QTY"/>
+			<result property="friQty" column="FRI_QTY"/>
+			<result property="satQty" column="SAT_QTY"/>
+			<result property="sunQty" column="SUN_QTY"/>
+	</resultMap>
+	
+	<select id='getMatInfoByYm' resultMap="oraCxjhMap">
+		select * from T_ORA_CXJH
+		WHERE YEAR = #{year} AND MONTH = #{month}
+	</select>
+	
+	<!-- nvl(A.ZYJRK,0) AS EST_DELI_QTY,nvl(A.ZYGXL,0) AS EST_SALE_QTY, 
+	round(nvl(A.ZSYKC,0)+nvl(A.ZYJRK,0)-nvl(A.ZYGXL,0),2) AS NATION_STOCK1,
+	case when nvl(A.ZYGXL,0)=0 then 0 else round(round(nvl(A.ZSYKC,0)+nvl(A.ZYJRK,0)-nvl(A.ZYGXL,0),2)*30/A.ZYGXL,2) end as TURN_OVER_DAYS -->
+	<select id="getPadPlanMatInfo" resultMap="padPlanMatMap" parameterType="java.util.Map">
+		SELECT '' as ID,rownum as SN,#{mainId} AS MAIN_ID,B.mat_code AS MAT_CODE,B.mat_name AS MAT_NAME,
+		B.series_code AS PROD_SERIES_CODE,B.series_name AS PROD_SERIES,nvl(A.ZABC,'') AS RANK,nvl(A.ZXSPJ,0) AS THREE_AVG_SALES,
+		round(nvl(A.ZSYKC,0)+0-0,0) AS NATION_STOCK1,
+		nvl(A.ZSYKC,0) as NATION_STOCK2,0 as pad_plan_qty,
+		nvl(B.saleForeQty,0) as SALE_FORE_QTY,
+		nvl(B.nextSaleForeQty,0) as NEXT_SALE_FORE_QTY,
+		0 AS EST_DELI_QTY,0 AS EST_SALE_QTY,nvl(A.ZBYXL,0) AS ACT_SALE_QTY,
+		nvl(A.ZSJSC,0) as ACT_DELI_QTY,0 as ACT_TURN_OVER_DAYS,B.bigItemCode AS BIG_ITEM_CODE,
+		B.bigItemExpl as BIG_ITEM_EXPL, 0 as TURN_OVER_DAYS from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.matCode} as mat_code,
+	        #{item.matName} as mat_name,
+	        #{item.prodSeriesCode} as series_code,
+	        #{item.prodSeries} as series_name,
+	        #{item.saleForeQty} as saleForeQty,
+	        #{item.nextSaleForeQty} as nextSaleForeQty,
+	        #{item.bigItemCode} as bigItemCode,
+	        #{item.bigItemExpl} as bigItemExpl,
+	        #{item.nationStock2} as NATION_STOCK2
+   		FROM dual 
+    	</foreach>
+    	) B left join T_ORA_CXJH A ON A.MATNR = B.mat_code 
+    	and A.YEAR = #{year} AND A.MONTH = #{month}
+    	left join T_ORA_CXJH C ON C.MATNR = B.mat_code 
+    	and C.YEAR = #{preYear} AND C.MONTH = #{month}
+    	left join T_ORA_CXJH D ON D.MATNR = B.mat_code 
+    	and D.YEAR = #{preYearT} AND D.MONTH = #{nextMonth}
+    	
+	</select>
+	
+	<select id="getTranPlanMatInfo" resultMap="tranPlanMatMap" parameterType="java.util.Map">
+		select a.*,rownum as SN from (SELECT '' as ID,#{mainId} AS MAIN_ID,B.mat_code AS MAT_CODE,
+		B.mat_name AS MAT_NAME,nvl(A.ZABC,'') AS RANK,B.series_name AS PROD_SERIES,nvl(B.SALE_FORE_QTY,0) as SALE_FORE_QTY,
+		nvl(A.ZBYXL,0) AS SALE_QTY,case when nvl(B.SALE_FORE_QTY,0)=0 then '' else 100*round(nvl(A.ZBYXL,0)/B.SALE_FORE_QTY,4)||'%' end AS SALE_SCALE, 
+		nvl(B.PLAN_DEV_QTY,0) AS PLAN_DEV_QTY,nvl(A.ZSJSC,0) as ACT_DEV_QTY,
+		case when nvl(B.SALE_FORE_QTY,0)=0 then '' else 100*round(nvl(A.ZSJSC,0)/B.SALE_FORE_QTY,4)||'%' end AS DEV_SCALE, nvl(B.PLAN_DEV_QTY,0)- nvl(A.ZSJSC,0) as UN_DEV_QTY,0 as MON_QTY,0 as TUE_QTY,
+		0 as WED_QTY,0 as THU_QTY,0 as FRI_QTY,0 as SAT_QTY,0 as SUN_QTY from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.matCode} as mat_code,
+	    	#{item.sn} as sn,
+	        #{item.matName} as mat_name,
+	        #{item.saleForeQty} as SALE_FORE_QTY,
+	        #{item.planDevQty} as PLAN_DEV_QTY,
+	        #{item.prodSeries} as series_name
+   		FROM dual 
+    	</foreach>
+    	) B left join T_ORA_CXJH A ON A.MATNR = B.mat_code 
+    	and A.YEAR = #{year} AND A.MONTH = #{month}
+    	order by b.sn ) a
+	</select>
+	
+</mapper>

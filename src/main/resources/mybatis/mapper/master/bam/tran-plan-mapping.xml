@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.TranPlanMapper">
+	<resultMap id="tranPlanMap" type="com.faujor.entity.bam.psm.TranPlan">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="tranCode" column="TRAN_CODE"/>
+			<result property="tranName" column="TRAN_NAME"/>
+			<result property="tranDate" column="TRAN_DATE"/>
+			<result property="status" column="STATUS"/>
+			<result property="crtDate" column="CRT_DATE"/>
+			<result property="crtUser" column="CRT_USER"/>
+			<result property="uptDate" column="UPT_DATE"/>
+			<result property="uptUser" column="UPT_USER"/>
+	</resultMap>
+	
+	<resultMap id="tranPlanDetailMap" type="com.faujor.entity.bam.psm.TranPlanDetail">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="rank" column="RANK"/>
+			<result property="matUnit" column="MAT_UNIT"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="saleForeQty" column="SALE_FORE_QTY"/>
+			<result property="saleQty" column="SALE_QTY"/>
+			<result property="saleScale" column="SALE_SCALE"/>
+			<result property="planDevQty" column="PLAN_DEV_QTY"/>
+			<result property="actDevQty" column="ACT_DEV_QTY"/>
+			<result property="devScale" column="DEV_SCALE"/>
+			<result property="unDevQty" column="UN_DEV_QTY"/>
+			<result property="monQty" column="MON_QTY"/>
+			<result property="tueQty" column="TUE_QTY"/>
+			<result property="wedQty" column="WED_QTY"/>
+			<result property="thuQty" column="THU_QTY"/>
+			<result property="friQty" column="FRI_QTY"/>
+			<result property="satQty" column="SAT_QTY"/>
+			<result property="sunQty" column="SUN_QTY"/>
+			<result property="sumQty" column="SUM_QTY"/>
+			<result property="estDevQty" column="EST_DEV_QTY"/>
+	</resultMap>
+	
+	<select id="getTranPlanByPage" resultMap="tranPlanMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select tranPlan.* from PS_TRAN_PLAN tranPlan 
+				  where 1=1 
+					<if test="tranName!=null and tranName!=''">
+						and tranPlan.TRAN_NAME like '%'||#{tranName}||'%'
+					</if>
+					<if test="status!=null and status!=''">
+						and tranPlan.STATUS = #{status}
+					</if>
+					<!-- <if test="tranDateStart!=null and tranDateStart!=''">
+						and to_char(tranPlan.TRAN_DATE,'yyyy-MM-dd') &gt;= #{tranDateStart}
+					</if>
+					<if test="tranDateEnd!=null and tranDateEnd!=''">
+						and to_char(tranPlan.TRAN_DATE,'yyyy-MM-dd') &lt;= #{tranDateEnd}
+					</if> -->
+					<if test="crtDateStart!=null and crtDateStart!=''">
+						and tranPlan.CRT_DATE &gt;= #{crtDateStart}
+					</if>
+					<if test="crtDateEnd!=null and crtDateEnd!=''">
+						and tranPlan.CRT_DATE &lt;= #{crtDateEnd}
+					</if>
+				order by tranPlan.TRAN_CODE desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getTranPlanCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from PS_TRAN_PLAN tranPlan  
+		where 1=1 
+		<if test="tranName!=null and tranName!=''">
+			and tranPlan.TRAN_NAME like '%'||#{tranName}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and tranPlan.STATUS = #{status}
+		</if>
+		<!-- <if test="tranDateStart!=null and tranDateStart!=''">
+			and to_char(tranPlan.TRAN_DATE,'yyyy-MM-dd') &gt;= #{tranDateStart}
+		</if>
+		<if test="tranDateEnd!=null and tranDateEnd!=''">
+			and to_char(tranPlan.TRAN_DATE,'yyyy-MM-dd') &lt;= #{tranDateEnd}
+		</if> -->
+		<if test="crtDateStart!=null and crtDateStart!=''">
+			and tranPlan.CRT_DATE &gt;= #{crtDateStart}
+		</if>
+		<if test="crtDateEnd!=null and crtDateEnd!=''">
+			and tranPlan.CRT_DATE &lt;= #{crtDateEnd}
+		</if>
+	</select>
+	
+	<select id="getTranPlanById" resultMap="tranPlanMap" parameterType="String">
+		select tranPlan.* from PS_TRAN_PLAN tranPlan 
+		where 1=1 and tranPlan.ID = #{id}
+	</select>
+	
+	<delete id="delTranPlanById" parameterType="String">
+		delete from PS_TRAN_PLAN where ID=#{id}
+	</delete>
+	
+	<insert id="saveTranPlan" parameterType="com.faujor.entity.bam.psm.TranPlan">
+		insert into PS_TRAN_PLAN (id,sn,TRAN_CODE,TRAN_NAME,TRAN_DATE,status,
+  		crt_date,crt_user)
+		values
+		(#{id},#{sn},#{tranCode},#{tranName},#{tranDate},
+		#{status},#{crtDate},#{crtUser})
+	</insert>
+	
+	<update id="updateTranPlan" parameterType="com.faujor.entity.bam.psm.TranPlan">
+		update PS_TRAN_PLAN set
+			sn=#{sn},TRAN_CODE=#{tranCode},
+			TRAN_NAME=#{tranName},TRAN_DATE=#{tranDate},
+			status=#{status},upt_date=#{uptDate},upt_user=#{uptUser}
+		where id=#{id}
+	</update>
+	
+	<update id="updateTranPlanStatus" >
+		update PS_TRAN_PLAN set
+		  status=#{status}
+		where id=#{id}
+	</update>
+	
+	<select id="getTranPlanDetailPage" resultMap="tranPlanDetailMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select detail.* from PS_TRAN_PLAN_DETAIL detail 
+				  where 1=1 and detail.MAIN_ID = #{mainId} 
+				order by detail.sn asc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getTranPlanDetailListByMainId" resultMap="tranPlanDetailMap" parameterType="String">
+		select a.*,rownum as sn from (select a.id,a.main_id,a.mat_code,a.mat_name,a.RANK,a.mat_unit,m.series_expl as prod_series,
+  		a.SALE_FORE_QTY,a.SALE_QTY,a.SALE_SCALE,a.PLAN_DEV_QTY,a.ACT_DEV_QTY,a.DEV_SCALE,a.UN_DEV_QTY,
+  		a.MON_QTY,a.TUE_QTY,a.WED_QTY,a.THU_QTY,a.FRI_QTY,a.SAT_QTY,a.SUN_QTY,a.EST_DEV_QTY,a.SUM_QTY 
+  		from PS_TRAN_PLAN_DETAIL a 
+		left join mdm_mate m on a.mat_code = m.mate_code and m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		where a.MAIN_ID=#{mainId}
+		order by m.produ_code,m.series_code,m.big_item_code,m.small_item_code,a.mat_code) a
+	</select>
+	
+	<select id="getTranPlanDetailCount" resultType="java.lang.Integer" parameterType="String">
+		select count(1) from PS_TRAN_PLAN_DETAIL 
+		where MAIN_ID=#{mainId}
+	</select>
+	
+	<insert id="saveTranPlanDetailList" parameterType="java.util.List">
+		
+		insert into PS_TRAN_PLAN_DETAIL (id,sn,main_id,mat_code,mat_name,RANK,mat_unit,prod_series,
+  		SALE_FORE_QTY,SALE_QTY,SALE_SCALE,PLAN_DEV_QTY,ACT_DEV_QTY,DEV_SCALE,UN_DEV_QTY,
+  		MON_QTY,TUE_QTY,WED_QTY,THU_QTY,FRI_QTY,SAT_QTY,SUN_QTY,EST_DEV_QTY,SUM_QTY) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode},
+	        #{item.matName},
+	        #{item.rank},
+	        #{item.matUnit},
+	        #{item.prodSeries},
+	        #{item.saleForeQty},
+	        #{item.saleQty},
+	        #{item.saleScale},
+	        #{item.planDevQty},
+	        #{item.actDevQty},
+	        #{item.devScale},
+	        #{item.unDevQty},
+	        #{item.monQty},
+	        #{item.tueQty},
+	        #{item.wedQty},
+	        #{item.thuQty},
+	        #{item.friQty},
+	        #{item.satQty},
+	        #{item.sunQty},
+	        #{item.estDevQty},
+	        #{item.sumQty}
+   		FROM dual 
+    	</foreach>
+    	) A 
+	</insert>
+	
+	<delete id="delTranPlanDetailByMainId" parameterType="String">
+		delete from PS_TRAN_PLAN_DETAIL where MAIN_ID=#{mainId}
+	</delete>
+	
+	<select id="getMatInfoFromPadPlan" resultMap="tranPlanDetailMap" >
+		select a.*,rownum as sn from (select a.* from (SELECT B.mat_code AS MAT_CODE,
+		B.mat_name AS MAT_NAME,B.series_name AS PROD_SERIES,nvl(A.SALE_FORE_QTY,0) as SALE_FORE_QTY,
+		nvl(A.PLAN_DEV_QTY,0) AS PLAN_DEV_QTY from 
+		(
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.mateCode} as mat_code,
+	        #{item.mateName} as mat_name,
+	        #{item.seriesExpl} as series_name
+   		FROM dual 
+    	</foreach>
+    	) B
+    	left join 
+		(select a.MAT_CODE,a.SALE_FORE_QTY,a.PAD_PLAN_QTY as PLAN_DEV_QTY from PS_PAD_PLAN_DETAIL a
+   		inner join PS_PAD_PLAN b on a.main_id = b.id
+   		where b.plan_month = #{ym}
+   		) A ON B.mat_code = A.MAT_CODE ) a
+    	left join mdm_mate m on a.mat_code = m.mate_code and m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+    	order by m.produ_code,m.series_code,m.big_item_code,m.small_item_code,a.mat_code ) a
+	</select>
+	
+	<select id="getTranPlanDetailFromPadPlan" resultMap="tranPlanDetailMap" parameterType="Map">
+		select a.*,rownum as sn from (select a.* from (SELECT a.MAT_CODE,a.MAT_NAME,a.PROD_SERIES,nvl(A.SALE_FORE_QTY,0) as SALE_FORE_QTY,
+		nvl(A.PAD_PLAN_QTY,0) AS PLAN_DEV_QTY,a.PROD_SERIES_CODE from PS_PAD_PLAN_DETAIL a
+   		inner join PS_PAD_PLAN b on a.main_id = b.id
+   		where 1=1 
+   		<if test="ym!=null and ym!=''">
+			and b.plan_month = #{ym}
+		</if>
+		<if test="status!=null and status!=''">
+			and b.status = #{status}
+		</if>
+		<if test="matInfo!=null and matInfo!=''">
+			and (A.MAT_CODE LIKE '%'||#{matInfo}||'%' OR A.MAT_NAME LIKE '%'||#{matInfo}||'%')
+		</if>
+		<if test="seriesExpl!=null and seriesExpl!=''">
+			and A.PROD_SERIES LIKE '%'||#{seriesExpl}||'%'
+		</if>
+		) a
+    	left join mdm_mate m on a.mat_code = m.mate_code and m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+    	order by m.produ_code,m.series_code,m.big_item_code,m.small_item_code,a.mat_code ) a
+	</select>
+	
+	<!-- 根据交货计划修改调拨的数据-->
+	<update id="updateTranPlanDetailFromPadPlan" parameterType="Map">
+		update ps_tran_plan_detail detail
+		set (detail.Sale_Fore_Qty,detail.sale_qty,
+		detail.plan_dev_qty,detail.act_dev_qty,
+		detail.sale_scale,detail.un_dev_qty,detail.dev_scale) =
+		(select pad.SALE_FORE_QTY,pad.SALE_QTY,pad.PLAN_DEV_QTY,pad.ACT_DEV_QTY,
+		case when nvl(pad.SALE_FORE_QTY,0)=0 then '0%' else 100*round(pad.SALE_QTY/pad.SALE_FORE_QTY,4)||'%' end AS SALE_SCALE,
+		pad.PLAN_DEV_QTY-pad.ACT_DEV_QTY-detail.est_dev_qty as UN_DEV_QTY,
+		case when nvl(pad.PLAN_DEV_QTY,0)=0 then '0%' else 100*round((pad.ACT_DEV_QTY+detail.est_dev_qty)/pad.PLAN_DEV_QTY,4)||'%' end AS DEV_SCALE
+		  from 
+		( SELECT a.MAT_CODE,
+		         nvl(A.SALE_FORE_QTY, 0) as SALE_FORE_QTY,
+		         nvl(A.ACT_SALE_QTY, 0) AS SALE_QTY,
+		         nvl(A.PAD_PLAN_QTY, 0) AS PLAN_DEV_QTY,
+		         nvl(A.ACT_DELI_QTY, 0) as ACT_DEV_QTY
+		    from PS_PAD_PLAN_DETAIL a
+		   inner join PS_PAD_PLAN b
+		      on a.main_id = b.id
+		   where 1 = 1
+		     and b.plan_month = #{planYm}) pad where pad.MAT_CODE = detail.mat_code
+		)
+		where detail.main_id = #{mainId} and exists (select 1 from ( SELECT a.MAT_CODE,
+		         nvl(A.SALE_FORE_QTY, 0) as SALE_FORE_QTY,
+		         nvl(A.ACT_SALE_QTY, 0) AS SALE_QTY,
+		         nvl(A.PAD_PLAN_QTY, 0) AS PLAN_DEV_QTY,
+		         nvl(A.ACT_DELI_QTY, 0) as ACT_DEV_QTY
+		    from PS_PAD_PLAN_DETAIL a
+		   inner join PS_PAD_PLAN b
+		      on a.main_id = b.id
+		   where 1 = 1
+		     and b.plan_month = #{planYm}) pad where pad.MAT_CODE = detail.mat_code)
+	</update>
+</mapper>

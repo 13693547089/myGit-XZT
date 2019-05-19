@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.bam.SapPdrMapper">
+	<resultMap id="pdrMap" type="com.faujor.entity.bam.psm.Pdr">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="pdrCode" column="PDR_CODE"/>
+			<result property="produceDate" column="PRODUCE_DATE"/>
+			<result property="suppName" column="SUPP_NAME"/>
+			<result property="suppCode" column="SUPP_CODE"/>
+			<result property="status" column="STATUS"/>
+			<result property="crtDate" column="CRT_DATE"/>
+			<result property="crtUser" column="CRT_USER"/>
+			<result property="uptDate" column="UPT_DATE"/>
+			<result property="uptUser" column="UPT_USER"/>
+			<result property="remark" column="REMARK"/>
+	</resultMap>
+	
+	<resultMap id="pdrDetailMap" type="com.faujor.entity.bam.psm.PdrDetail">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="matUnit" column="MAT_UNIT"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="pdcPlanQty" column="PDC_PLAN_QTY"/>
+			<result property="currNeedQty" column="CURR_NEED_QTY"/>
+			<result property="preCompQty" column="PRE_COMP_QTY"/>
+			<result property="currCompQty" column="CURR_COMP_QTY"/>
+			<result property="compScale" column="COMP_SCALE"/>
+			<result property="actPdcQty" column="ACT_PDC_QTY"/>
+			<result property="actDevQty" column="ACT_DEV_QTY"/>
+			<result property="stockQty" column="STOCK_QTY"/>
+			<result property="batch" column="BATCH"/>
+			<result property="remark" column="REMARK"/>
+			<result property="qcStock" column="QC_STOCK"/>
+			<result property="unQcStock" column="UN_QC_STOCK"/>
+			<result property="beginStock" column="BEGIN_STOCK"/>
+			<result property="theoryStock" column="THEORY_STOCK"/>
+			<result property="diffStock" column="DIFF_STOCK"/>
+			<result property="preSumDev" column="PRE_SUM_DEV"/>
+			<result property="devPlanQty" column="DEV_PLAN_QTY"/>
+			<result property="devCompScale" column="DEV_COMP_SCALE"/>
+			<result property="currSumDev" column="CURR_SUM_DEV"/>
+	</resultMap>
+	
+	<resultMap id="pdrItemMap" type="com.faujor.entity.bam.psm.PdrItem">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="itemType" column="ITEM_TYPE"/>
+			<result property="batchNo" column="BATCH_NO"/>
+			<result property="qty" column="QTY"/>
+			<result property="remark" column="REMARK"/>
+			<result property="qcQty" column="QC_QTY"/>
+			<result property="unQcQty" column="UN_QC_QTY"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="boardName" column="BOARD_NAME"/>
+	</resultMap>
+	
+	<delete id="delPdrById" parameterType="String">
+		delete from t_srm_PS_PDR where ID=#{id}
+	</delete>
+	
+	<insert id="savePdr" parameterType="com.faujor.entity.bam.psm.Pdr">
+		insert into t_srm_PS_PDR (id,sn,PDR_CODE,PRODUCE_DATE,SUPP_NAME,SUPP_CODE,status,
+  		crt_date,crt_user,remark)
+		values
+		(#{id},#{sn},#{pdrCode},#{produceDate},#{suppName},#{suppCode},
+		#{status},#{crtDate},#{crtUser},#{remark})
+	</insert>
+	
+	<insert id="savePdrDetailList" parameterType="java.util.List">
+		<!-- <selectKey keyProperty="id" resultType="String" order="BEFORE">
+	        select sys_guid() from dual
+	    </selectKey> -->
+		insert into t_srm_PS_PDR_DETAIL (id,sn,main_id,mat_code,mat_name,mat_unit,prod_series,
+  		PDC_PLAN_QTY,CURR_NEED_QTY,PRE_COMP_QTY,CURR_COMP_QTY,COMP_SCALE,ACT_PDC_QTY,ACT_DEV_QTY,CURR_SUM_DEV,
+  		STOCK_QTY,BATCH,REMARK,QC_STOCK,UN_QC_STOCK,BEGIN_STOCK,THEORY_STOCK,DIFF_STOCK,PRE_SUM_DEV,DEV_PLAN_QTY,DEV_COMP_SCALE) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode},
+	        #{item.matName},
+	        #{item.matUnit},
+	        #{item.prodSeries},
+	        #{item.pdcPlanQty},
+	        #{item.currNeedQty},
+	        #{item.preCompQty},
+	        #{item.currCompQty},
+	        #{item.compScale},
+	        #{item.actPdcQty},
+	        #{item.actDevQty},
+	        #{item.currSumDev},
+	        #{item.stockQty},
+	        #{item.batch},
+	        #{item.remark},
+	        #{item.qcStock},
+	        #{item.unQcStock},
+	        #{item.beginStock},
+	        #{item.theoryStock},
+	        #{item.diffStock},
+	        #{item.preSumDev},
+	        #{item.devPlanQty},
+	        #{item.devCompScale}
+   		FROM dual 
+    	</foreach>
+    	) A 
+	</insert>
+	
+	<delete id="delPdrDetailByMainId" parameterType="String">
+		delete from t_srm_PS_PDR_DETAIL where MAIN_ID=#{mainId}
+	</delete>
+	
+	<insert id="savePdrItemList" parameterType="java.util.List">
+		insert into t_srm_PS_PDR_ITEM (id,sn,main_id,mat_code,mat_name,item_type,batch_no,
+  		qty,remark,QC_QTY,UN_QC_QTY,PROD_SERIES,BOARD_NAME) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode},
+	        #{item.matName},
+	        #{item.itemType},
+	        #{item.batchNo},
+	        #{item.qty},
+	        #{item.remark},
+	        #{item.qcQty},
+	        #{item.unQcQty},
+	        #{item.prodSeries},
+	        #{item.boardName}
+   		FROM dual 
+    	</foreach>
+    	) A 
+	</insert>
+	
+	<delete id="delPdrItemByMainId" parameterType="String">
+		delete from t_srm_PS_PDR_ITEM where MAIN_ID=#{mainId}
+	</delete>
+</mapper>

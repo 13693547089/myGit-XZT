@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.task.TaskMapper2">
+	<resultMap type="com.faujor.entity.task.TaskDO" id="taskMap">
+		<id property="id" column="id" />
+		<result property="taskName" column="task_name" />
+		<result property="sdata1" column="sdata1" />
+		<result property="processCode" column="process_code" />
+		<result property="node" column="node" />
+		<result property="actionUrl" column="action_url" />
+		<result property="executor" column="executor" />
+		<result property="executorName" column="executor_name" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="completeTime" column="complete_time" />
+		<result property="completor" column="completor" />
+		<result property="completeName" column="complete_name" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.task.ProcTestDO" id="testDO">
+		<id property="id" column="id" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<select id="findTaskBySdata1" resultMap="taskMap" parameterType="String">
+		select * from tm_task where sdata1 = #{sdata1}
+	</select>
+
+	<insert id="batchSaveTask" parameterType="List">
+		insert all into tm_task
+		(id, task_name, sdata1, process_code, node,
+		executor, executor_name,
+		create_time,
+		creator,creator_name,complete_time) values
+		<foreach collection="list" item="item" index="index" open=""
+			close=""
+			separator="into tm_task (id, task_name, sdata1, process_code, node, executor, executor_name,
+		create_time, creator,creator_name,complete_time) values">
+			(#{item.id}, #{item.taskName}, #{item.sdata1},
+			#{item.processCode},
+			#{item.node}, #{item.executor},
+			#{item.executorName}, #{item.createTime}, #{item.creator},
+			#{item.creatorName}, #{item.completeTime} )
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<insert id="batchSaveTaskHis" parameterType="List">
+		insert all into tm_task_his (id, task_name, sdata1, process_code,
+		node, executor, executor_name, create_time,
+		creator,creator_name,complete_time, completor, complete_name)values
+		<foreach collection="list" item="item" index="index" open=""
+			close=""
+			separator="into tm_task_his (id, task_name, sdata1, process_code, node, executor, executor_name,
+						create_time, creator,creator_name,complete_time, completor, complete_name) values">
+			(#{item.id}, #{item.taskName}, #{item.sdata1},
+			#{item.processCode}, #{item.node}, #{item.executor},
+			#{item.executorName}, #{item.createTime}, #{item.creator},
+			#{item.creatorName}, #{item.completeTime}, #{item.completor},
+			#{item.completeName} )
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<delete id="batchRemoveTask" parameterType="List">
+		delete from tm_task t where t.id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item.id}
+		</foreach>
+	</delete>
+
+	<select id="findUndoTaskList" resultMap="taskMap" parameterType="String">
+		select t.* from tm_task t where t.executor = #{executor}
+	</select>
+
+	<select id="findDoneTaskList" resultMap="taskMap" parameterType="String">
+		select t.* from tm_task_his t where t.executor = #{executor}
+	</select>
+
+	<select id="findTaskByStada1AndExecutor" resultMap="taskMap">
+		select * from
+		tm_task where sdata1 = #{sdata1} and executor =
+		#{userId}
+	</select>
+
+	<update id="updateTaskInfo" parameterType="com.faujor.entity.task.TaskDO">
+		update tm_task set
+		create_time = #{createTime}, complete_time =#{completeTime}, completor
+		= #{completor}, complete_name = #{completeName} where id = #{id}
+	</update>
+
+	<select id="findTestById" parameterType="String" resultMap="testDO">
+		select * from
+		tm_proc_test where id = #{id}
+	</select>
+
+	<insert id="saveTestInfo" parameterType="com.faujor.entity.task.TestDO">
+		insert into tm_proc_test
+		(id, remark) values (#{id}, #{remark})
+	</insert>
+
+	<update id="updateTestInfo" parameterType="com.faujor.entity.task.TestDO">
+		update tm_proc_test
+		set remark = #{remark} where id = #{id}
+	</update>
+
+	<insert id="saveTaskInfo" parameterType="com.faujor.entity.task.TaskDO">
+		insert into tm_task (id,
+		task_name, sdata1, process_code, node, executor, executor_name,
+		create_time, creator, creator_name, complete_time, action_url) values
+		(#{id}, #{taskName},#{sdata1}, #{processCode},#{node}, #{executor},
+		#{executorName},#{createTime}, #{creator}, #{creatorName},
+		#{completeTime},#{actionUrl})
+	</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8"></meta>
+<head th:include="include::header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div id="exampleToolbar" role="group">
+						<button type="button" class="btn btn-primary" onclick="add()">添加
+						</button>
+						<button type="button" class="btn btn-danger"
+							onclick="batchRemove()">删除</button>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+			</script>
+		</div>
+		<div>
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div>
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/privileges/role/role.js">
+		
+	</script>
+</body>
+</html>

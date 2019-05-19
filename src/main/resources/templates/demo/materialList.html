@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>物料主数据列表</title>
+<link rel="stylesheet" href="/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/cssCommon/Common.css}">
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+td:nth-child(1) {
+	border-right: none !important;
+}
+
+th:nth-child(1) {
+	border-right: none !important;
+}
+</style>
+
+</head>
+<body>
+	<div class="demoTable">
+		<form class="layui-form" action="" method="post">
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label"
+							style="width: 100px; box-sizing: border-box; color: #676a6c; margin-bottom: 5px">物料</label>
+						<div class="layui-input-block">
+							<input type="text" id="mateInfo" name="mateInfo"
+								placeholder="物料编码/名称" style="width: 70%" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label"
+							style="width: 100px; box-sizing: border-box; color: #676a6c; margin-bottom: 5px">物料组</label>
+						<div class="layui-input-block">
+							<input type="text" id="mateGroupInfo" name="mateGroupInfo"
+								placeholder="物料组编码/描述" style="width: 70%" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label"
+							style="width: 100px; box-sizing: border-box; color: #676a6c; margin-bottom: 5px">物料类型</label>
+						<div class="layui-input-block">
+							<input type="text" id="mateTypeInfo" name="mateTypeInfo"
+								placeholder="物料类型/描述" style="width: 70%" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</form>
+		<div class="layui-row">
+			<div class="layui-col-md9">
+				<button class="layui-btn layui-btn-sm" id="exportSupp">导出</button>
+			</div>
+			<div class="layui-col-md2">
+				<button class="layui-btn layui-btn-sm" data-type="reload"
+					id="serachSupp">搜索</button>
+				<button class="layui-btn layui-btn-sm" id="reset">重置</button>
+			</div>
+		</div>
+	</div>
+
+	<table class="layui-table"
+		lay-data="{width:'100%', height:'auto', url:'/page/queryMaterialByPage', page:true, id:'mateTableId',limit:10}"
+		lay-filter="demo">
+		<thead>
+			<tr>
+				<th lay-data="{type:'numbers', fixed:'left'}">序号</th>
+				<th lay-data="{field:'finMateId', align:'center',width:160}">成品物料编码</th>
+				<th
+					lay-data="{field:'mateCode', align:'center',width:154,event: 'setSign'}">物料编码</th>
+				<th
+					lay-data="{field:'mateName', align:'center',width:363 ,event: 'setSign'}">物料名称</th>
+				<th
+					lay-data="{field:'mateGroupExpl',align:'center', width:183,event: 'setSign'}">物料组说明</th>
+				<th lay-data="{field:'mateTypeExpl',align:'center', width:153}">物料类型说明</th>
+				<th lay-data="{field:'basicUnit', align:'center',width:120}">基本单位</th>
+				<th lay-data="{field:'procUnit', align:'center',width:147}">采购单位</th>
+			</tr>
+		</thead>
+	</table>
+	<script type="text/javascript" src="/layui/layui.js"></script>
+	<script type="text/javascript" src="/js/appjs/demo/materialList.js"></script>
+
+
+
+
+</body>
+</html>

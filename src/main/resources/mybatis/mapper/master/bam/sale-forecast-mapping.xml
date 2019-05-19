@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.SaleForecastMapper">
+  <resultMap id="saleForecastMap" type="com.faujor.entity.bam.psm.SaleForecast">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="FSCT_CODE" jdbcType="VARCHAR" property="fsctCode" />
+    <result column="FSCT_NAME" jdbcType="VARCHAR" property="fsctName" />
+    <result column="FSCT_YEAR" jdbcType="VARCHAR" property="fsctYear" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="CRT_DATE" jdbcType="VARCHAR" property="crtDate" />
+    <result column="CRT_USER" jdbcType="VARCHAR" property="crtUser" />
+    <result column="UPT_DATE" jdbcType="VARCHAR" property="uptDate" />
+    <result column="UPT_USER" jdbcType="VARCHAR" property="uptUser" />
+    <result column="CRT_USER_CODE" jdbcType="VARCHAR" property="crtUserCode" />
+  </resultMap>
+  
+  <resultMap id="saleFcstDetailMap" type="com.faujor.entity.bam.psm.SaleFcstDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="SN" jdbcType="VARCHAR" property="sn" />
+    <result column="MAIN_ID" jdbcType="VARCHAR" property="mainId" />
+    <result column="MAT_CODE" jdbcType="VARCHAR" property="matCode" />
+    <result column="MAT_NAME" jdbcType="VARCHAR" property="matName" />
+    <result column="PROD_SERIES_CODE" jdbcType="VARCHAR" property="prodSeriesCode" />
+    <result column="PROD_SERIES" jdbcType="VARCHAR" property="prodSeries" />
+    <result column="BIG_ITEM_CODE" jdbcType="VARCHAR" property="bigItemCode" />
+    <result column="BIG_ITEM_EXPL" jdbcType="VARCHAR" property="bigItemExpl" />
+    <result column="SALE_FORE_QTY1" jdbcType="DECIMAL" property="saleForeQty1" />
+    <result column="SALE_FORE_QTY2" jdbcType="DECIMAL" property="saleForeQty2" />
+    <result column="SALE_FORE_QTY3" jdbcType="DECIMAL" property="saleForeQty3" />
+    <result column="SALE_FORE_QTY4" jdbcType="DECIMAL" property="saleForeQty4" />
+    <result column="SALE_FORE_QTY5" jdbcType="DECIMAL" property="saleForeQty5" />
+    <result column="SALE_FORE_QTY6" jdbcType="DECIMAL" property="saleForeQty6" />
+    <result column="SALE_FORE_QTY7" jdbcType="DECIMAL" property="saleForeQty7" />
+    <result column="SALE_FORE_QTY8" jdbcType="DECIMAL" property="saleForeQty8" />
+    <result column="SALE_FORE_QTY9" jdbcType="DECIMAL" property="saleForeQty9" />
+    <result column="SALE_FORE_QTY10" jdbcType="DECIMAL" property="saleForeQty10" />
+    <result column="SALE_FORE_QTY11" jdbcType="DECIMAL" property="saleForeQty11" />
+    <result column="SALE_FORE_QTY12" jdbcType="DECIMAL" property="saleForeQty12" />
+    
+    <result column="SALE_FORE1" jdbcType="DECIMAL" property="saleFore1" />
+    <result column="SALE_FORE2" jdbcType="DECIMAL" property="saleFore2" />
+    <result column="SALE_FORE3" jdbcType="DECIMAL" property="saleFore3" />
+    <result column="SALE_FORE4" jdbcType="DECIMAL" property="saleFore4" />
+    <result column="SALE_FORE5" jdbcType="DECIMAL" property="saleFore5" />
+    <result column="SALE_FORE6" jdbcType="DECIMAL" property="saleFore6" />
+    <result column="SALE_FORE7" jdbcType="DECIMAL" property="saleFore7" />
+    <result column="SALE_FORE8" jdbcType="DECIMAL" property="saleFore8" />
+    <result column="SALE_FORE9" jdbcType="DECIMAL" property="saleFore9" />
+    <result column="SALE_FORE10" jdbcType="DECIMAL" property="saleFore10" />
+    <result column="SALE_FORE11" jdbcType="DECIMAL" property="saleFore11" />
+    <result column="SALE_FORE12" jdbcType="DECIMAL" property="saleFore12" />
+    <result column="RANK" jdbcType="VARCHAR" property="rank" />
+    <result column="SUM_SALE_FORE1" jdbcType="DECIMAL" property="sumSaleFore1" />
+    <result column="SUM_SALE_FORE2" jdbcType="DECIMAL" property="sumSaleFore2" />
+    <result column="SUM_SALE_FORE3" jdbcType="DECIMAL" property="sumSaleFore3" />
+    
+    <result column="sumnum" property="sumnum" />
+  </resultMap>
+  
+  <select id="getSaleFcstByPage" resultMap="saleForecastMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select saleFcst.* from PS_SALE_FORECAST saleFcst 
+				  where 1=1 
+					<if test="fsctCode!=null and fsctCode!=''">
+						and saleFcst.FSCT_CODE like '%'||#{fsctCode}||'%'
+					</if>
+					<if test="fsctName!=null and fsctName!=''">
+						and saleFcst.FSCT_NAME like '%'||#{fsctName	}||'%'
+					</if>
+					<if test="status!=null and status!=''">
+						and saleFcst.STATUS = #{status}
+					</if>
+					<if test="crtDateStart!=null and crtDateStart!=''">
+						and saleFcst.CRT_DATE &gt;= #{crtDateStart}
+					</if>
+					<if test="crtDateEnd!=null and crtDateEnd!=''">
+						and saleFcst.CRT_DATE &lt;= #{crtDateEnd}
+					</if>
+					<if test="crtUser!=null and crtUser!=''">
+						and saleFcst.CRT_USER = #{crtUser}
+					</if>
+				order by saleFcst.FSCT_CODE desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getSaleFcstCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from PS_SALE_FORECAST saleFcst 
+		where 1=1 
+		<if test="fsctCode!=null and fsctCode!=''">
+			and saleFcst.FSCT_CODE like '%'||#{fsctCode}||'%'
+		</if>
+		<if test="fsctName!=null and fsctName!=''">
+			and saleFcst.FSCT_NAME like '%'||#{fsctName	}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and saleFcst.STATUS = #{status}
+		</if>
+		<if test="crtDateStart!=null and crtDateStart!=''">
+			and saleFcst.CRT_DATE &gt;= #{crtDateStart}
+		</if>
+		<if test="crtDateEnd!=null and crtDateEnd!=''">
+			and saleFcst.CRT_DATE &lt;= #{crtDateEnd}
+		</if>
+		<if test="crtUser!=null and crtUser!=''">
+			and saleFcst.CRT_USER = #{crtUser}
+		</if>
+		
+		<!-- 判断是否存在相同年度的条件 -->
+		<if test="fsctYear!=null and fsctYear!=''">
+			and saleFcst.fsct_year = #{fsctYear}
+		</if>
+		<if test="nonId!=null and nonId!=''">
+			and saleFcst.ID != #{nonId}
+		</if>
+	</select>
+	
+	<select id="getSaleFcstById" resultMap="saleForecastMap" parameterType="String">
+		select saleFcst.* from PS_SALE_FORECAST saleFcst 
+		where 1=1 and saleFcst.ID = #{id}
+	</select>
+	
+	<select id="getSaleFcstByCondition" resultMap="saleForecastMap" parameterType="Map">
+		select saleFcst.* from PS_SALE_FORECAST saleFcst 
+		where 1=1 
+		<if test="id!=null and id!=''">
+			and saleFcst.ID = #{id}
+		</if>
+		<if test="status!=null and status!=''">
+			and saleFcst.STATUS = #{status}
+		</if>
+		<if test="fsctCode!=null and fsctCode!=''">
+			and saleFcst.FSCT_CODE like '%'||#{fsctCode}||'%'
+		</if>
+		<if test="fsctName!=null and fsctName!=''">
+			and saleFcst.FSCT_NAME like '%'||#{fsctName	}||'%'
+		</if>
+		<if test="fsctYear!=null and fsctYear!=''">
+			and saleFcst.fsct_year = #{fsctYear}
+		</if>
+		order by saleFcst.FSCT_CODE desc
+	</select>
+	
+	<delete id="delSaleFcstById" parameterType="String">
+		delete from PS_SALE_FORECAST where ID=#{id}
+	</delete>
+	
+	<insert id="saveSaleFcst" parameterType="com.faujor.entity.bam.psm.SaleForecast">
+		insert into PS_SALE_FORECAST (ID, FSCT_CODE, FSCT_NAME, FSCT_YEAR, 
+		STATUS, REMARK, CRT_DATE, CRT_USER, UPT_DATE, UPT_USER,CRT_USER_CODE)
+    	values (#{id,jdbcType=VARCHAR}, #{fsctCode,jdbcType=VARCHAR}, #{fsctName,jdbcType=VARCHAR}, 
+	    #{fsctYear,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+	    #{crtDate,jdbcType=VARCHAR}, #{crtUser,jdbcType=VARCHAR}, #{uptDate,jdbcType=VARCHAR}, 
+	    #{uptUser,jdbcType=VARCHAR},#{crtUserCode,jdbcType=VARCHAR})
+	</insert>
+  	
+	<update id="updateSaleFcstStatus" parameterType="Map">
+		update PS_SALE_FORECAST set status=#{status}
+		where 1=1 
+		<if test="nonId!=null and nonId!=''">
+			and id != #{nonId}
+		</if>
+		<if test="id!=null and id!=''">
+			and id=#{id}
+		</if>
+	</update>
+	
+	<select id="getSaleFcstDetailListByMainId" resultMap="saleFcstDetailMap" parameterType="String">
+		select ID,rownum as sn, MAIN_ID, MAT_CODE, 
+	      MAT_NAME, PROD_SERIES_CODE, PROD_SERIES, 
+	      BIG_ITEM_CODE, BIG_ITEM_EXPL, SALE_FORE_QTY1, 
+	      SALE_FORE_QTY2, SALE_FORE_QTY3, SALE_FORE_QTY4, 
+	      SALE_FORE_QTY5, SALE_FORE_QTY6, SALE_FORE_QTY7, 
+	      SALE_FORE_QTY8, SALE_FORE_QTY9, SALE_FORE_QTY10, 
+	      SALE_FORE_QTY11, SALE_FORE_QTY12, SALE_FORE1, 
+	      SALE_FORE2, SALE_FORE3, SALE_FORE4,SALE_FORE5, SALE_FORE6, SALE_FORE7,
+	      SALE_FORE8, SALE_FORE9, SALE_FORE10,SALE_FORE11, SALE_FORE12,RANK,
+	      SUM_SALE_FORE1,SUM_SALE_FORE2,SUM_SALE_FORE3 
+	      from PS_SALE_FCST_DETAIL 
+		where MAIN_ID=#{mainId}
+		order by PROD_SERIES,BIG_ITEM_EXPL,mat_name
+	</select>
+	
+	<select id="getSaleFcstDetailCount" resultType="java.lang.Integer" parameterType="String">
+		select count(1) from PS_SALE_FCST_DETAIL 
+		where MAIN_ID=#{mainId}
+	</select>
+	
+	<insert id="saveSaleFcstDetailList" parameterType="java.util.List">
+      insert into PS_SALE_FCST_DETAIL (ID, MAIN_ID, MAT_CODE, 
+      MAT_NAME, PROD_SERIES_CODE, PROD_SERIES, 
+      BIG_ITEM_CODE, BIG_ITEM_EXPL, SALE_FORE_QTY1, 
+      SALE_FORE_QTY2, SALE_FORE_QTY3, SALE_FORE_QTY4, 
+      SALE_FORE_QTY5, SALE_FORE_QTY6, SALE_FORE_QTY7, 
+      SALE_FORE_QTY8, SALE_FORE_QTY9, SALE_FORE_QTY10, 
+      SALE_FORE_QTY11, SALE_FORE_QTY12, SALE_FORE1, 
+      SALE_FORE2, SALE_FORE3, SALE_FORE4,SALE_FORE5, SALE_FORE6, SALE_FORE7, 
+      SALE_FORE8, SALE_FORE9, SALE_FORE10,SALE_FORE11, SALE_FORE12,RANK,
+      SUM_SALE_FORE1,SUM_SALE_FORE2,SUM_SALE_FORE3)
+      SELECT A.* from (
+	  <foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	      SELECT #{item.id}, #{item.mainId}, #{item.matCode}, 
+	      #{item.matName}, #{item.prodSeriesCode}, #{item.prodSeries}, 
+	      #{item.bigItemCode}, #{item.bigItemExpl}, #{item.saleForeQty1}, 
+	      #{item.saleForeQty2}, #{item.saleForeQty3}, #{item.saleForeQty4}, 
+	      #{item.saleForeQty5}, #{item.saleForeQty6}, #{item.saleForeQty7}, 
+	      #{item.saleForeQty8}, #{item.saleForeQty9}, #{item.saleForeQty10}, 
+	      #{item.saleForeQty11}, #{item.saleForeQty12} , #{item.saleFore1}, 
+	      #{item.saleFore2}, #{item.saleFore3}, #{item.saleFore4}, 
+	      #{item.saleFore5}, #{item.saleFore6}, #{item.saleFore7}, 
+	      #{item.saleFore8}, #{item.saleFore9}, #{item.saleFore10}, 
+	      #{item.saleFore11}, #{item.saleFore12},#{item.rank},
+	      #{item.sumSaleFore1},#{item.sumSaleFore2},#{item.sumSaleFore3}
+  	  FROM dual 
+   	  </foreach>
+   	  ) A 
+	</insert>
+	
+	<delete id="delSaleFcstDetailByMainId" parameterType="String">
+		delete from PS_SALE_FCST_DETAIL where MAIN_ID=#{mainId}
+	</delete>
+	
+	<update id="updatePadPlanDetailBySaleFcst" parameterType="Map">
+		
+		merge into ps_pad_plan_detail detail
+		      using (select temp.id,
+     case when temp.mNum=1 then fcst.sale_fore_qty1
+      when temp.mNum=2 then fcst.sale_fore_qty2
+      when temp.mNum=3 then fcst.sale_fore_qty3
+      when temp.mNum=4 then fcst.sale_fore_qty4
+      when temp.mNum=5 then fcst.sale_fore_qty5
+      when temp.mNum=6 then fcst.sale_fore_qty6
+      when temp.mNum=7 then fcst.sale_fore_qty7
+      when temp.mNum=8 then fcst.sale_fore_qty8
+      when temp.mNum=9 then fcst.sale_fore_qty9
+      when temp.mNum=10 then fcst.sale_fore_qty10
+      when temp.mNum=11 then fcst.sale_fore_qty11
+      when temp.mNum=12 then fcst.sale_fore_qty12
+      when temp.mNum=13 then fcst.sale_fore1
+      when temp.mNum=14 then fcst.sale_fore2
+      when temp.mNum=15 then fcst.sale_fore3
+      when temp.mNum=16 then fcst.sale_fore4
+      when temp.mNum=17 then fcst.sale_fore5
+      when temp.mNum=18 then fcst.sale_fore6
+      when temp.mNum=19 then fcst.sale_fore7
+      when temp.mNum=20 then fcst.sale_fore8
+      when temp.mNum=21 then fcst.sale_fore9
+      when temp.mNum=22 then fcst.sale_fore10
+      when temp.mNum=23 then fcst.sale_fore11
+      when temp.mNum=24 then fcst.sale_fore12
+      end as sale_fore_qty,
+    case when temp.mNum=1 then fcst.sale_fore_qty2
+      when temp.mNum=2 then fcst.sale_fore_qty3
+      when temp.mNum=3 then fcst.sale_fore_qty4
+      when temp.mNum=4 then fcst.sale_fore_qty5
+      when temp.mNum=5 then fcst.sale_fore_qty6
+      when temp.mNum=6 then fcst.sale_fore_qty7
+      when temp.mNum=7 then fcst.sale_fore_qty8
+      when temp.mNum=8 then fcst.sale_fore_qty9
+      when temp.mNum=9 then fcst.sale_fore_qty10
+      when temp.mNum=10 then fcst.sale_fore_qty11
+      when temp.mNum=11 then fcst.sale_fore_qty12
+      when temp.mNum=12 then fcst.sale_fore1
+      when temp.mNum=13 then fcst.sale_fore2
+      when temp.mNum=14 then fcst.sale_fore3
+      when temp.mNum=15 then fcst.sale_fore4
+      when temp.mNum=16 then fcst.sale_fore5
+      when temp.mNum=17 then fcst.sale_fore6
+      when temp.mNum=18 then fcst.sale_fore7
+      when temp.mNum=19 then fcst.sale_fore8
+      when temp.mNum=20 then fcst.sale_fore9
+      when temp.mNum=21 then fcst.sale_fore10
+      when temp.mNum=22 then fcst.sale_fore11
+      when temp.mNum=23 then fcst.sale_fore12
+      when temp.mNum=24 then fcst.sale_fore1
+      end as next_sale_fore_qty
+     from 
+     (
+	     select temp.*,ym.mNum from 
+	    (select a.id,a.mat_code,a.mat_name,
+	    a.sale_fore_qty,
+	    a.next_sale_fore_qty,
+	    b.plan_month
+	    from ps_pad_plan_detail a
+	    inner join ps_pad_plan b on a.main_id = b.id
+	    where b.plan_month &gt;= #{sYm} and b.plan_month &lt;= #{eYm}
+	     and b.status !='已提交'
+	    ) temp
+	    left join (
+	      <foreach collection="list" item="item" index= "index" separator="UNION ALL">
+		      SELECT #{item.ym} as ym, #{item.num} as mNum FROM dual 
+	   	  </foreach>
+	    ) ym on temp.plan_month = ym.ym
+    ) temp
+    left join 
+    (select b.* from ps_sale_fcst_detail b
+    inner join ps_sale_forecast a on a.id = b.main_id
+    where a.id =  #{fcstId}) fcst
+    on temp.mat_code = fcst.mat_code) item
+      on (detail.id = item.id)
+      when matched then
+      update set 
+      detail.sale_fore_qty = case when item.sale_fore_qty is null then detail.sale_fore_qty else item.sale_fore_qty end,
+      detail.next_sale_fore_qty = case when item.next_sale_fore_qty is null then detail.next_sale_fore_qty else item.next_sale_fore_qty end
+	</update>
+	
+	<insert id="saveImpSaleFcstDetailList" parameterType="java.util.List">
+      insert into PS_SALE_FCST_DETAIL (ID, MAIN_ID, MAT_CODE, 
+      SALE_FORE_QTY1, SALE_FORE_QTY2, SALE_FORE_QTY3, SALE_FORE_QTY4, 
+      SALE_FORE_QTY5, SALE_FORE_QTY6, SALE_FORE_QTY7, 
+      SALE_FORE_QTY8, SALE_FORE_QTY9, SALE_FORE_QTY10, 
+      SALE_FORE_QTY11, SALE_FORE_QTY12, SALE_FORE1, 
+      SALE_FORE2, SALE_FORE3, SALE_FORE4,SALE_FORE5, SALE_FORE6, SALE_FORE7, 
+      SALE_FORE8, SALE_FORE9, SALE_FORE10,SALE_FORE11, SALE_FORE12,RANK,
+      SUM_SALE_FORE1,SUM_SALE_FORE2,SUM_SALE_FORE3,
+      MAT_NAME,BIG_ITEM_CODE, BIG_ITEM_EXPL,PROD_SERIES_CODE, PROD_SERIES) 
+      SELECT A.*,m.mate_name,m.BIG_ITEM_CODE,m.BIG_ITEM_EXPL,m.series_code,m.series_expl from (
+	  <foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	      SELECT #{item.id}, #{item.mainId}, #{item.matCode} as mat_code, 
+	      #{item.saleForeQty1},#{item.saleForeQty2}, #{item.saleForeQty3}, #{item.saleForeQty4}, 
+	      #{item.saleForeQty5}, #{item.saleForeQty6}, #{item.saleForeQty7}, 
+	      #{item.saleForeQty8}, #{item.saleForeQty9}, #{item.saleForeQty10}, 
+	      #{item.saleForeQty11}, #{item.saleForeQty12} , #{item.saleFore1}, 
+	      #{item.saleFore2}, #{item.saleFore3}, #{item.saleFore4}, 
+	      #{item.saleFore5}, #{item.saleFore6}, #{item.saleFore7}, 
+	      #{item.saleFore8}, #{item.saleFore9}, #{item.saleFore10}, 
+	      #{item.saleFore11}, #{item.saleFore12},#{item.rank},
+	      0 as sum1,0 as sum2,0 as sum3
+  	  FROM dual 
+   	  </foreach>
+   	  ) A 
+	  left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+	  and m.mate_code = A.mat_code
+	</insert>
+	
+	<select id="getSaleFcstDataByCxjh" resultMap="saleFcstDetailMap"  parameterType="Map">
+		select a.*, ${sumC} 
+		 from 
+		(SELECT B.mat_code,B.mat_name,B.PROD_SERIES_CODE,B.PROD_SERIES,B.BIG_ITEM_CODE,B.BIG_ITEM_EXPL,
+		case when nvl(D.q1,0) =0 then nvl(E.q1,0)  else  D.q1 end as SALE_FORE_QTY1,
+		case when nvl(D.q2,0) =0 then nvl(E.q2,0) 	else D.q2 end as SALE_FORE_QTY2,
+		case when nvl(D.q3,0) =0 then nvl(E.q3,0) 	else D.q3 end as SALE_FORE_QTY3,
+		case when nvl(D.q4,0) =0 then nvl(E.q4,0) 	else D.q4 end as SALE_FORE_QTY4,
+		case when nvl(D.q5,0) =0 then nvl(E.q5,0) 	else D.q5 end as SALE_FORE_QTY5,
+		case when nvl(D.q6,0) =0 then nvl(E.q6,0) 	else D.q6 end as SALE_FORE_QTY6,
+		case when nvl(D.q7,0) =0 then nvl(E.q7,0) 	else D.q7 end as SALE_FORE_QTY7,
+		case when nvl(D.q8,0) =0 then nvl(E.q8,0) 	else D.q8 end as SALE_FORE_QTY8,
+		case when nvl(D.q9,0) =0 then nvl(E.q9,0) 	else D.q9 end as SALE_FORE_QTY9,
+		case when nvl(D.q10,0)=0 then nvl(E.q10,0)	else D.q10 end as SALE_FORE_QTY10,
+		case when nvl(D.q11,0)=0 then nvl(E.q11,0)	else D.q11 end as SALE_FORE_QTY11,
+		case when nvl(D.q12,0)=0 then nvl(E.q12,0)	else D.q12 end as SALE_FORE_QTY12,
+		case when nvl(D.q13,0)=0 then nvl(E.q13,0)  else D.q13 end as SALE_FORE1,
+		case when nvl(D.q14,0)=0 then nvl(E.q14,0)  else D.q14 end as SALE_FORE2,
+		case when nvl(D.q15,0)=0 then nvl(E.q15,0)  else D.q15 end as SALE_FORE3,
+		case when nvl(D.q16,0)=0 then nvl(E.q16,0)  else D.q16 end as SALE_FORE4,
+		case when nvl(D.q17,0)=0 then nvl(E.q17,0)  else D.q17 end as SALE_FORE5,
+		case when nvl(D.q18,0)=0 then nvl(E.q18,0)  else D.q18 end as SALE_FORE6,
+		case when nvl(D.q19,0)=0 then nvl(E.q19,0)  else D.q19 end as SALE_FORE7,
+		case when nvl(D.q20,0)=0 then nvl(E.q20,0)  else D.q20 end as SALE_FORE8,
+		case when nvl(D.q21,0)=0 then nvl(E.q21,0)  else D.q21 end as SALE_FORE9,
+		case when nvl(D.q22,0)=0 then nvl(E.q22,0)  else D.q22 end as SALE_FORE10,
+		case when nvl(D.q23,0)=0 then nvl(E.q23,0)  else D.q23 end as SALE_FORE11,
+		case when nvl(D.q24,0)=0 then nvl(E.q24,0)  else D.q24 end as SALE_FORE12
+		 from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.matCode} as mat_code,
+	        #{item.matName} as mat_name,
+	        #{item.prodSeriesCode} as PROD_SERIES_CODE,
+	        #{item.prodSeries} as PROD_SERIES,
+	        #{item.bigItemCode} as BIG_ITEM_CODE,
+	        #{item.bigItemExpl} as BIG_ITEM_EXPL
+   		FROM dual 
+    	</foreach>
+    	) B left join (select * from 
+		(select matnr,zbyxl,year||'-'||month as ym from t_ora_cxjh where year||'-'||month &gt;=#{sYm} and year||'-'||month &lt;=#{eYm} )
+		pivot (max(nvl(zbyxl,0)) for  ym in (${currYmBlock}))) D 
+		ON D.matnr = B.mat_code
+		left join (select * from 
+		(select matnr,zbyxl,year||'-'||month as ym from t_ora_cxjh where year||'-'||month &gt;=#{preSYm} and year||'-'||month &lt;=#{preEYm} )
+		pivot (max(nvl(zbyxl,0)) for  ym in (${preYmBlock}))) E 
+		ON E.matnr = B.mat_code) a
+	</select>
+	
+	<!-- 更新销售预测明细的总计 -->
+	<update id="updateSaleFcstDetailSum" parameterType="Map">
+		update PS_SALE_FCST_DETAIL a
+		set a.SUM_SALE_FORE1=${sum1},a.SUM_SALE_FORE2=${sum2},a.SUM_SALE_FORE3=${sum3}
+		where a.main_id = #{mainId}
+	</update>
+	
+	<!-- 更新生产交货明细未来月份的计算值 -->
+	<update id="updateFuturePadPlanDetailCalc" parameterType="Map">
+		merge into ps_pad_plan_detail detail
+			      using (
+		select a.id from ps_pad_plan_detail a
+		inner join ps_pad_plan b
+		on b.id = a.main_id
+		where b.plan_month &gt; #{sYm} and b.plan_month &lt;= #{eYm}) temp
+		on (detail.id = temp.id)
+		when matched then
+		update set
+		detail.nation_stock1 =  round(detail.nation_stock2+detail.pad_plan_qty-detail.sale_fore_qty,2),
+		detail.turn_over_days = case when detail.sale_fore_qty=0 then 0 else 
+		round((round(detail.nation_stock2+detail.pad_plan_qty-detail.sale_fore_qty,2)/detail.sale_fore_qty)*30,2) end
+	</update>
+	
+	<!-- 月底最后一日更新对应月份的销售数量为实际销量 -->
+	<update id="updateSaleForeByCxjh" parameterType="Map">
+		update ps_sale_fcst_detail a
+		set ${saleForeColumn} = (select nvl(b.zbyxl,0) from t_ora_cxjh b where a.mat_code=b.matnr
+		and b.year=#{year} and b.month = #{month})
+		where a.main_id = #{saleId} and exists(select 1 from t_ora_cxjh b where a.mat_code=b.matnr 
+		and b.year=#{year} and b.month = #{month})
+	</update>
+	
+	<!-- 获取导出的总计数据 -->
+	<select id="getSaleFcstSumByMainId" resultMap="saleFcstDetailMap"  parameterType="String">
+		select prod_series,BIG_ITEM_EXPL,sum(round(SALE_FORE_QTY1)) as SALE_FORE_QTY1, sum(round(SALE_FORE_QTY2)) as SALE_FORE_QTY2, 
+		sum(round(SALE_FORE_QTY3)) as SALE_FORE_QTY3, sum(round(SALE_FORE_QTY4)) as SALE_FORE_QTY4, sum(round(SALE_FORE_QTY5)) as SALE_FORE_QTY5,
+		sum(round(SALE_FORE_QTY6)) as SALE_FORE_QTY6, sum(round(SALE_FORE_QTY7)) as SALE_FORE_QTY7, 
+		sum(round(SALE_FORE_QTY8)) as SALE_FORE_QTY8, sum(round(SALE_FORE_QTY9)) as SALE_FORE_QTY9, sum(round(SALE_FORE_QTY10)) as SALE_FORE_QTY10, 
+		sum(round(SALE_FORE_QTY11)) as SALE_FORE_QTY11, sum(round(SALE_FORE_QTY12)) as SALE_FORE_QTY12, sum(round(SALE_FORE1)) as SALE_FORE1, 
+		sum(round(SALE_FORE2)) as SALE_FORE2, sum(round(SALE_FORE3)) as SALE_FORE3, sum(round(SALE_FORE4)) as SALE_FORE4,sum(round(SALE_FORE5)) as SALE_FORE5, 
+		sum(round(SALE_FORE6)) as SALE_FORE6, sum(round(SALE_FORE7)) as SALE_FORE7, sum(round(SALE_FORE8)) as SALE_FORE8, sum(round(SALE_FORE9)) as SALE_FORE9, 
+		sum(round(SALE_FORE10)) as SALE_FORE10,sum(round(SALE_FORE11)) as SALE_FORE11, sum(round(SALE_FORE12)) as SALE_FORE12,
+		sum(round(SUM_SALE_FORE1)) as SUM_SALE_FORE1,sum(round(SUM_SALE_FORE2)) as SUM_SALE_FORE2,sum(round(SUM_SALE_FORE3)) as SUM_SALE_FORE3,
+		count(1) as sumnum 
+		from ps_sale_fcst_detail where main_id = #{mainId}
+		group by prod_series,BIG_ITEM_EXPL
+		order by prod_series,BIG_ITEM_EXPL
+	</select>
+	
+	<!-- 更新导入的数据中空白的数据为去年同期的实际销量 -->
+	<update id="updatePadPlanDetailByLastYm" parameterType="Map">
+		merge into PS_SALE_FCST_DETAIL padDetail
+			      using (
+		select detail.id,detail.mat_code, 
+		case when detail.sale_fore_qty1 = '-999.99' then nvl(ym1.zbyxl,0) else detail.sale_fore_qty1 end as sale_fore_qty1,
+		case when detail.sale_fore_qty2 = '-999.99' then nvl(ym2.zbyxl,0) else detail.sale_fore_qty2 end as sale_fore_qty2,
+		case when detail.sale_fore_qty3 = '-999.99' then nvl(ym3.zbyxl,0) else detail.sale_fore_qty3 end as sale_fore_qty3,
+		case when detail.sale_fore_qty4 = '-999.99' then nvl(ym4.zbyxl,0) else detail.sale_fore_qty4 end as sale_fore_qty4,
+		case when detail.sale_fore_qty5 = '-999.99' then nvl(ym5.zbyxl,0) else detail.sale_fore_qty5 end as sale_fore_qty5,
+		case when detail.sale_fore_qty6 = '-999.99' then nvl(ym6.zbyxl,0) else detail.sale_fore_qty6 end as sale_fore_qty6,
+		case when detail.sale_fore_qty7 = '-999.99' then nvl(ym7.zbyxl,0) else detail.sale_fore_qty7 end as sale_fore_qty7,
+		case when detail.sale_fore_qty8 = '-999.99' then nvl(ym8.zbyxl,0) else detail.sale_fore_qty8 end as sale_fore_qty8,
+		case when detail.sale_fore_qty9 = '-999.99' then nvl(ym9.zbyxl,0) else detail.sale_fore_qty9 end as sale_fore_qty9,
+		case when detail.sale_fore_qty10 = '-999.99' then nvl(ym10.zbyxl,0) else detail.sale_fore_qty10 end as sale_fore_qty10,
+		case when detail.sale_fore_qty11 = '-999.99' then nvl(ym11.zbyxl,0) else detail.sale_fore_qty11 end as sale_fore_qty11,
+		case when detail.sale_fore_qty12 = '-999.99' then nvl(ym12.zbyxl,0) else detail.sale_fore_qty12 end as sale_fore_qty12,
+		case when detail.sale_fore1 = '-999.99' then nvl(ym13.zbyxl,0) else detail.sale_fore1 end as sale_fore1,
+		case when detail.sale_fore2 = '-999.99' then nvl(ym14.zbyxl,0) else detail.sale_fore2 end as sale_fore2,
+		case when detail.sale_fore3 = '-999.99' then nvl(ym15.zbyxl,0) else detail.sale_fore3 end as sale_fore3,
+		case when detail.sale_fore4 = '-999.99' then nvl(ym16.zbyxl,0) else detail.sale_fore4 end as sale_fore4,
+		case when detail.sale_fore5 = '-999.99' then nvl(ym17.zbyxl,0) else detail.sale_fore5 end as sale_fore5,
+		case when detail.sale_fore6 = '-999.99' then nvl(ym18.zbyxl,0) else detail.sale_fore6 end as sale_fore6,
+		case when detail.sale_fore7 = '-999.99' then nvl(ym19.zbyxl,0) else detail.sale_fore7 end as sale_fore7,
+		case when detail.sale_fore8 = '-999.99' then nvl(ym20.zbyxl,0) else detail.sale_fore8 end as sale_fore8,
+		case when detail.sale_fore9 = '-999.99' then nvl(ym21.zbyxl,0) else detail.sale_fore9 end as sale_fore9,
+		case when detail.sale_fore10 = '-999.99' then nvl(ym22.zbyxl,0) else detail.sale_fore10 end as sale_fore10,
+		case when detail.sale_fore11 = '-999.99' then nvl(ym23.zbyxl,0) else detail.sale_fore11 end as sale_fore11,
+		case when detail.sale_fore12 = '-999.99' then nvl(ym24.zbyxl,0) else detail.sale_fore12 end as sale_fore12
+		from PS_SALE_FCST_DETAIL detail
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year1} and month=#{month1}) ym1 
+		on detail.mat_code = ym1.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year2} and month=#{month2}) ym2 
+		on detail.mat_code = ym2.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year3} and month=#{month3}) ym3 
+		on detail.mat_code = ym3.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year4} and month=#{month4}) ym4 
+		on detail.mat_code = ym4.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year5} and month=#{month5}) ym5 
+		on detail.mat_code = ym5.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year6} and month=#{month6}) ym6 
+		on detail.mat_code = ym6.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year7} and month=#{month7}) ym7 
+		on detail.mat_code = ym7.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year8} and month=#{month8}) ym8 
+		on detail.mat_code = ym8.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year9} and month=#{month9}) ym9 
+		on detail.mat_code = ym9.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year10} and month=#{month10}) ym10 
+		on detail.mat_code = ym10.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year11} and month=#{month11}) ym11 
+		on detail.mat_code = ym11.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year12} and month=#{month12}) ym12 
+		on detail.mat_code = ym12.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year13} and month=#{month13}) ym13 
+		on detail.mat_code = ym13.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year14} and month=#{month14}) ym14
+		on detail.mat_code = ym14.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year15} and month=#{month15}) ym15 
+		on detail.mat_code = ym15.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year16} and month=#{month16}) ym16 
+		on detail.mat_code = ym16.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year17} and month=#{month17}) ym17 
+		on detail.mat_code = ym17.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year18} and month=#{month18}) ym18 
+		on detail.mat_code = ym18.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year19} and month=#{month19}) ym19
+		on detail.mat_code = ym19.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year20} and month=#{month20}) ym20 
+		on detail.mat_code = ym20.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year21} and month=#{month21}) ym21 
+		on detail.mat_code = ym21.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year22} and month=#{month22}) ym22 
+		on detail.mat_code = ym22.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year23} and month=#{month23}) ym23 
+		on detail.mat_code = ym23.matnr
+		left join (select matnr,nvl(zbyxl,0) as zbyxl from t_ora_cxjh where year = #{year24} and month=#{month24}) ym24 
+		on detail.mat_code = ym24.matnr
+		where detail.main_id = #{mainId}) temp
+		on (padDetail.main_id = #{mainId} and padDetail.id = temp.id)
+		when matched then
+		update set 
+		padDetail.sale_fore_qty1 =  temp.sale_fore_qty1,
+		padDetail.sale_fore_qty2 =  temp.sale_fore_qty2,
+		padDetail.sale_fore_qty3 =  temp.sale_fore_qty3,
+		padDetail.sale_fore_qty4 =  temp.sale_fore_qty4,
+		padDetail.sale_fore_qty5 =  temp.sale_fore_qty5,
+		padDetail.sale_fore_qty6 =  temp.sale_fore_qty6,
+		padDetail.sale_fore_qty7 =  temp.sale_fore_qty7,
+		padDetail.sale_fore_qty8 =  temp.sale_fore_qty8,
+		padDetail.sale_fore_qty9 =  temp.sale_fore_qty9,
+		padDetail.sale_fore_qty10 =  temp.sale_fore_qty10,
+		padDetail.sale_fore_qty11 =  temp.sale_fore_qty11,
+		padDetail.sale_fore_qty12 =  temp.sale_fore_qty12,
+		padDetail.sale_fore1 =  temp.sale_fore1,
+		padDetail.sale_fore2 =  temp.sale_fore2,
+		padDetail.sale_fore3 =  temp.sale_fore3,
+		padDetail.sale_fore4 =  temp.sale_fore4,
+		padDetail.sale_fore5 =  temp.sale_fore5,
+		padDetail.sale_fore6 =  temp.sale_fore6,
+		padDetail.sale_fore7 =  temp.sale_fore7,
+		padDetail.sale_fore8 =  temp.sale_fore8,
+		padDetail.sale_fore9 =  temp.sale_fore9,
+		padDetail.sale_fore10 =  temp.sale_fore10,
+		padDetail.sale_fore11 =  temp.sale_fore11,
+		padDetail.sale_fore12 =  temp.sale_fore12
+	</update>
+</mapper>

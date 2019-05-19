@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>预约申请列表</title>
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style>
+.layui-input-block{margin-left: 130px;}
+th:nth-child(1){width:60px;}
+td:nth-child(1){width:60px;}
+.Clear{clear:both;}
+.floaRight{float:right;}
+.layui-table{margin:0px;}
+html,body{overflow:auto;}
+.BttonDiv{margin-bottom:5px;margin-left:0px;}
+.blueHollow {
+	background: #fff;
+	border: 1px solid #458ffc;
+	color: #458ffc;
+}
+
+.blueHollow:hover {
+	color: white;
+	background: #458ffc;
+}
+</style>
+<body>
+<div class='mid_div'>
+	<!--  <div style='width:99%;margin-left:1%;'>
+			 <h3>订单信息 </h3>
+			 <hr class="layui-bg-black">
+	</div>-->
+	<div class='BttonDiv ' style="margin-top:10px;">
+		<button  class="layui-btn layui-btn-xs blueHollow" id="reset" style='display:none'>提交</button>
+		<button  class="layui-btn layui-btn-xs blueHollow hide" id="savedate">保存</button>
+		<button  class="layui-btn layui-btn-xs blueHollow " id="return" style='display:none'>退回</button>
+		<button  class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+		<button  class="layui-btn layui-btn-xs blueHollow hide" id="confirm">确认</button>
+		<button  class="layui-btn layui-btn-xs blueHollow" id="Exprot">导出</button>
+	</div>
+		 <form action=""  id="oderform"  medthod="post" >
+		 <input name="receMateData"   id="receMateData" class="hide" style=''></input>
+		 <input name="receMateData2"   id="receMateData2" class="hide" style=''></input>
+		  <input name="papData"   id="papData" class="hide" style=''></input>
+		 <input  id="json1" th:value="${mone}" class="hide" style=''></input>
+		 <input  id="json2" th:value="${mones}" class="hide" style=''></input>
+		 <input  id="type" th:value="${type}" name="type" class="hide" style=''></input>
+		  <input  id="Fid" th:value="${contactsMain.fid}" name="fid" class="hide" style=''></input>
+		  <input  id="status" th:value="${contactsMain.status}" name="status2" class="hide" style=''></input>
+		  <input  id="SuppNumb" th:value="${contactsMain.suppNumb}" name="SuppNumb" class="hide" style=''></input>
+		  <input  th:value="${contactsMain.inteAmou}" class='hide' id='radio'>
+		<div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 118px;">财务对账单号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="recoNumb" required  lay-verify="required" class="layui-input" readonly="readonly" style='cursor: pointer;'th:value="${contactsMain.recoNumb}">
+			    </div>
+			  </div>
+		  </div>   
+		   <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label "style='width:118px;' >状态</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="status" required  lay-verify="required"   class="layui-input status" readonly="readonly" style='cursor: pointer;'th:value="${contactsMain.status}">
+			    </div>
+			  </div>
+		  </div>
+		  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style='width:118px;'>填单日期</label>
+			    <div class="layui-input-block">
+			      <input type="date" name="creatTime" id="creatTime" required  lay-verify="required"    class="layui-input" readonly="readonly" style='cursor: pointer;' th:value="${contactsMain.creatTime == null ? '' : #dates.format(contactsMain.creatTime,'yyyy-MM-dd')}" >
+			    </div>
+			  </div>
+		  </div>   
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md8">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style='width:118px;'>供应商</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppName" id="suppName" required  lay-verify="required"  class="layui-input" th:value="${contactsMain.suppName}" readonly="readonly" style='cursor: pointer;' >
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  	 <div class="layui-form-item">
+			    <label class="layui-form-label" style='width:118px;'>账款截止日期</label>
+			    <div class="layui-input-block">
+			      <input type="date" name="closDate" required  lay-verify="required"   class="layui-input" th:value="${contactsMain.closDate == null ? '' : #dates.format(contactsMain.closDate,'yyyy-MM-dd')}" readonly="readonly" style='cursor: pointer;' >
+			    </div>
+			  </div>
+		  </div>
+		</div>
+		<div>
+				<div class='hide'>
+					<button  class="layui-btn layui-btn-xs blueHollow floaRight" type="button" id="publOrder" style='margin:0px 10px 0px 10px;'>删除</button>
+					<button  class="layui-btn layui-btn-xs blueHollow floaRight" type="button" id="add" >添加</button>
+					<div class='Clear'></div>
+				</div>
+				<div class="unseAcco">
+				<table class="layui-table " id="reconciliationTable" lay-filter="demo" >
+				
+				</table>
+				</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+		 </div>
+		<div>
+				<div class='hide'>
+					<button  class="layui-btn layui-btn-xs blueHollow floaRight" type="button" id="publOrder" style='margin:0px 10px 0px 10px;'>删除</button>
+					<button  class="layui-btn layui-btn-xs blueHollow floaRight" type="button" id="add2" >添加</button>
+					<div class='Clear'></div>
+				</div>
+				<div class="tempEsti">
+				<table class="layui-table" id="reconciliationmoneTable" lay-filter="demo" >
+				</table>
+				</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+		 </div>
+		 <div style='width:100%;'>
+		 	<div style='width:50%;float:left;'>
+		 		<label style='display:block;width:100%;text-align:center;background: #f2f2f2;margin: 0px;height: 31px;line-height: 31px;    font-weight: initial;color:#666;'>当期银行付款合计</label>
+		 		<input  type="text" style='width:100%;height:38px;border: 1px solid #e2e2e2;font-size: 12px;' name="bankTota" readonly="readonly"  th:value="${contactsMain.bankTota}">
+		 	</div>
+		 	<div style='width:50%;float:right;'>
+		 		<label style='display:block;width:100%; text-align:center;background: #f2f2f2;margin: 0px;height: 31px;line-height: 31px;font-weight: initial;color:#666;'>其中因贵司申请需要提前支付货款收取贵公司利息金额</label>
+		 		<input  type="text" style='width:100%;height:38px;border: 1px solid #e2e2e2;font-size:12px;' name="advaInteAmou" readonly="readonly"  th:value="${contactsMain.advaInteAmou}">
+		 	</div>
+		 	<div style='clear:both;'></div>
+		 </div>
+		 <div>
+		 	<input type='radio' value='数据无误' name='inteAmou' th:selected=${contactsMain.inteAmou} id='accuracy'>数据无误<input type='radio' value='数据有误' name='inteAmou' th:selected=${contactsMain.inteAmou} id='Error'>数据有误
+		 	<textarea rows="3" cols="20" placeholder='若数据确认无误，请选择数据无误后提交打印并加盖公章；若数据不符，请在此处说明具体原因，谢谢！' name='dataText' th:text=${contactsMain.dataText} style='display: block;width: 100%;border: 1px solid #e2e2e2;'class='Textarea'>
+		 	
+		 	</textarea>
+		 </div>
+		 <div class=" btn-padding">
+   <a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+    class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;供应商附件
+   </a>
+  </div>
+		<div class="pull-right add " id="layerDemo">
+				<!-- 添加按钮 -->
+				<a class="btn editRow "  style='padding-left:0px;'>
+					<button class="layui-btn layui-btn-xs blueHollow" type="button"  data-toggle="modal" data-target="#paperInfo">添加</button>
+				</a>
+			</div>
+			<table class="layui-table" id="orderEncl" lay-filter="demo" >
+		</table> 
+		</form>
+		<div class="modal fade" id="paperInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" 
+							aria-hidden="true">×
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						添加附件
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="layui-form" action="" method="post" id="paperForm" enctype="multipart/form-data">
+						 <div class="layui-row">
+						  	  <div class="layui-col-md6">
+								  <div class="layui-form-item">
+								    <label class="layui-form-label" style="width: 100px;">附件类型</label>
+								    <div class="layui-input-block">
+								    	<input type="text" name="appeType"  id="appeType"   style="width: 138% !important" class="layui-input">
+								    </div>
+								  </div>
+							  </div> 
+						</div>
+						<div class="layui-row"> 
+						  	  <div class="layui-col-md6">
+								   <div class="layui-form-item">
+								    <label class="layui-form-label" style="width: 100px;">名称</label>
+								    <div class="layui-input-block">
+								    	<input type="text" name="appeName"  id="appeName"   style="width: 138% !important" class="layui-input">
+								    </div>
+								  </div>
+							  </div>
+						</div>
+						<div class="layui-row">	    
+						  	  <div class="layui-col-md6">
+								  <div class="layui-form-item">
+					    		      <label class="layui-form-label" style="width: 99px">附件上传</label>
+					    			  <div class="layui-input-block">
+									     <input type="file" name="file"  id="file"   style="width: 138% !important" class="layui-input">
+					    			  </div>
+					 			   </div>
+							  </div>  
+						  </div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" 
+							data-dismiss="modal" onclick="affirm()">确认
+					</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						关闭
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>  
+		
+		
+		
+</div>
+</body>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+<div th:include="include::layuiOthersJS"></div>
+<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>		
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/fam/intercourse/intercourseConfirmDetail.js}"></script>			
+</html>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.ConfigMapper">
+	<resultMap id="userSeriesMap" type="com.faujor.entity.bam.psm.UserSeries">
+			<id property="id" column="id"/>
+			<result property="userCode" column="USER_CODE"/>
+			<result property="userName" column="USER_NAME"/>
+			<result property="userId" column="USER_ID"/>
+			<result property="seriesCode" column="SERIES_CODE"/>
+			<result property="seriesExpl" column="SERIES_EXPL"/>
+	</resultMap>
+	
+	<!-- 用户系列排序实体类 -->
+	<resultMap id="userSeriesOrderMap" type="com.faujor.entity.bam.psm.UserSeriesOrder">
+			<id property="id" column="id"/>
+			<result property="sn" column="SN"/>
+			<result property="parentId" column="PARENT_ID"/>
+			<result property="userCode" column="USER_CODE"/>
+			<result property="userName" column="USER_NAME"/>
+			<result property="seriesCode" column="SERIES_CODE"/>
+			<result property="seriesName" column="SERIES_NAME"/>
+	</resultMap>
+	
+	<select id="getUserSeriesByMap" resultMap="userSeriesMap" parameterType="Map">
+		select * from mdm_user_series where 1=1 
+		<if test="userCode != null and userCode != ''">
+			and USER_CODE=#{userCode}
+		</if>
+		<if test="userId != null and userId != ''">
+			and USER_ID=#{userId}
+		</if>
+		<if test="seriesExpl != null and seriesExpl != ''">
+			and (SERIES_EXPL like '%'||#{seriesExpl}||'%' or SERIES_CODE like '%'||#{seriesExpl}||'%')
+		</if>
+	</select>
+	
+	<insert id="insertUserSeriesInfo" parameterType="Map">
+		insert into mdm_user_series (id,USER_CODE,USER_NAME,USER_ID,SERIES_CODE,SERIES_EXPL) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.userCode} AS USER_CODE,
+	        #{item.userName},
+	        #{item.userId},
+	        #{item.seriesCode} as SERIES_CODE,
+	        #{item.seriesExpl}
+   		FROM dual 
+    	</foreach>
+    	) A left join (select SERIES_CODE from mdm_user_series where USER_CODE = #{userCode}) B
+    	ON A.SERIES_CODE = B.SERIES_CODE
+    	WHERE B.SERIES_CODE is null
+	</insert>
+	
+	<delete id="delUserSeriesInfo" parameterType="Map">
+		delete from mdm_user_series where 1=1 
+		<if test="userCode != null and userCode != ''">
+			and USER_CODE=#{userCode}
+		</if>
+		<if test="userId != null and userId != ''">
+			and USER_ID=#{userId}
+		</if>
+		<if test="id != null and id != ''">
+			and id=#{id}
+		</if>
+	</delete>
+	
+	<select id="getMaterialSeriesData" resultMap="userSeriesMap" parameterType="Map">
+		select distinct SERIES_CODE,SERIES_EXPL from mdm_mate
+		where SERIES_CODE is not null
+		<if test="seriesExpl != null and seriesExpl != ''">
+			and (lower(SERIES_EXPL) like '%'||#{seriesExpl}||'%' or lower(SERIES_CODE) like '%'||#{seriesExpl}||'%')
+		</if>
+		order by SERIES_CODE
+	</select>
+	
+	<select id="getUserSeriesData" resultMap="userSeriesMap" parameterType="Map">
+		select USER_NAME,wm_concat(distinct series_code||':'||series_expl) as SERIES_EXPL from mdm_user_series
+		where 1=1 
+		<if test="users != null and users != ''">
+			and user_code in (${users})
+		</if>
+    	group by USER_NAME
+	</select>
+	
+	<!-- *****************用户系列排序配置********************* -->
+	<!-- 获取用户数据 -->
+	<select id="getSeriesOrderUserByPage" resultMap="userSeriesOrderMap" parameterType="Map">
+    	select tb1.* from (
+			select tb.*,rownum rn from
+				(select id,user_code,user_name from ps_series_order
+				  where 1=1 and parent_id is null 
+					<if test="userCodeName !=null and userCodeName !=''">
+						and (user_code like '%'||#{userCodeName}||'%' or user_name like '%'||#{userCodeName}||'%')
+					</if>
+				order by user_code asc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getSeriesOrderUserByCount" resultType="java.lang.Integer" parameterType="Map">
+    	select count(1) from ps_series_order
+		  where 1=1 and parent_id is null 
+			<if test="userCodeName !=null and userCodeName !=''">
+				and (user_code like '%'||#{userCodeName}||'%' or user_name like '%'||#{userCodeName}||'%')
+			</if>
+	</select>
+	
+	<!-- 插入系列排序的用户信息 -->
+	<insert id="insertSeriesOrderUser" parameterType="java.util.List">
+		insert into ps_series_order (id,user_code,user_name) 
+		select sys_guid(),a.userCode,a.userName from
+		(
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT #{item.userCode} as userCode,#{item.userName} as userName FROM dual 
+    	</foreach>
+    	) a left join ps_series_order b on b.parent_id is null and a.userCode=b.user_code
+    	where b.id is null
+	</insert>
+	
+	<!-- 删除用户系列排序的用户或单个排序明细信息 -->
+	<delete id="delSeriesOrderUserInfo" parameterType="String">
+		delete from ps_series_order where 1=1 and id = #{parentId}
+	</delete>
+	
+	<!-- 获取用户对应的系列排序数据 -->
+	<select id="getUserSeriesOrderDetail" resultMap="userSeriesOrderMap" parameterType="String">
+    	select a.id,a.sn,#{parentId} as parent_id,b.series_code,b.series_name
+		 from ps_series_order a
+		right join (select distinct series_code,series_expl as series_name from mdm_mate
+		where mate_type='0005' and series_code is not null) b
+		on a.series_code = b.series_code and a.parent_id = #{parentId}
+		order by a.sn,b.series_code
+	</select>
+	
+	<!-- 插入用户对应的系列排序数据 -->
+	<insert id="insertUserSeriesOrderDetail" parameterType="java.util.List">
+		insert into ps_series_order (id,sn,parent_id,series_code,series_name) 
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	sys_guid(),
+	        #{item.sn},
+	        #{item.parentId},
+	        #{item.seriesCode},
+	        #{item.seriesName}
+   		FROM dual 
+    	</foreach>
+	</insert>
+	
+	<!-- 删除用户对应的系列排序数据 -->
+	<delete id="delUserSeriesOrderDetail" parameterType="String">
+		delete from ps_series_order where 1=1 and parent_id = #{parentId}
+	</delete>
+</mapper>

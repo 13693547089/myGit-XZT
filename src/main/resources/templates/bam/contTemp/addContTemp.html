@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+</head>
+
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+ input {height: 30px;}
+.main-body{margin-top:10px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {margin-top: 0px;margin-bottom: 0px;}
+.margin-top20{margin-top: 20px;}   
+.layui-form-label{width:100px;}
+.layui-form-label10{width:10px;}
+#endDate{margin-left: -35%;}  
+.pull-right{margin-right:20px}  
+
+	.blueHollow{
+		background: #fff;
+		    border: 1px solid #458ffc;
+		    color: #458ffc; }
+	.blueHollow:hover {
+	color:white;
+			background: #458ffc; }
+</style>
+<body>
+	
+	<div class="layui-row main-body ">
+		<div class="layui-row">
+			<div class="layui-col-md8">
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn" id="publishBtn">发布</button>
+				<button class="layui-btn layui-btn-xs blueHollow disableBtn" id="saveBtn">保存</button>
+				
+				<button th:if="${type=='2'}" class="layui-btn layui-btn-xs blueHollow disableBtn" id="revokeBtn">撤回</button>
+				
+				<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+			</div>
+		</div>
+		<div class="layui-row margin-top20" >
+			<div class=" panel-default ">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;模板信息
+					</a>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<form class="layui-form" method="post" id="tempForm" >
+								<input type="hidden" name="jsonFile" id="jsonFile"/>
+								<input type="hidden" name="jsonMenu" id="jsonMenu"/>
+								<input type="hidden" name="type" id="type" th:value="${type}"/>
+								<input type="hidden" name="id" id="id" th:value="${temp.id}"/>
+								<input type="hidden" name="tempStatus" id="tempStatus" th:value="${temp.tempStatus}"/>
+								<div class="layui-row">
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label">模板状态</label>
+											<div class="layui-input-block">
+												<input th:if="${temp.tempNo==null || temp.tempNo==''}"  readonly="readonly" id="statusName" type="text" th:value="未发布"   autocomplete="off" class="layui-input">
+												<input th:if="${temp.tempNo!=null && temp.tempNo!=''}"  readonly="readonly" id="statusName"  type="text" th:value="${temp.statusName}"  autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+									<div class="layui-col-md3">
+										 <div class="layui-form-item">
+										    <label class="layui-form-label">模板编号</label>
+										    <div class="layui-input-block">
+										      <input type="text" name="tempNo"  readonly="readonly" id="tempNo" th:value="${temp.tempNo}"  autocomplete="off" class="layui-input">
+										    </div>
+										  </div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label">创建日期</label>
+											<div class="layui-input-block">
+												<input type="text" readonly="readonly" name="createTime"
+													id="createTime"
+													th:value="${temp.createTime== null} ? '':${#dates.format(temp.createTime, 'yyyy-MM-dd')} "
+													autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											
+											<label class="layui-form-label"><i class="red xinghao">*</i>合同类型</label>
+											<div class="layui-input-block">
+												<select name="contType" class="must" lay-verify="required">
+													<option value="1" th:each="dic:${contTypeList}" th:selected="${temp.contType==dic.dicCode}" th:value="${dic.dicCode}" th:text="${dic.dicName}">上海</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											
+											<label class="layui-form-label"><i class="red xinghao">*</i>版本号</label>
+											<div class="layui-input-block">
+												<input type="text" name="contVersion" id="contVersion" th:value="${temp.contVersion}" autocomplete="off" class="layui-input	must">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<div class="layui-col-md9">
+										<div class="layui-form-item">
+											
+											<label class="layui-form-label"><i class="red xinghao">*</i>文件名称</label>
+											<div class="layui-input-block">
+												<input type="text" name="tempName" id="tempName" th:value="${temp.tempName}" autocomplete="off" class="layui-input must">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<div class="layui-col-md9">
+										<div class="layui-form-item layui-form-text">
+										    <label class="layui-form-label">文件说明</label>
+										    <div class="layui-input-block">
+										      <textarea name="contRemark" id="contRemark" th:value="${temp.contRemark}" th:text="${temp.contRemark}" placeholder="请输入内容" class="layui-textarea"></textarea>
+										    </div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<input type="hidden" id="versionBasis" name="versionBasis" th:value="${temp.versionBasis}"/>
+									
+									<label class="layui-form-label" style="margin-right:10px"><i class="red xinghao">*</i>版本依据</label>
+									<button type="button" class="layui-btn layui-btn-xs blueHollow disableBtn" id="addVersionBasis" style='margin-top:3px;float:left;'><i class="layui-icon"></i>选择文件</button>
+									<span class="" id="filename" th:text="${temp.basisName}"  style="height:38px;display: block;line-height: 30px;font-size:14px;cursor: pointer;">11111.png</span>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row " >
+			<div class=" panel-default ">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseThree"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;文件附件
+					</a>
+					<div class="pull-right">
+						<a class="layui-btn layui-btn-xs blueHollow disableBtn" id="addFile">添加</a>
+						<a class="layui-btn layui-btn-xs blueHollow disableBtn"  id="delFile">删除</a>
+					</div>
+					<div id="collapseThree" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<div class="layui-row">
+							
+								<table class="table table-striped table-bordered table-hover" id="filetable"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class=" panel-default ">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;历史记录
+					</a>
+					<div id="collapseFour" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<div class="layui-row">
+								<div class="layui-upload-list">
+									<table class="table table-striped table-bordered table-hover" id="logtable"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-xs blueInline" lay-event="downLoad">下载</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>	
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript" th:src="@{/editTable/plus/import.inc.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/contTemp/addContTemp.js}"></script>
+</body>
+</html>

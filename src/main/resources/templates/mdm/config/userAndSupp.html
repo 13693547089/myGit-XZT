@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>采购供应源配置</title>
+</head>
+<style type="text/css">
+	.layui-col-md9{margin-left:0px;}
+	.layui-col-space10>*{padding-bottom:0px;}
+	.layui-btn-group{margin-top:6px;}
+	html,body{overflow:auto !important;}
+	 .pitch{background:#b9e0ef;}
+</style>
+<body class='fau-body'>
+	<div class="demoTable">
+		<form class="layui-form" action="" method="post" style='height: 100%;'>
+			<div class="layui-row layui-col-space20">
+				<div class="layui-col-md3">
+					<div class="layui-row divMargin1">
+						<div class="layui-col-md12">
+							<input type="text" id="userInfo" name="userInfo"
+								placeholder="采购员姓名/员工编号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-col-md12">
+						<div class="layui-fluid tableCont xuanzhong" style='padding:0px;'>
+							<table class="layui-table" id="userTable" lay-filter="userTable"
+								style='display: none;'></table>
+						</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md9">
+					<div class="layui-row divMargin1">
+						<div class="layui-col-md4">
+							<input type="text" id="suppInfo" name="suppInfo"
+								placeholder="供应商编码/名称" class="layui-input">
+						</div>
+						<div class="layui-col-md4" style='margin-left: 20px;'>
+							<input type="text" id="category" name="category"
+								placeholder="供应商分类" class="layui-input">
+						</div>
+						<div class="layui-col-md12"
+							style=" height: 38px; display: flex; align-items: center;">
+							<div class="layui-btn-group1" style='width:100%;'>
+							<div style='float:left;width:50%;'>
+								<button class="layui-btn layui-btn-xs blueHollow" id="addBtn" style='float:left;'
+									type="button" sec:authorize="hasRole('ROLE_BUYERSUPP_ADD')">添加</button>
+								<button class="layui-btn layui-btn-xs blueHollow" id="delBtn" 
+									type="button" style='margin-left: 10px !important;float:left;' sec:authorize="hasRole('ROLE_BUYERSUPP_REMOVE')">
+									删除</button>
+								<button class="layui-btn layui-btn-xs blueHollow" id="expBtn" 
+									type="button" style='margin-left: 10px !important;float:left;'>
+									导出</button>
+							</div>
+							<div style='float:right;width:50%;text-align:right;'>
+							
+								<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn"
+									data-type="reload" type="button">搜索</button>
+								<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn"
+									type="reset">重置</button>
+							</div>
+								
+								
+							</div>
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-col-md12" >
+						<div class="layui-fluid tableCont " style='padding:0px;'>
+							<table id="qualSuppTable" lay-filter="qualSuppTable"></table>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+<div th:include="include::layuiCommonJS"></div>
+<script th:src="@{/larryMS/js/appjs/mdm/config/userAndSupp.js}"></script>
+</html>

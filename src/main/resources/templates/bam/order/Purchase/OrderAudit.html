@@ -1,0 +1,257 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>预约申请列表</title>
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" th:href="@{/layui/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}"> -->
+</head>
+<style type="text/css">
+.top_div{height:50px;width:100%;}
+.layui-table-cell{padding:0px !important;}
+.clear{clear:both;}
+.heigt150{height:150px;}
+.heightMax{height:100%;padding-left:2%;}
+.box{
+            width: 50px;
+            height: 19px;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 auto;
+        }
+.help{
+        width: 75%;
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+        }
+ .mone_div{height:50px;}       
+.mone_input{height:100%;border:none;}
+body{overflow:auto !important;}
+.hide{display:none;}
+.fixed-table-body{height:auto !important;}
+.fixed-table-container{border:none !important;}
+table{margin-top:0px !important;}
+#fallBack{display:none;}
+#confirm{display:none;}
+.BttonDiv{margin-bottom:5px;}
+.layui-table-view .layui-table td, .layui-table-view .layui-table th{padding: 2px 0px;}
+.popWidth{width:252px;}
+.popSpan{padding-top: 8px;height: 30px;display: block;float: left;width: 10px;color:red;}
+</style>
+<body onload='htload()'>
+
+<!-- 订单信息 -->
+<div class='mid_div'>
+	
+	<div class='BttonDiv '>
+		<button  class="layui-btn layui-btn-xs Sub blueHollow" th:if="${order.status=='已发布' && taskPDO.pagePattern == 'write' || order.status=='已退回' && taskPDO.pagePattern == 'write'}" id="publOrder">提交</button>
+		<button  class="layui-btn layui-btn-xs Sub blueHollow" th:if="${order.status=='已回签' && taskPDO.pagePattern == 'write'}" id="confirm">确认</button>
+		<button  class="layui-btn layui-btn-xs Sub blueHollow" th:if="${order.status=='已回签' && taskPDO.pagePattern == 'write'}" id="fallBack">回退</button>
+		<button  class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>
+		 <input type="text" name="fid" id="fid" required th:value="${order.fid}" lay-verify="required"  style="width: 70%;display: none;" class="layui-input">
+		 <input type="text" name="status" id="status" required th:value="${order.status}" lay-verify="required"  style="display: none;" class="layui-input">
+		 <input type="text" name="purcType" id="purcType" required th:value="${order.purcType}" lay-verify="required"  style="display: none;" class="layui-input">
+		<input  id="taskName" th:value="${taskPDO.taskName}" name="taskName" style="display: none;" lay-verify="required"></input>
+		 <input  id="processCode" th:value="${taskPDO.processCode}" name="processCode" style="display: none;" lay-verify="required"></input>
+		 <input  id="pagePattern" th:value="${taskPDO.pagePattern}" name="pagePattern" style="display: none;" lay-verify="required"></input>
+		 <input  id="userType" th:value="${userType}" name="userType" style="display: none;" lay-verify="required"></input>
+		<input type="text" name="enclLeng" id="enclLeng" required th:value="${order.enclLeng}" lay-verify="required"  style="width: 70%;display: none;" class="layui-input">
+		<div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 118px;">合同/订单编号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppName" required  lay-verify="required"  style="width: 70%" class="layui-input redonl" id='contOrdeNumb' th:value="${order.contOrdeNumb}" disabled= "true">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style='width:118px;'>订购日期</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppAbbre" required  lay-verify="required"   style="width: 70%" class="layui-input redonl" th:value="${order.subeDate == null ? '' : #dates.format(order.subeDate,'yyyy-MM-dd')}" disabled= "true">
+			    </div>
+			  </div>
+		  </div>  
+		   <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label"style='width:118px;' >状态</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppAbbre" id="status" required  lay-verify="required"   style="width: 70%" class="layui-input redonl Type" th:value="${order.status}" disabled= "true">
+			    </div>
+			  </div>
+		  </div>  
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md3">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style='width:118px;'>供应商</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppName" required  lay-verify="required"  style="width: 70%" class="layui-input redonl" th:value="${order.suppName} " disabled= "true">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  	 <div class="layui-form-item">
+			      <input type="text" name="suppAbbre"  id="suppAbbre" required  lay-verify="required"   class="layui-input redonl"  th:value="${order.suppNumb}" disabled= "true">
+			    </div>
+		  </div>
+		  <div class="layui-col-md5">
+				<div class="layui-form-item" style="margin-left: 110px;">
+					<label class="layui-form-label" style='width: 118px;'>下单限比</label>
+					<div class="layui-input-block">
+						<input type="text" name="limitThan" id="limitThan" required lay-verify="required"
+							style="width: 90% !important" class="layui-input"
+							th:value="${order.limitThan}" >
+					</div>
+					<div style='float:right; width:5%;margin-top:-29px;'>%</div>
+				</div>
+			</div>
+		</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+		<table class="layui-table" id="orderTable" lay-filter="demo" >
+		</table>
+		<div class="layui-row heigt150" >
+			<div class="layui-col-md6 heightMax" style='visibility:hidden'>
+			  	<div class='box'>备注</div>
+			  	<textarea th:text="${order.remarks}" class='help redonl1' style='background:white !important;'></textarea> 
+		  </div>
+		  <!--  <div class="layui-col-md6 heightMax" >
+		  		<div class='layui-row'>
+			  			<div class="layui-col-md6 ">
+			  				<label>币种：</label> 
+			  				<label>人民币</label>
+			  			</div>
+			  			<div class="layui-col-md6 ">
+			  				<div class='mone_div' style='height:18px;'>小计：<input class='mone_input Mone redonl'readonly='readonly'style='background-color:  white;' ></div>
+			  			</div>
+			  			
+			  		</div> 
+		  			<div class='layui-row'>
+		  				<div class="layui-col-md6 ">
+			  				<div class='mone_div' style='height:18px;'>税额：<input class='mone_input Tax redonl'readonly='readonly' style='background-color:  white;'></div>
+			  			</div>
+		  				<div class="layui-col-md6">
+		  					<div class='mone_div' style='height:18px;'>合计：<input class='mone_input TaxMone redonl' readonly='readonly'style='background-color:  white;'></div>
+		  				</div>
+		  			</div>
+			  	<div class='clear'></div>
+		  </div>-->
+		   <div class="layui-col-md6 heightMax" >
+			  		<div class='layui-row'>
+			  			<div class="layui-col-md3 " style='margin-top:42px;'>
+			  				<label>币种：</label> 
+			  				<label>人民币</label>
+			  			</div>
+			  			<!-- <div class="layui-col-md6 ">
+			  				<div class='mone_div' style='height:18px;'>小计：<input class='mone_input Mone redonl'readonly='readonly'style='background-color:  white;' ></div>
+			  			</div>
+			  			 -->
+			  			 <div class='help layui-col-md6'>
+					  		<div class='mone_div' style='height:35px;'>小计：<input class='mone_input Mone redonl'readonly='readonly' ></div>
+					  		<div class='mone_div' style='height:35px;'>税额：<input class='mone_input Tax redonl'readonly='readonly' ></div>
+					  		<div class='mone_div' style='height:35px;'>合计：<input class='mone_input TaxMone redonl' readonly='readonly'></div>
+					  		
+			  			 </div> 
+			  		</div> 
+		  			<!--  <div class='layui-row'>
+		  				<div class="layui-col-md6 ">
+			  				<div class='mone_div' style='height:18px;'>税额：<input class='mone_input Tax redonl'readonly='readonly' style='background-color:  white;'></div>
+			  			</div>
+		  				<div class="layui-col-md6">
+		  					<div class='mone_div' style='height:18px;'>合计：<input class='mone_input TaxMone redonl' readonly='readonly'style='background-color:  white;'></div>
+		  				</div>
+		  			</div>-->
+		  		
+			  	
+			  	<div class='clear'></div>
+		  </div>
+		</div>
+		<div class="panel-default ">
+  <div class=" btn-padding">
+   <a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+    class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;订单附件
+   </a>
+  </div>
+ </div>
+		<div class="pull-right add " id="layerDemo">
+				<!-- 添加按钮 -->
+				<a class="btn editRow "  style='padding-left:0px;'>
+					<button class="layui-btn layui-btn-xs blueHollow" type="button"  data-toggle="modal" data-target="#paperInfo" id='addEncl'>添加</button>
+				</a>
+			</div>   
+		<table class="layui-table" id="orderEncl" lay-filter="demo" >
+		</table>
+</div>
+
+
+
+
+<div class="modal fade" id="paperInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" 
+							aria-hidden="true">×
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						添加附件
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="layui-form" action="" method="post" id="paperForm" enctype="multipart/form-data">
+						 <div class="layui-row">
+						  	  <div class="layui-col-md6">
+								  <div class="layui-form-item ">
+								    <label class="layui-form-label" style="width: 100px;">附件类型</label>
+								    <div class="layui-input-block popWidth" >
+								    	<span class='popSpan'>*</span><input type="text" name="appeType"  id="appeType"   style="width: 237px  !important;display: inline-block;" class="layui-input fujian enclType">
+								    </div>
+								  </div>
+							  </div> 
+						</div>
+						<div class="layui-row"> 
+						  	  <div class="layui-col-md6">
+								   <div class="layui-form-item">
+								    <label class="layui-form-label" style="width: 100px;">名称</label>
+								    <div class="layui-input-block popWidth">
+								    	<span class='popSpan'>*</span><input type="text" name="appeName"  id="appeName"   style="width: 237px  !important;display: inline-block;" class="layui-input fujian enclName">
+								    </div>
+								  </div>
+							  </div>
+						</div>
+						<div class="layui-row">	    
+						  	  <div class="layui-col-md6">
+								  <div class="layui-form-item">
+					    		      <label class="layui-form-label" style="width: 99px">附件上传</label>
+					    			  <div class="layui-input-block popWidth">
+									     <span class='popSpan'>*</span><input type="file" name="file"  id="file"   style="width: 237px  !important;display: inline-block;" class="layui-input fujian enclOn">
+					    			  </div>
+					 			   </div>
+							  </div>  
+						  </div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" 
+							 onclick="affirm()">确认
+					</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						关闭
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+<div th:include="include::bootstrapJS"></div>
+<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>		
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/order/OrderAudit.js}"></script>	
+</html>

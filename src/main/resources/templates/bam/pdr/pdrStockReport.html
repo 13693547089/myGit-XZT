@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>产能上报库存报表</title>
+</head>
+
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/pdr/pdrStockReport.js}"></script>
+
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {
+    margin-top: 0px;
+    margin-bottom: 0px;}
+.layui-form-label {
+    width: 105px;
+}
+.margin-left4{margin-left:4%}
+div.layui-table, .layui-table-view{margin-top:-5px}
+</style>
+
+<body class='fau-body-list'>
+		<form action="" id="searchForm" class="layui-form">
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">供应商</label>
+						<div class="layui-input-block">
+							<input type="text" name="search_suppName" id="search_suppName" lay-verify="required"
+								placeholder="请输供应商名称" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-block">
+							<select name="search_status" id="search_status" lay-verify="required">
+								<option value="">请选择</option>
+								<option th:each="dic:${statusList}" th:value="${dic.dicCode}" th:text="${dic.dicName}" ></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">生产日期</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" class="layui-input" id="search_prodDateStart" name="search_prodDateStart" placeholder="yyyy-MM-dd">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							<input type="text" class="layui-input" id="search_prodDateEnd" name="search_prodDateEnd" placeholder="yyyy-MM-dd">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">系列</label>
+						<div class="layui-input-block">
+							<input type="text" name="search_series" id="search_series" lay-verify="required"
+								placeholder="请输系列" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">物料名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="search_matName" id="search_matName" lay-verify="required"
+								placeholder="请输物料名称" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">产品类别</label>
+						<div class="layui-input-block">
+							<input type="text" name="search_matType" id="search_matType" lay-verify="required"
+								placeholder="请输产品类别" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	<div class="layui-row">
+		<div class="layui-col-md9  ">
+			<button class="layui-btn layui-btn-xs blueHollow" style="margin-left: 10px" id="exportStockBtn">导出库存</button>
+		</div>
+		<div class="layui-col-md3  textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+	</div>
+	<div class="layui-row">
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+			<table class="layui-table" id="list-table" lay-filter="docTool" style="margin-top: 0px"></table>
+	</div>
+	</div>
+</body>
+</html>

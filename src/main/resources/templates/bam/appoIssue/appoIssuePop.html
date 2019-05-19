@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>预约发布弹出框</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+body{overflow:hidden;}
+.margi75{margin-left:75%;}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div>
+	<h2>确认发布以下预约申请吗？</h2>
+	</div>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+	<table id="appoTable" class="layui-table"  lay-filter="demo">
+	</table>
+	</div>
+	<div class="layui-row layui-col-space10" >
+		<div class="layui-col-xs1 margi75" >
+			   <button class="layui-btn layui-btn-xs blueHollow"   id="confirm" type="button">确定</button>
+		</div>
+		<div class="layui-col-xs1 layui-col-xs-offset9"style='margin-left:2%;'>
+			   <button class="layui-btn layui-btn-xs blueHollow"  id="cancel" type="button">取消</button>
+		</div>
+	</div>
+	</div>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+ <script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/appoIssue/appoIssuePop.js}"></script>	
+</body>
+</html>
+		 

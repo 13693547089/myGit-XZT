@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>排产计划</title>
+</head>
+<link rel="stylesheet" href="/css/calendar/editCalendar.css">
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.btnDiv{ float: right; margin-right: 40px;}
+</style>
+<body class='fau-body-list'>
+	<form class="layui-form margin-top20" id="searchForm" action="" method="post">
+		<input id="mainId" type="hidden" th:value="${mainId}"/>
+		<input id="suppProdId" type="hidden" th:value="${suppProd.id}">
+		<input id="planMonth" type="hidden" th:value="${planMonth}">
+		<input id="status" type="hidden" th:value="${status}">
+		<div class="layui-row">
+			<div class=" layui-col-md5   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料名称</label>
+					<div class="layui-input-block" >
+						<input type="text" id="mateDesc" readonly="readonly" name="mateDesc" th:value="${suppProd.mateDesc}"
+							   class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md5   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料编码</label>
+					<div class="layui-input-block" >
+						<input type="text" id="mateCode" readonly="readonly" name="mateCode" th:value="${suppProd.mateCode}"
+							  class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class=" layui-col-md5   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">本月生产计划</label>
+					<div class="layui-input-block" >
+						<input type="text" id="prodPlan" name="prodPlan" readonly="readonly" th:value="${suppProd.prodPlan}"
+							   class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md5   layui-col-sm5">
+				<div class="layui-form-item">
+					<label class="layui-form-label">剩余未分配</label>
+					<div class="layui-input-block" >
+						<input type="text" id="remainNum" name="remainNum" readonly="readonly" th:value="${suppProd.remainNum}"
+							  class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid">
+		<div class="content">
+			<div style='height:32px;width:100%;display:flex;align-items:center;justify-content:space-around;background-image:linear-gradient(to bottom,#4cabc7,#10acd9);'>
+				<!-- <span style='font-size:30px;padding:0px 12px;color:#fff;' class='zuo'>左</span> -->
+				<span style='font-size:20px;color:#fff;' class="timebar">2018-3</span>
+				<!-- <span style='font-size:30px;padding:0px 12px;color:#fff;' class='you'>右</span> -->
+			</div>
+			<div class="diaryback">
+				<div class="cont_week" style='width:100%;height:50px;background-color:#0e6c86;'></div>
+				<div class='cont_day' style='width:100%;background-color:#fff;border-right:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;height:300px;'></div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row btnDiv" style="margin-top: 20px" >
+		<button class="layui-btn layui-btn-sm blueHollow" id="cancleBtn"  >关闭</button>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/calendar/editCalendar.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/suppProd/viewProdPlanDg.js}"></script>
+</body>
+</html>

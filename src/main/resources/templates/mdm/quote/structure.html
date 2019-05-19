@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+</head>
+<body class='fau-body-list'>
+	<form class="layui-form" id="searchForm" action="" method="post">
+		<input type="text" id="id" name="id" class="layui-input layui-hide">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">模板</label>
+					<div class="layui-input-block">
+						<input type="text" id="tempCode" name="tempCode" placeholder="模板编号/名称" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料</label>
+					<div class="layui-input-block">
+						<input type="text" id="mateCode" name="mateCode" placeholder="物料编号/名称" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid divMargin">
+		<div class="layui-row">
+			<div class="layui-col-sm9">
+
+				<button class="layui-btn layui-btn-xs blueHollow" id="addBtn">新建</button>
+				<button class="layui-btn layui-btn-xs blueHollow" id="batchModifyBtn">批量调整</button>
+				<button class="layui-btn layui-btn-xs blueHollow" id="batchDelBtn">批量删除</button>
+				<button class="layui-btn layui-btn-xs blueHollow" id="batchCreateBtn">批量创建</button>
+
+			</div>
+			<div class="layui-col-md3 textRight">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="serachInfo">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="reset">重置</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="structureTable" lay-filter="structure">
+		</table>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+  			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="detail">查看</a>
+ 			<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del" style='padding: 0 4px;'>删除</a>
+		</script>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/structure.js}"></script>
+</body>
+</html>

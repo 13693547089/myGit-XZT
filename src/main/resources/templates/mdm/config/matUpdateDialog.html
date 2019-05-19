@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiCommonHeader">
+<title>批量修改</title>
+</head>
+<body class='fau-body'>
+	<form class="layui-form" action="" id="signForm">
+		<div class="layui-form-item MarginTop">
+			<div class="layui-form-item">
+				<label class="layui-form-label">机台</label>
+				<div class="layui-input-block">
+					<select name="board" id="board" lay-search="" lay-filter="required">
+						<option value="">请选择...</option>
+						<option th:each="dic:${boardList}" th:value="${dic.dicCode}"
+							th:text="${dic.dicName}"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">类型</label>
+			<div class="layui-input-block">
+				<select name="itemType" id="itemType" lay-search=""
+					lay-filter="mateSelected">
+					<option value="">请选择...</option>
+					<option th:each="dic:${itemTypeList}" th:value="${dic.dicCode}"
+						th:text="${dic.dicName}"></option>
+				</select>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/mdm/config/matUpdateDialog.js}"></script>
+</body>
+</html>

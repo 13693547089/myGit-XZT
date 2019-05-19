@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.cluster.mdm.ClusterMaterialMapper">
+	<resultMap type="com.faujor.entity.cluster.mdm.MaterialDO"
+		id="mateMap">
+		<id property="mateId" column="ima01" />
+		<result property="mateCode" column="mate_code" />
+		<result property="skuTiptop" column="ima01a" />
+		<result property="skuEnglish" column="ima02" />
+		<result property="chinName" column="ta_ima001" />
+		<result property="mateType" column="ima06" />
+		<result property="mateGroupCode" column="ima061" />
+		<result property="mateGroupExpl" column="ima061a" />
+		<result property="barCode" column="ima135" />
+		<result property="barCodeEngl" column="ima135a" />
+		<result property="barCodeChin" column="ima135b" />
+		<result property="repeUnit" column="ima25" />
+		<result property="boxNumber" column="ima31_fac" />
+		<result property="finProMate" column="ima26" />
+		<result property="finProSku" column="ima27" />
+		<result property="abcIden" column="ima07" />
+		<result property="busiCode" column="ta_ima003" />
+		<result property="busiExpl" column="ta_ima003a" />
+		<result property="cateCode" column="ta_ima005" />
+		<result property="cateExpl" column="ta_ima005a" />
+		<result property="bigCate" column="ima14" />
+		<result property="bigCateName" column="ima15" />
+		<result property="seriesCode" column="ta_ima004" />
+		<result property="seriesExpl" column="ta_ima004a" />
+		<result property="bigItemCode" column="ta_ima006" />
+		<result property="bigItemExpl" column="ta_ima006a" />
+		<result property="smallItemCode" column="ta_ima007" />
+		<result property="smallItemExpl" column="ta_ima007a" />
+		<result property="mainProfCode" column="ta_ima008" />
+		<result property="mainProfExpl" column="ta_ima008a" />
+		<result property="nextProfCode" column="ta_ima009" />
+		<result property="nextProfExpl" column="ta_ima009a" />
+		<result property="boxCode" column="ta_ima016" />
+		<result property="isGift" column="ima24" />
+		<result property="brandCode" column="ta_ima032" />
+		<result property="brandExpl" column="ta_ima032a" />
+		<result property="childBrandCode" column="ta_ima033" />
+		<result property="childBrandExpl" column="ta_ima033a" />
+		<result property="produCode" column="ta_ima034" />
+		<result property="produExpl" column="ta_ima034a" />
+		<result property="chanCode" column="ta_ima035" />
+		<result property="chanExpl" column="ta_ima035a" />
+		<result property="useChin" column="ta_ima036" />
+		<result property="useEngl" column="ta_ima037" />
+		<result property="mateStatus" column="ta_ima014" />
+		<result property="procUnit" column="ima44" />
+		<result property="boxUnit" column="ima31" />
+		<result property="branchUnit" column="ima86" />
+		<result property="produUnit" column="ima55" />
+		<result property="packNumber" column="ima86_fac" />
+		<result property="dimension" column="ta_ima038" />
+		<result property="produAbc" column="ta_ima040" />
+		<result property="barCodeAbc" column="ta_ima041" />
+		<result property="supply" column="ima16" />
+		<result property="reveCateCode" column="ima12" />
+		<result property="reveCateName" column="ima13" />
+		<result property="expiDate" column="ima17" />
+		<result property="guarUnit" column="ima18" />
+		<result property="nationKey" column="ima19" />
+		<result property="nationName" column="ima28" />
+		<result property="provCode" column="ima20" />
+		<result property="provName" column="ima21" />
+		<result property="cityCode" column="ima22" />
+		<result property="cityName" column="ima23" />
+		<result property="mateLength" column="ta_ima024" />
+		<result property="mateWidth" column="ta_ima025" />
+		<result property="mateHigh" column="ta_ima026" />
+		<result property="mateBulk" column="ta_ima027" />
+		<result property="mateWeight" column="ta_ima028" />
+		<result property="status" column="imaacti" />
+		<result property="isDelete" column="imaacti1" />
+		<result property="repeatedly" column="ima09" />
+		<result property="updateDate" column="imadate" />
+		<result property="finMateId" column="ima26" />
+		<result property="mateName" column="ima02" />
+		<result property="basicUnit" column="ima25" />
+		<result property="isQuote" column="" />
+		<collection property="materialUnits"
+			ofType="com.faujor.entity.cluster.mdm.MaterialUnitDO">
+			<result property="id" column="id" />
+			<result property="mateNumber" column="imb01" />
+			<result property="mateId" column="mate_id" />
+			<result property="unit" column="imb02" />
+			<result property="mole" column="imb03" />
+			<result property="deno" column="imb04" />
+			<result property="mateLength" column="imb05" />
+			<result property="mateWidth" column="imb06" />
+			<result property="mateHigh" column="imb07" />
+			<result property="lwhUnit" column="imb08" />
+			<result property="mateWeight" column="imb09" />
+			<result property="weightUnit" column="imb10" />
+			<result property="mateBulk" column="imb11" />
+			<result property="bulkUnit" column="imb12" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.cluster.mdm.MaterialUnitDO"
+		id="unitMap">
+		<result property="id" column="id" />
+		<result property="mateNumber" column="imb01" />
+		<result property="mateId" column="mate_id" />
+		<result property="unit" column="imb02" />
+		<result property="mole" column="imb03" />
+		<result property="deno" column="imb04" />
+		<result property="mateLength" column="imb05" />
+		<result property="mateWidth" column="imb06" />
+		<result property="mateHigh" column="imb07" />
+		<result property="lwhUnit" column="imb08" />
+		<result property="mateWeight" column="imb09" />
+		<result property="weightUnit" column="imb10" />
+		<result property="mateBulk" column="imb11" />
+		<result property="bulkUnit" column="imb12" />
+	</resultMap>
+
+	<select id="clusterMaterialList" resultMap="mateMap"
+		parameterType="com.faujor.entity.cluster.mdm.MaterialDO">
+		select concat('m', t1.ima01) as ima01, t1.ima01 as
+		mate_code,t1.ima01a,t1.ima02,t1.ta_ima001,t1.ima06, t1.ima061,
+		t1.ima061a, t1.ima135, t1.ima135a, t1.ima135b, t1.ima25, t1.ima31_fac,
+		t1.ima26, t1.ima27, t1.ima07, t1.ta_ima003, t1.ta_ima003a,
+		t1.ta_ima005, t1.ta_ima005a, t1.ima14, t1.ima15, t1.ta_ima004,
+		t1.ta_ima004a, t1.ta_ima006, t1.ta_ima006a, t1.ta_ima007,
+		t1.ta_ima007a, t1.ta_ima008, t1.ta_ima008a, t1.ta_ima009,
+		t1.ta_ima009a, t1.ta_ima016, t1.ima24, t1.ta_ima032, t1.ta_ima032a,
+		t1.ta_ima033, t1.ta_ima033a, t1.ta_ima034, t1.ta_ima034a,
+		t1.ta_ima035, t1.ta_ima035a, t1.ta_ima036, t1.ta_ima037, t1.ta_ima014,
+		t1.ima44, t1.ima31, t1.ima86, t1.ima55, t1.ima86_fac, t1.ta_ima038,
+		t1.ta_ima040, t1.ta_ima041, t1.ima16, t1.ima12, t1.ima13, t1.ima17,
+		t1.ima18, t1.ima19, t1.ima28, t1.ima20, t1.ima21, t1.ima22, t1.ima23,
+		t1.ta_ima024, t1.ta_ima025, t1.ta_ima026, t1.ta_ima027, t1.ta_ima028,
+		t1.imaacti, t1.imaacti1,t1.ima09, t1.imadate, t1.ima26, t1.ima02,
+		t1.ima25, '0',sys_guid() as id, t2.imb01, concat(t2.imb02,t2.imb01) as
+		mate_id, t2.imb02, t2.imb03, t2.imb04, t2.imb05, t2.imb06, t2.imb07,
+		t2.imb08, t2.imb09, t2.imb10, t2.imb11, t2.imb12 from ima_file t1 left
+		join imb_file t2 on t2.imb01 = t1.ima01 where 1=1
+		<if test="mateType != null and mateType != '' "> and t1.ima06 = #{mateType}</if>
+	</select>
+
+	<select id="findClusterMaterialList" resultMap="mateMap"
+		parameterType="com.faujor.entity.cluster.mdm.MaterialDO">
+		select concat('m', t1.ima01) as ima01, t1.ima01 as
+		mate_code,t1.ima01a,t1.ima02,t1.ta_ima001,t1.ima06, t1.ima061,
+		t1.ima061a, t1.ima135, t1.ima135a, t1.ima135b, t1.ima25, t1.ima31_fac,
+		t1.ima26, t1.ima27, t1.ima07, t1.ta_ima003, t1.ta_ima003a,
+		t1.ta_ima005, t1.ta_ima005a, t1.ima14, t1.ima15, t1.ta_ima004,
+		t1.ta_ima004a, t1.ta_ima006, t1.ta_ima006a, t1.ta_ima007,
+		t1.ta_ima007a, t1.ta_ima008, t1.ta_ima008a, t1.ta_ima009,
+		t1.ta_ima009a, t1.ta_ima016, t1.ima24, t1.ta_ima032, t1.ta_ima032a,
+		t1.ta_ima033, t1.ta_ima033a, t1.ta_ima034, t1.ta_ima034a,
+		t1.ta_ima035, t1.ta_ima035a, t1.ta_ima036, t1.ta_ima037, t1.ta_ima014,
+		t1.ima44, t1.ima31, t1.ima86, t1.ima55, t1.ima86_fac, t1.ta_ima038,
+		t1.ta_ima040, t1.ta_ima041, t1.ima16, t1.ima12, t1.ima13, t1.ima17,
+		t1.ima18, t1.ima19, t1.ima28, t1.ima20, t1.ima21, t1.ima22, t1.ima23,
+		t1.ta_ima024, t1.ta_ima025, t1.ta_ima026, t1.ta_ima027, t1.ta_ima028,
+		t1.imaacti, t1.imaacti1,t1.ima09, t1.imadate, t1.ima26, t1.ima02,
+		t1.ima25, '0',
+		concat(t2.imb01,t2.imb02) as id, concat('m', t1.ima01)
+		as mate_id, t2.imb02, t2.imb03, t2.imb04, t2.imb05, t2.imb06,
+		t2.imb07, t2.imb08, t2.imb09, t2.imb10, t2.imb11, t2.imb12 from
+		ima_file t1 left join imb_file t2 on t2.imb01 = t1.ima01 where 1=1
+		<if test="mateType != null and mateType != '' "> and t1.ima06 = #{mateType}</if>
+	</select>
+
+	<select id="test" resultMap="unitMap">
+		select * from ima_file where
+	</select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.DeliverySignMapper">
+	<resultMap type="com.faujor.entity.bam.delivery.DeliverySignDO"
+		id="deliverySignMap">
+		<id property="id" column="id" />
+		<result property="deliCode" column="deli_code" />
+		<result property="signTime" column="sign_time" />
+		<result property="signStatus" column="sign_status" />
+		<result property="remark" column="remark" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+	</resultMap>
+
+	<insert id="saveSignInfo" parameterType="com.faujor.entity.bam.delivery.DeliverySignDO">
+		insert into
+		bam_deli_sign (id, deli_code, sign_time, sign_status, remark,
+		create_time, creator, creator_name) values(#{id}, #{deliCode},
+		#{signTime}, #{signStatus}, #{remark}, #{createTime}, #{creator},
+		#{creatorName})
+	</insert>
+</mapper>

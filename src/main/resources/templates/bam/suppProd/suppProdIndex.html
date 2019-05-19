@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<title>排产计划</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.red{color:red}
+	.green{color:green}
+	.layui-col-md9{border: 1px solid white;}
+	.layui-table-view .layui-table td, .layui-table-view .layui-table th{padding: 0px 0px;}
+</style>
+<body class='fau-body-list'>
+	<form class="layui-form margin-top20" id="searchForm" action="" method="post">
+		<input type="text" id="id" name="id" class="layui-input layui-hide">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">备货计划编号</label>
+					<div class="layui-input-block">
+						<input type="text" id="planDesc" name="planDesc"
+							placeholder="计划编号或名称" style="width: 70%" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item ">
+					<label class="layui-form-label suppInput">计划状态</label>
+					<div class="layui-input-inline suppDiv" id="suppDiv">
+						<select name="status" id="status" lay-verify="" lay-search="" lay-filter="status">
+							<option value="">请选择</option>
+							<option value="未排产">未排产</option>
+							<option value="已排产">已排产</option>
+							<option value="已驳回">已驳回</option>
+							<option value="已提交">已提交</option>
+							<option value="已确认">已确认</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		    <div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">计划月份</label>
+					<div class="layui-input-inline">
+						<input type="text" id="planMonth" name="planMonth" placeholder="yyyy-MM" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+				<div class="layui-col-md4">
+						<div class="layui-form-item">
+						<label class="layui-form-label">物料信息</label>
+						<div class="layui-input-inline">
+							<input type="text" id="mateDesc" name="mateDesc" placeholder="物料编码或名称" class="layui-input">
+						</div>
+					</div>
+				</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">供应商信息</label>
+					<div class="layui-input-inline">
+						<input type="text" id="suppName" name="suppName" placeholder="供应商编码或名称" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<div class="layui-col-md9">
+				<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_SUPPPLAN_CONFIRM')"  id="confirmBtn">确认</button>
+				<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_SUPPPLAN_REFRUSE')"  id="refuseBtn">驳回</button>
+			</div> 
+			<div class="layui-col-md3   textRight">
+				<button class="layui-btn layui-btn-xs yellowSolid " id="searchBtn">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="suppProdTable" lay-filter="suppProdTable">
+		</table>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+ 			<a class="layui-btn layui-btn-xs blueInline" lay-event="plan">排产</a>
+		</script>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/suppProd/suppProdIndex.js}"></script>
+</body>
+</html>

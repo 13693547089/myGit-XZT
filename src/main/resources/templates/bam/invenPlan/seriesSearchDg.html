@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>备货计划</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	#searchBtn{float: right; margin-right: 45px;}
+	.btnDiv{ float: right; margin-right: 40px;} 
+	.blueHollow {
+	  border:1px #458ffc solid;
+	  background: white;
+	  color: #458ffc; }
+	.blueHollow:hover {
+	  background: #458ffc;
+	  color: #fff; }
+	  .layui-input{width:90%}
+</style>
+<body>
+	<form class="layui-form margin-top20" id="searchForm" action="" method="post">
+		<input type="hidden" id="selectSeriesCodes" th:value="${selectSeriesCodes}"/>
+		<input type="hidden" id="planCode" th:value="${planCode}"/>
+		<input type="hidden" id="planMonth" th:value="${planMonth}"/>
+		<div class="layui-row">
+			<div class="layui-col-md4 layui-col-sm6" >
+				<div class="layui-form-item">
+					<label class="layui-form-label">系列信息</label>
+					<div class="layui-input-inline" >
+						<input type="text" id="seriesDesc" name="seriesDesc" placeholder="请输入系列关键字" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm6" >
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button" id="searchBtn">搜索</button>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="seriesTable" lay-filter="seriesTable">
+		</table>
+	</div>
+	<div class="layui-row btnDiv">
+		<button class="layui-btn layui-btn-xs blueHollow" id=confirmBtn>确定</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="cancleBtn">取消</button>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/invenPlan/seriesSearchDg.js}"></script>
+</body>
+</html>

@@ -1,0 +1,1097 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.PadPlanMapper">
+	<resultMap id="padPlanMap" type="com.faujor.entity.bam.psm.PadPlan">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="planCode" column="PLAN_CODE"/>
+			<result property="planName" column="PLAN_NAME"/>
+			<result property="planMonth" column="PLAN_MONTH"/>
+			<result property="status" column="STATUS"/>
+			<result property="crtDate" column="CRT_DATE"/>
+			<result property="crtUser" column="CRT_USER"/>
+			<result property="uptDate" column="UPT_DATE"/>
+			<result property="uptUser" column="UPT_USER"/>
+			<result property="crtUserCode" column="CRT_USER_CODE"/>
+			<result property="submitUserCode" column="SUBMIT_USER_CODE"/>
+			<result property="submitUserName" column="SUBMIT_USER_NAME"/>
+			<result property="submitDate" column="SUBMIT_DATE"/>
+			<result property="syncFlag" column="SYNC_FLAG"/>
+	</resultMap>
+	
+	<resultMap id="padPlanDetailMap" type="com.faujor.entity.bam.psm.PadPlanDetail">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="prodSeriesCode" column="PROD_SERIES_CODE"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="rank" column="RANK"/>
+			<result property="threeAvgSales" column="THREE_AVG_SALES"/>
+			<result property="nationStock1" column="NATION_STOCK1"/>
+			<result property="nationStock2" column="NATION_STOCK2"/>
+			<result property="nationStock3" column="NATION_STOCK3"/>
+			<result property="padPlanQty" column="PAD_PLAN_QTY"/>
+			<result property="saleForeQty" column="SALE_FORE_QTY"/>
+			<result property="turnOverDays" column="TURN_OVER_DAYS"/>
+			<result property="nextSaleForeQty" column="NEXT_SALE_FORE_QTY"/>
+			<result property="estDeliQty" column="EST_DELI_QTY"/>
+			<result property="estSaleQty" column="EST_SALE_QTY"/>
+			<result property="actSaleQty" column="ACT_SALE_QTY"/>
+			<result property="actDeliQty" column="ACT_DELI_QTY"/>
+			<result property="actTurnOverDays" column="ACT_TURN_OVER_DAYS"/>
+			<result property="bigItemCode" column="BIG_ITEM_CODE"/>
+			<result property="bigItemExpl" column="BIG_ITEM_EXPL"/>
+			<result property="produCode" column="produ_code"/>
+			<result property="produExpl" column="produ_expl"/>
+			<result property="planMonth" column="PLAN_MONTH"/>
+	</resultMap>
+	
+	<select id="getPadPlanByPage" resultMap="padPlanMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select padPlan.* from (select * from ps_pad_plan
+where 1=1
+<if test="userCode!=null and userCode!=''">
+	and crt_user_code  = #{userCode}
+</if>
+and status = '已保存'
+union
+select * from ps_pad_plan
+where 1=1
+and status != '已保存') padPlan 
+				  where 1=1 
+					<if test="planName!=null and planName!=''">
+						and padPlan.PLAN_NAME like '%'||#{planName}||'%'
+					</if>
+					<if test="planCode!=null and planCode!=''">
+						and padPlan.PLAN_CODE like '%'||#{planCode}||'%'
+					</if>
+					<if test="status!=null and status!=''">
+						and padPlan.STATUS = #{status}
+					</if>
+					<if test="crtDateStart!=null and crtDateStart!=''">
+						and padPlan.CRT_DATE &gt;= #{crtDateStart}
+					</if>
+					<if test="crtDateEnd!=null and crtDateEnd!=''">
+						and padPlan.CRT_DATE &lt;= #{crtDateEnd}
+					</if>
+					<if test="crtUser!=null and crtUser!=''">
+						and padPlan.CRT_USER = #{crtUser}
+					</if>
+					
+					<if test="planMonth!=null and planMonth!=''">
+						and padPlan.PLAN_MONTH = #{planMonth}
+					</if>
+				order by padPlan.PLAN_CODE desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<select id="getPadPlanCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from (select * from ps_pad_plan
+where 1=1
+<if test="userCode!=null and userCode!=''">
+	and crt_user_code  = #{userCode}
+</if>
+and status = '已保存'
+union
+select * from ps_pad_plan
+where 1=1
+and status != '已保存') padPlan 
+		where 1=1 
+		<if test="planName!=null and planName!=''">
+			and padPlan.PLAN_NAME like '%'||#{planName}||'%'
+		</if>
+		<if test="planCode!=null and planCode!=''">
+			and padPlan.PLAN_CODE like '%'||#{planCode}||'%'
+		</if>
+		<if test="status!=null and status!=''">
+			and padPlan.STATUS = #{status}
+		</if>
+		<if test="crtDateStart!=null and crtDateStart!=''">
+			and padPlan.CRT_DATE &gt;= #{crtDateStart}
+		</if>
+		<if test="crtDateEnd!=null and crtDateEnd!=''">
+			and padPlan.CRT_DATE &lt;= #{crtDateEnd}
+		</if>
+		<if test="crtUser!=null and crtUser!=''">
+			and padPlan.CRT_USER = #{crtUser}
+		</if>
+		
+		<!-- 判断是否存在相同月份的条件 -->
+		<if test="planMonth!=null and planMonth!=''">
+			and padPlan.PLAN_MONTH = #{planMonth}
+		</if>
+		<if test="nonId!=null and nonId!=''">
+			and padPlan.ID != #{nonId}
+		</if>
+	</select>
+	
+	<select id="getPadPlanByMap" resultMap="padPlanMap" parameterType="Map">
+		select padPlan.* from PS_PAD_PLAN padPlan 
+		where 1=1 
+		<if test="id!=null and id!=''">
+			and padPlan.ID = #{id}
+		</if>
+		<if test="planMonth!=null and planMonth!=''">
+			and padPlan.PLAN_MONTH = #{planMonth}
+		</if>
+	</select>
+	
+	<select id="getPadPlanListByMap" resultMap="padPlanMap" parameterType="Map">
+		select padPlan.* from PS_PAD_PLAN padPlan 
+		where 1=1 
+		<if test="status!=null and status!=''">
+			and padPlan.status = #{status}
+		</if>
+		<if test="syncFlag!=null and syncFlag!=''">
+			and padPlan.SYNC_FLAG = #{syncFlag}
+		</if>
+	</select>
+	
+	<delete id="delPadPlanById" parameterType="String">
+		delete from PS_PAD_PLAN where ID=#{id}
+	</delete>
+	
+	<insert id="savePadPlan" parameterType="com.faujor.entity.bam.psm.PadPlan">
+		insert into PS_PAD_PLAN (id,sn,plan_code,plan_name,plan_month,status,
+  		crt_date,crt_user,crt_user_code,submit_user_code,submit_user_name,submit_date,SYNC_FLAG)
+		values
+		(#{id},#{sn},#{planCode},#{planName},#{planMonth},
+		#{status},#{crtDate},#{crtUser},#{crtUserCode},#{submitUserCode},#{submitUserName},#{submitDate},#{syncFlag})
+	</insert>
+	
+	<update id="updatePadPlan" parameterType="com.faujor.entity.bam.psm.PadPlan">
+		update PS_PAD_PLAN set
+			sn=#{sn},plan_code=#{planCode},
+			plan_name=#{planName},plan_month=#{planMonth}, status=#{status},
+			upt_date=#{uptDate},upt_user=#{uptUser},submit_user_code=#{submitUserCode},
+			submit_user_name=#{submitUserName},submit_date=#{submitDate},SYNC_FLAG=#{syncFlag} 
+		where id=#{id}
+	</update>
+	
+	<update id="updatePadPlanStatus" >
+		update PS_PAD_PLAN set
+		  status=#{status}
+		where id=#{id}
+	</update>
+	
+	<update id="updatePadPlanSyncFlag" >
+		update PS_PAD_PLAN set
+		  SYNC_FLAG=#{syncFlag}
+		where id=#{id}
+	</update>
+	
+	<select id="getMaxPadPlanMonth" resultType="String">
+		select max(padPlan.plan_month) as max_month from PS_PAD_PLAN padPlan 
+	</select>
+	
+	<select id="getPadPlanDetailPage" resultMap="padPlanDetailMap" parameterType="Map">
+		select tb1.* from (
+			select tb.*,rownum rn from
+				(select padPlanDetail.* from PS_PAD_PLAN_DETAIL padPlanDetail 
+				  inner join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+				  and m.mate_code = padPlanDetail.mat_code
+				  where 1=1 and padPlanDetail.MAIN_ID = #{mainId} and padPlanDetail.mat_code is not null 
+				  and m.MATE_STATUS in ('Z1','Z2') 
+				order by padPlanDetail.sn asc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	
+	<!-- 需要用到sn来进行删除处理,先排序，再赋rownum -->
+	<select id="getPadPlanDetailListByMainId" resultMap="padPlanDetailMap" parameterType="String">
+		select id,rownum as sn,main_id,mat_code,mat_name,PROD_SERIES_CODE,prod_series,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_EXPL,BIG_ITEM_CODE ,produ_code,produ_expl
+  		from (select detail.*,m.produ_code,m.produ_expl from PS_PAD_PLAN_DETAIL detail 
+		inner join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		and m.mate_code = detail.mat_code
+		where detail.MAIN_ID=#{mainId} and detail.mat_code is not null 
+		and m.MATE_STATUS in ('Z1','Z2') 
+		order by  m.produ_code,m.series_code,m.big_item_code,m.small_item_code,detail.mat_name)
+	
+	</select>
+		<!-- substr(detail.rank,1,1),length(detail.rank),detail.rank, -->
+	<select id="getPadPlanDetailCount" resultType="java.lang.Integer" parameterType="String">
+		select count(1) from PS_PAD_PLAN_DETAIL padPlanDetail 
+		inner join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		and m.mate_code = padPlanDetail.mat_code
+		where padPlanDetail.MAIN_ID=#{mainId} and padPlanDetail.mat_code is not null
+		and m.MATE_STATUS in ('Z1','Z2') 
+		
+	</select>
+	
+	<insert id="savePadPlanDetailList" parameterType="java.util.List">
+		<!-- <selectKey keyProperty="id" resultType="String" order="BEFORE">
+	        select sys_guid() from dual
+	    </selectKey> -->
+		insert into PS_PAD_PLAN_DETAIL (id,sn,main_id,mat_code,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series) 
+		SELECT A.*,m.BIG_ITEM_CODE,m.BIG_ITEM_EXPL,m.mate_name,m.series_code,m.series_expl from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode} as mat_code,
+	        #{item.rank},
+	        #{item.threeAvgSales},
+	        #{item.nationStock1},
+	        #{item.nationStock2},
+	        #{item.nationStock3},
+	        #{item.padPlanQty},
+	        #{item.saleForeQty},
+	        #{item.turnOverDays},
+	        #{item.nextSaleForeQty},
+	        #{item.estDeliQty},
+	        #{item.estSaleQty},
+	        #{item.actSaleQty},
+	        #{item.actDeliQty},
+	        #{item.actTurnOverDays}
+   		FROM dual 
+    	</foreach>
+    	) A left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+	  and m.mate_code = A.mat_code
+	</insert>
+	
+	<delete id="delPadPlanDetailByMainId" parameterType="String">
+		delete from PS_PAD_PLAN_DETAIL where MAIN_ID=#{mainId}
+	</delete>
+	
+	<!-- 根据用户管理的系列保存明细数据 -->
+	<insert id="savePadPlanDetailListByUserSeries" parameterType="Map">
+		insert into PS_PAD_PLAN_DETAIL (id,sn,main_id,mat_code,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series) 
+		SELECT A.*,m.BIG_ITEM_CODE,m.BIG_ITEM_EXPL,m.mate_name,m.series_code,m.series_expl from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode} as mat_code,
+	        #{item.rank},
+	        #{item.threeAvgSales},
+	        #{item.nationStock1},
+	        #{item.nationStock2},
+	        #{item.nationStock3},
+	        #{item.padPlanQty},
+	        #{item.saleForeQty},
+	        #{item.turnOverDays},
+	        #{item.nextSaleForeQty},
+	        #{item.estDeliQty},
+	        #{item.estSaleQty},
+	        #{item.actSaleQty},
+	        #{item.actDeliQty},
+	        #{item.actTurnOverDays}
+   		FROM dual 
+    	</foreach>
+    	) A left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+	  and m.mate_code = A.mat_code
+	  inner join MDM_USER_SERIES series on series.SERIES_CODE = m.series_code
+	  where series.user_code = #{userCode}
+	</insert>
+	<!-- 根据用户管理的系列删除明细数据 -->
+	<delete id="delPadPlanDetailByUserSeries" parameterType="Map">
+		delete from PS_PAD_PLAN_DETAIL detail
+		where exists (select 1 from MDM_USER_SERIES series where detail.PROD_SERIES_CODE = series.SERIES_CODE 
+		and series.user_code = #{userCode})
+		and detail.MAIN_ID=#{mainId}
+	</delete>
+	
+	<select id="getMatProdSeriesByYearMonth" resultType="com.faujor.entity.common.BaseEntity" parameterType="String">
+		SELECT distinct DETAIL.PROD_SERIES_CODE code, DETAIL.PROD_SERIES name FROM PS_PAD_PLAN_DETAIL DETAIL
+  		INNER JOIN PS_PAD_PLAN PLAN ON PLAN.ID = DETAIL.MAIN_ID
+  		WHERE PLAN.PLAN_MONTH = #{ym} and plan.status='已提交'
+  		<if test="seriesCodes!=null">
+  			and DETAIL.PROD_SERIES_CODE in
+  			<foreach collection="seriesCodes" open="(" close=")" item="item" separator=",">
+  			#{item}
+  			</foreach>
+  		</if>
+  		<if test="seriesDesc!=null and seriesDesc!=''">
+  			and(DETAIL.PROD_SERIES_CODE like #{seriesDesc} or DETAIL.PROD_SERIES like #{seriesDesc})
+  		</if>
+	</select>
+	
+	<select id="getPadPlanDetailByMap" resultMap="padPlanDetailMap"  parameterType="Map">
+		SELECT DETAIL.* from PS_PAD_PLAN_DETAIL DETAIL
+  		INNER JOIN PS_PAD_PLAN PLAN ON PLAN.ID = DETAIL.MAIN_ID
+  		WHERE PLAN.PLAN_MONTH = #{planMonth} 
+  		<if test="prodSeries!=null and prodSeries!=''">
+  			and DETAIL.PROD_SERIES_code= #{prodSeries}
+  		</if>
+  		<if test="mateCode!=null and mateCode!=''">
+  			and DETAIL.mat_code= #{mateCode}
+  		</if>
+  		<if test="mateName!=null and mateName!=''">
+  			and (DETAIL.mat_Name like #{mateName} or DETAIL.mat_code like #{mateName})
+  		</if>
+  		<if test="status!=null and status!=''">
+  			and plan.status= #{status}
+  		</if>
+	</select>
+	
+	<!-- nvl(D.next_sale_fore_qty,0) as SALE_FORE_QTY, -->
+	<select id="getPadPlanTempDetailByMap" resultMap="padPlanDetailMap"  parameterType="Map">
+		SELECT '' as ID,rownum as SN,#{mainId} AS MAIN_ID,B.mat_code AS MAT_CODE,B.mat_name AS MAT_NAME,
+		B.series_code AS PROD_SERIES_CODE,B.series_name AS PROD_SERIES,'' AS RANK,0 AS THREE_AVG_SALES,
+		nvl(D.NATION_STOCK1,0) as NATION_STOCK2,0 as PAD_PLAN_QTY,
+		round(nvl(D.NATION_STOCK1,0)+0-nvl(saleDetail.currSale,0),0) AS NATION_STOCK1,
+		nvl(saleDetail.currSale,0) as SALE_FORE_QTY,
+		nvl(saleDetail.nextSale,0) as next_sale_fore_qty,
+		0 AS EST_DELI_QTY,0 AS EST_SALE_QTY,0 AS ACT_SALE_QTY,0 as ACT_DELI_QTY,0 as ACT_TURN_OVER_DAYS,
+		case when nvl(saleDetail.currSale,0)=0 then 0 else round(round(nvl(D.NATION_STOCK1,0)+0-nvl(saleDetail.currSale,0),0)*30/saleDetail.currSale,0) end as TURN_OVER_DAYS,
+		m.BIG_ITEM_CODE,m.BIG_ITEM_EXPL,m.produ_code,m.produ_expl from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.matCode} as mat_code,
+	        #{item.matName} as mat_name,
+	        #{item.prodSeriesCode} as series_code,
+	        #{item.prodSeries} as series_name
+   		FROM dual 
+    	</foreach>
+    	) B left join (select detail.mat_code,detail.next_sale_fore_qty,detail.NATION_STOCK1 from PS_PAD_PLAN_DETAIL detail
+		inner join PS_PAD_PLAN plan 
+		on detail.main_id = plan.id and plan.plan_month=#{preYm}) D 
+		ON D.mat_code = B.mat_code
+		left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		and m.mate_code = B.mat_code
+		left join (select ${columnName} as currSale,${nextColumnName} as nextSale,mat_code 
+		from ps_sale_fcst_detail 
+		where main_id = #{saleId}) saleDetail on B.mat_code = saleDetail.mat_code
+	</select>
+	
+	<update id="updateNextPadPlanDetail" parameterType="Map">
+		update ps_pad_plan_detail a
+		set (a.sale_fore_qty) = (select nvl(b.next_sale_fore_qty,0) 
+		from ps_pad_plan_detail b where b.main_id=#{currID}
+		and a.mat_code = b.mat_code and b.next_sale_fore_qty != a.sale_fore_qty)
+		where a.main_id = #{nextID}
+		and exists (select 1 from ps_pad_plan_detail b where b.main_id=#{currID}
+		and a.mat_code = b.mat_code and b.next_sale_fore_qty != a.sale_fore_qty)
+	</update>
+	
+	<!-- 通过 t_ora_cxjh表更新某月 生产交货计划明细数据 -->
+	<update id="updateMonthPadDetail" parameterType="Map">
+		update ps_pad_plan_detail a
+		set (a.rank,a.THREE_AVG_SALES,a.nation_stock2,a.ACT_SALE_QTY,
+		a.nation_stock1,a.turn_over_days,a.ACT_DELI_QTY)
+		=(select nvl(b.ZABC,''),nvl(b.ZXSPJ,0),nvl(b.ZSYKC,0),nvl(b.ZBYXL,0),
+		round(nvl(b.ZSYKC,0)+nvl(a.EST_DELI_QTY,0)-nvl(a.EST_SALE_QTY,0),0),
+		case when nvl(a.EST_SALE_QTY,0)=0 then 0 else
+		round(round(nvl(b.ZSYKC,0)+nvl(a.EST_DELI_QTY,0)-nvl(a.EST_SALE_QTY,0),0)*30/a.EST_SALE_QTY,0) end,
+		nvl(b.ZSJSC,0) 
+		from t_ora_cxjh b where a.mat_code=b.matnr
+		and b.year=#{year} and b.month=#{month})
+		where a.main_id =(select id from ps_pad_plan where PLAN_MONTH=#{ym})
+		and exists(select 1 from t_ora_cxjh b where a.mat_code=b.matnr
+		and b.year=#{year} and b.month=#{month})
+	</update>
+	
+	<!-- 月底最后一日，使用实际销量更新销售预测 -->
+	<update id="updatePadPlanSaleForeByCxjh" parameterType="Map">
+		update ps_pad_plan_detail a
+		set a.sale_fore_qty = (select nvl(b.zbyxl,0) from t_ora_cxjh b where a.mat_code=b.matnr
+		and b.year=#{year} and b.month = #{month})
+		where a.main_id = #{padId} and exists(select 1 from t_ora_cxjh b where a.mat_code=b.matnr 
+		and b.year=#{year} and b.month = #{month})
+	</update>
+	
+	<!-- 通过 中间库中t_ora_cxjh表实时数据（上个月库存）更新某月 生产交货计划明细数据 -->
+	<update id="updatePadPlanDetailByCxjh" parameterType="Map">
+	
+		(
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.matnr} as matnr,
+	        #{item.matName} as zsykc,
+	        #{item.prodSeriesCode} as series_code,
+	        #{item.prodSeries} as series_name
+   		FROM dual 
+    	</foreach>
+    	) B
+    	
+	</update>
+	
+	 <!-- 保存中间表中额外的物料至生产交货计划中 -->
+	<insert id="saveExtraMaterialInPadPlan" parameterType="Map">
+		insert into PS_PAD_PLAN_DETAIL (id,sn,main_id,mat_code,
+	      rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+	      sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+	      ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series)
+		select sys_guid() as id,'' as sn,#{padId} as main_id,a.matnr as Mat_Code,
+		nvl(a.zabc,'') as rank,nvl(a.ZXSPJ,0) as three_avg_sales,
+		round(nvl(a.ZSYKC,0)+0-0,0) as nation_stock1,nvl(a.ZSYKC,0)as nation_stock2,
+		0 as nation_stock3, 0 as pad_plan_qty,nvl(saleFcst.currSale,0) as sale_fore_qty,
+		0 as turn_over_days,
+		nvl(saleFcst.nextSale,0) as NEXT_SALE_FORE_QTY,
+		0 as EST_DELI_QTY,0 as EST_SALE_QTY,nvl(a.ZBYXL,0) as ACT_SALE_QTY,
+		nvl(a.ZSJSC,0) as ACT_DELI_QTY,0 as ACT_turn_over_days,m.BIG_ITEM_CODE,m.BIG_ITEM_EXPL,
+		m.mate_name,m.series_code,m.series_expl
+		from t_ora_cxjh a
+		left join ps_pad_plan_detail b
+		on a.matnr = b.mat_code and b.main_id = #{padId}
+		left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		and m.mate_code = a.matnr
+		left join (select ${columnName} as currSale,${nextColumnName} as nextSale,mat_code 
+		from ps_sale_fcst_detail where main_id = #{saleId}) saleFcst on saleFcst.mat_code = a.matnr
+		where a.year=#{year} and a.month=#{month} and b.mat_code is null
+	</insert>
+	
+	<!-- 未来月份的多余物料插入 -->
+	<insert id="saveFutureMonthExtraMat" parameterType="Map">
+		insert into PS_PAD_PLAN_DETAIL (id,sn,main_id,mat_code,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series)
+    
+	     select sys_guid() as id,'' as sn,#{nextId} as main_id,currMonth.Mat_Code,
+	     currMonth.rank,0 as three_avg_sales,0 as nation_stock1,currMonth.nation_stock1 as nation_stock2,0 as nation_stock3,
+	     currMonth.pad_plan_qty,
+	  		nvl(saleFcst.Salefore,0) as sale_fore_qty,
+	      0 as turn_over_days,
+	      nvl(saleFcst.nextSaleFore,0) as NEXT_SALE_FORE_QTY,
+	      0 as EST_DELI_QTY,0 as EST_SALE_QTY,0 as ACT_SALE_QTY,
+	  		0 as ACT_DELI_QTY,0 as ACT_turn_over_days,currMonth.BIG_ITEM_CODE,currMonth.BIG_ITEM_EXPL,
+	      currMonth.mat_name,currMonth.PROD_SERIES_CODE,currMonth.prod_series
+	     from ps_pad_plan_detail currMonth
+	     left join 
+	     (select mat_code,main_id from ps_pad_plan_detail where main_id=#{nextId}) nextMonth
+	     on currMonth.Mat_Code = nextMonth.mat_code
+	     left join (select ${saleColumn},mat_code from ps_sale_fcst_detail 
+	     where main_id = #{saleId}) saleFcst on saleFcst.mat_code = currMonth.Mat_Code
+	     where currMonth.main_id=#{currId} and nextMonth.main_id is null
+	</insert>
+	
+	<!-- 为未来月份删除多余物料 -->
+	<delete id="delFutureMonthExtraMat" parameterType="Map">
+		delete from ps_pad_plan_detail nextMonth
+		where not exists(select 1 from ps_pad_plan_detail currMonth
+		where nextMonth.Mat_Code = currMonth.Mat_Code
+		and currMonth.Main_Id = #{currId}) 
+		and nextMonth.Main_Id=#{nextId}
+	</delete>
+	
+	<!-- 当前及以前月份的多余物料插入 -->
+	<insert id="saveCurrPreMonthExtraMat" parameterType="Map">
+		 insert into PS_PAD_PLAN_DETAIL (id,sn,main_id,mat_code,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series)
+    
+	     select sys_guid() as id,'' as sn,#{nextId} as main_id,currMonth.Mat_Code,
+	     nvl(cxjh.ZABC,'') as rank,nvl(cxjh.ZXSPJ,0) as three_avg_sales,0 as nation_stock1,
+	     nvl(cxjh.ZSYKC,0) as nation_stock2,0 as nation_stock3,
+	     currMonth.pad_plan_qty,
+	  		nvl(saleFcst.Salefore,0) as sale_fore_qty,
+	      0 as turn_over_days,
+	      nvl(saleFcst.nextSaleFore,0) as NEXT_SALE_FORE_QTY,
+	      0 as EST_DELI_QTY,0 as EST_SALE_QTY,nvl(cxjh.ZBYXL,0) as ACT_SALE_QTY,
+	  		nvl(cxjh.ZSJSC,0) as ACT_DELI_QTY,0 as ACT_turn_over_days,currMonth.BIG_ITEM_CODE,currMonth.BIG_ITEM_EXPL,
+	      currMonth.mat_name,currMonth.PROD_SERIES_CODE,currMonth.prod_series
+	     from ps_pad_plan_detail currMonth
+	     left join 
+	     (select mat_code,main_id from ps_pad_plan_detail where main_id=#{nextId}) nextMonth
+	     on currMonth.Mat_Code = nextMonth.mat_code
+	     left join (select ${saleColumn},mat_code from ps_sale_fcst_detail 
+	     where main_id = #{saleId}) saleFcst on saleFcst.mat_code = currMonth.Mat_Code
+	     left join t_ora_cxjh cxjh on cxjh.year=#{year} and cxjh.month=#{month} and cxjh.matnr=currMonth.Mat_Code
+	     where currMonth.main_id=#{currId} and nextMonth.main_id is null
+	</insert>
+	
+	<!-- 未来月起，下个月中的上个月全国库存获取 -->
+	<update id="updateNextPlanPreStock" parameterType="Map">
+		update ps_pad_plan_detail a
+	    set a.nation_stock2 = (select b.nation_stock1 from ps_pad_plan_detail b 
+	    where b.main_id = #{preId} and b.mat_code=a.mat_code)
+	    where a.main_id = #{nextId}
+	    and exists(select 1 from ps_pad_plan_detail b 
+	    where b.main_id = #{preId} and b.mat_code=a.mat_code)
+	</update>
+	
+	<!-- 修改后续月份的计算列 -->
+	<update id="updateFutureMonthCalc" parameterType="Map">
+		update ps_pad_plan_detail a
+	    set a.nation_stock1=round(a.nation_stock2+a.pad_plan_qty-a.sale_fore_qty,0)
+	    ,a.turn_over_days=case when nvl(a.sale_fore_qty,0)=0 then 0 else
+	    round(round(a.nation_stock2+a.pad_plan_qty-a.sale_fore_qty,0)*30/a.sale_fore_qty,0) end
+	    where a.main_id = #{nextId}
+	</update>
+	
+	<!-- 修改当前及以前月份月份的计算列 -->
+	<update id="updateCurrPreMonthCalc" parameterType="Map">
+		update ps_pad_plan_detail a
+	    set a.nation_stock1=round(a.nation_stock2+a.EST_DELI_QTY-a.EST_SALE_QTY,0)
+	    ,a.turn_over_days=case when nvl(a.EST_SALE_QTY,0)=0 then 0 else
+	    round(round(a.nation_stock2+a.EST_DELI_QTY-a.EST_SALE_QTY,2)*30/a.EST_SALE_QTY,0) end
+	    where a.main_id = #{nextId}
+	</update>
+	
+	<resultMap id="psiMap" type="com.faujor.entity.bam.psm.Psi">
+			<result property="sumnum" column="sumnum"/>
+			<result property="rank" column="rank"/>
+			<result property="produExpl" column="produ_expl"/>
+			<result property="seriesCode" column="seriesCode"/>
+			<result property="matCode" column="matCode"/>
+			<result property="matShort" column="matShort"/>
+			<result property="threeAvgSales" column="threeAvgSales"/>
+			<result property="preY1mSales" column="preY1mSales"/>
+			<result property="preY2mSales" column="preY2mSales"/>
+			<result property="preY3mSales" column="preY3mSales"/>
+			<result property="preY4mSales" column="preY4mSales"/>
+			<result property="preY5mSales" column="preY5mSales"/>
+			<result property="preY6mSales" column="preY6mSales"/>
+			<result property="preY7mSales" column="preY7mSales"/>
+			<result property="preY8mSales" column="preY8mSales"/>
+			<result property="preY9mSales" column="preY9mSales"/>
+			<result property="preY10mSales" column="preY10mSales"/>
+			<result property="preY11mSales" column="preY11mSales"/>
+			<result property="preY12mSales" column="preY12mSales"/>
+			<result property="currY1mSales" column="currY1mSales"/>
+			<result property="currY2mSales" column="currY2mSales"/>
+			<result property="currY3mSales" column="currY3mSales"/>
+			<result property="currY4mSales" column="currY4mSales"/>
+			<result property="currY5mSales" column="currY5mSales"/>
+			<result property="currY6mSales" column="currY6mSales"/>
+			<result property="currY7mSales" column="currY7mSales"/>
+			<result property="currY8mSales" column="currY8mSales"/>
+			<result property="currY9mSales" column="currY9mSales"/>
+			<result property="currY10mSales" column="currY10mSales"/>
+			<result property="currY11mSales" column="currY11mSales"/>
+			<result property="currY12mSales" column="currY12mSales"/>
+			<result property="nationStock1" column="nationStock1"/>
+			<result property="nationStock2" column="nationStock2"/>
+			<result property="padPlanQty" column="padPlanQty"/>
+			<result property="padActQty" column="padActQty"/>
+			<result property="saleForeQty" column="saleForeQty"/>
+			<result property="saleForeActQty" column="saleForeActQty"/>
+			<result property="turnOverDays" column="turnOverDays"/>
+			<result property="estDeliQty" column="estDeliQty"/>
+			<result property="estSaleQty" column="estSaleQty"/>
+			<result property="actSaleQty" column="actSaleQty"/>
+			<result property="prodSeriesCode" column="prodSeriesCode"/>
+			<result property="bigItemExpl" column="bigItemExpl"/>
+	</resultMap>
+	
+	<select id="getPsiInfoByMap" resultMap="psiMap"  parameterType="Map">
+		select b.* from 
+		(select rownum as orderNum,c.* from
+   (select a.sn,b.series_code,b.series_name,b.BIG_ITEM_CODE
+		 from ps_series_order a
+		right join (select distinct series_code,series_expl as series_name,BIG_ITEM_CODE from mdm_mate
+		where mate_type='0005' and series_code is not null) b
+		on a.series_code = b.series_code and a.parent_id in (select id from ps_series_order where user_code = #{userCode} and rownum = 1)
+		order by a.sn,b.series_code,b.BIG_ITEM_CODE) c) a
+      left join (select detail.rank as rank,m.produ_expl,detail.mat_code as matCode,detail.mat_name as matShort,
+		ROUND(nvl(detail.three_Avg_Sales,0)) as threeAvgSales,
+		
+		nvl(preYear.jan,0) as preY1mSales,nvl(preYear.feb,0) as preY2mSales,nvl(preYear.mar,0) as preY3mSales,
+		nvl(preYear.apr,0) as preY4mSales,nvl(preYear.may,0) as preY5mSales,nvl(preYear.jun,0) as preY6mSales,
+		nvl(preYear.jul,0) as preY7mSales,nvl(preYear.aug,0) as preY8mSales,nvl(preYear.sep,0) as preY9mSales,
+		nvl(preYear.oct,0) as preY10mSales,nvl(preYear.nov,0) as preY11mSales,nvl(preYear.dec,0) as preY12mSales,
+		
+		nvl(currYear.jan,0) as currY1mSales,nvl(currYear.feb,0) as currY2mSales,nvl(currYear.mar,0) as currY3mSales,
+		nvl(currYear.apr,0) as currY4mSales,nvl(currYear.may,0) as currY5mSales,nvl(currYear.jun,0) as currY6mSales,
+		nvl(currYear.jul,0) as currY7mSales,nvl(currYear.aug,0) as currY8mSales,nvl(currYear.sep,0) as currY9mSales,
+		nvl(currYear.oct,0) as currY10mSales,nvl(currYear.nov,0) as currY11mSales,nvl(currYear.dec,0) as currY12mSales,
+		
+		ROUND(nvl(detail.NATION_STOCK2,0)) as nationStock2,ROUND(nvl(detail.PAD_PLAN_QTY,0)) as padPlanQty,
+		ROUND(nvl(detail.sale_Fore_Qty,0)) as saleForeQty,ROUND(nvl(detail.ACT_DELI_QTY,0)) as padActQty,ROUND(nvl(detail.ACT_SALE_QTY,0)) as saleForeActQty,
+		ROUND(nvl(detail.NATION_STOCK1,0)) as nationStock1,ROUND(nvl(detail.TURN_OVER_DAYS,0)) as turnOverDays,ROUND(nvl(detail.EST_DELI_QTY,0)) as estDeliQty
+		,ROUND(nvl(detail.EST_SALE_QTY,0)) as estSaleQty,ROUND(nvl(detail.ACT_SALE_QTY,0)) as actSaleQty,
+		detail.PROD_SERIES_CODE,detail.PROD_SERIES as prodSeriesCode,detail.BIG_ITEM_EXPL as bigItemExpl,detail.BIG_ITEM_CODE
+		
+		,nvl(padQty.p1,0) as next1Plan,nvl(padQty.p2,0) as next2Plan,nvl(padQty.p3,0) as next3Plan,nvl(padQty.p4,0) as next4Plan,nvl(padQty.p5,0) as next5Plan
+    ,nvl(padQty.p6,0) as next6Plan,nvl(padQty.p7,0) as next7Plan,nvl(padQty.p8,0) as next8Plan,nvl(padQty.p9,0) as next9Plan,nvl(padQty.p10,0) as next10Plan
+    ,nvl(padQty.p11,0) as next11Plan,nvl(padQty.p12,0) as next12Plan
+    
+    ,nvl(saleFQty.p1,0) as next1SalesF,
+    nvl(saleFQty.p2,0) as next2SalesF,
+    nvl(saleFQty.p3,0) as next3SalesF,
+    nvl(saleFQty.p4,0) as next4SalesF,
+    nvl(saleFQty.p5,0) as next5SalesF,
+    nvl(saleFQty.p6,0) as next6SalesF,
+    nvl(saleFQty.p7,0) as next7SalesF,
+    nvl(saleFQty.p8,0) as next8SalesF,
+    nvl(saleFQty.p9,0) as next9SalesF,
+    nvl(saleFQty.p10,0) as next10SalesF,
+    nvl(saleFQty.p11,0) as next11SalesF,
+    nvl(saleFQty.p12,0) as next12SalesF
+		
+		from ps_pad_plan_detail detail 
+		inner join ps_pad_plan plan on detail.main_id = plan.id 
+		inner join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		and m.mate_code = detail.mat_code
+		left join 
+		(select * from 
+		(select plan.plan_month,detail.mat_code,ROUND(nvl(detail.pad_plan_qty,0)) as pad_plan_qty from ps_pad_plan_detail detail
+		inner join ps_pad_plan plan on detail.main_id = plan.id
+		where 1=1 ) pivot (max(ROUND(nvl(pad_plan_qty,0))) for  plan_month in (${months}))
+		) padQty on padQty.mat_code = detail.mat_code
+		left join (
+		select * from 
+		(select plan.plan_month,detail.mat_code,ROUND(nvl(detail.sale_fore_qty,0)) as sale_fore_qty from ps_pad_plan_detail detail
+		inner join ps_pad_plan plan on detail.main_id = plan.id
+		where 1=1 ) pivot (max(ROUND(nvl(sale_fore_qty,0))) for  plan_month in (${months}))
+		) saleFQty on saleFQty.mat_code = detail.mat_code
+		left join 
+		(select * from 
+      (select matnr,month,zbyxl from t_ora_cxjh where year = #{preYear})
+      pivot (max(ROUND(nvl(zbyxl,0))) for  month in ('01' as jan,'02' as feb,'03' as mar,'04' as apr,'05' as may ,'06' as jun,
+      '07' as jul,'08' as aug,'09' as sep,'10' as oct,'11' as nov,'12' as dec))) preYear on preYear.matnr = detail.mat_code
+      left join 
+		(select * from 
+      (select matnr,month,zbyxl from t_ora_cxjh where year = #{currYear})
+      pivot (max(ROUND(nvl(zbyxl,0))) for  month in ('01' as jan,'02' as feb,'03' as mar,'04' as apr,'05' as may ,'06' as jun,
+      '07' as jul,'08' as aug,'09' as sep,'10' as oct,'11' as nov,'12' as dec))) currYear on currYear.matnr = detail.mat_code
+  		WHERE 1=1 and m.MATE_STATUS in ('Z1','Z2') 
+  		<if test="planMonth!=null and planMonth!=''">
+  			and plan.PLAN_MONTH = #{planMonth}
+  		</if>
+  		order by m.produ_code,detail.PROD_SERIES_CODE,detail.BIG_ITEM_CODE,m.small_item_code,detail.mat_name
+  		) b on a.series_code = b.PROD_SERIES_CODE and a.BIG_ITEM_CODE = b.BIG_ITEM_CODE 
+  		where b.matCode is not null 
+	</select>
+	
+	<!-- 获取导出的总计数据 -->
+	<select id="getPsiSumByMap" resultMap="psiMap"  parameterType="Map">
+		select b.* from 
+     (select rownum as orderNum,c.* from
+   (select a.sn,b.series_code,b.series_name,b.BIG_ITEM_CODE
+		 from ps_series_order a
+		right join (select distinct series_code,series_expl as series_name,BIG_ITEM_CODE from mdm_mate
+		where mate_type='0005' and series_code is not null) b
+		on a.series_code = b.series_code and a.parent_id in (select id from ps_series_order where user_code = #{userCode} and rownum = 1)
+		order by a.sn,b.series_code,b.BIG_ITEM_CODE) c) a
+		left join 
+		(select detail.PROD_SERIES_CODE,detail.PROD_SERIES as prodSeriesCode,detail.BIG_ITEM_EXPL as bigItemExpl,detail.BIG_ITEM_CODE,
+    count(1) as sumnum,
+    SUM(ROUND(nvl(detail.three_Avg_Sales,0))) as threeAvgSales,
+    
+    SUM(nvl(preYear.jan,0)) as preY1mSales,SUM(nvl(preYear.feb,0)) as preY2mSales,SUM(nvl(preYear.mar,0)) as preY3mSales,
+    SUM(nvl(preYear.apr,0)) as preY4mSales,SUM(nvl(preYear.may,0)) as preY5mSales,SUM(nvl(preYear.jun,0)) as preY6mSales,
+    SUM(nvl(preYear.jul,0)) as preY7mSales,SUM(nvl(preYear.aug,0)) as preY8mSales,SUM(nvl(preYear.sep,0)) as preY9mSales,
+    SUM(nvl(preYear.oct,0)) as preY10mSales,SUM(nvl(preYear.nov,0)) as preY11mSales,SUM(nvl(preYear.dec,0)) as preY12mSales,
+    
+    SUM(nvl(currYear.jan,0)) as currY1mSales,SUM(nvl(currYear.feb,0)) as currY2mSales,SUM(nvl(currYear.mar,0)) as currY3mSales,
+    SUM(nvl(currYear.apr,0)) as currY4mSales,SUM(nvl(currYear.may,0)) as currY5mSales,SUM(nvl(currYear.jun,0)) as currY6mSales,
+    SUM(nvl(currYear.jul,0)) as currY7mSales,SUM(nvl(currYear.aug,0)) as currY8mSales,SUM(nvl(currYear.sep,0)) as currY9mSales,
+    SUM(nvl(currYear.oct,0)) as currY10mSales,SUM(nvl(currYear.nov,0)) as currY11mSales,SUM(nvl(currYear.dec,0)) as currY12mSales,
+    
+    SUM(ROUND(nvl(detail.NATION_STOCK2,0))) as nationStock2,SUM(ROUND(nvl(detail.PAD_PLAN_QTY,0))) as padPlanQty,
+    SUM(ROUND(nvl(detail.sale_Fore_Qty,0))) as saleForeQty,SUM(ROUND(nvl(detail.ACT_DELI_QTY,0))) as padActQty,SUM(ROUND(nvl(detail.ACT_SALE_QTY,0))) as saleForeActQty,
+    SUM(ROUND(nvl(detail.NATION_STOCK1,0))) as nationStock1,
+    case when SUM(ROUND(nvl(detail.EST_SALE_QTY,0)))=0 then 0 else round(SUM(ROUND(nvl(detail.NATION_STOCK1,0)))*30/SUM(ROUND(nvl(detail.EST_SALE_QTY,0))),0) end as turnOverDays,
+    SUM(ROUND(nvl(detail.EST_DELI_QTY,0))) as estDeliQty
+    ,SUM(ROUND(nvl(detail.EST_SALE_QTY,0))) as estSaleQty,SUM(ROUND(nvl(detail.ACT_SALE_QTY,0))) as actSaleQty
+    
+    ,SUM(nvl(padQty.p1,0)) as next1Plan,SUM(nvl(padQty.p2,0)) as next2Plan,SUM(nvl(padQty.p3,0)) as next3Plan,SUM(nvl(padQty.p4,0)) as next4Plan,SUM(nvl(padQty.p5,0)) as next5Plan
+    ,SUM(nvl(padQty.p6,0)) as next6Plan,SUM(nvl(padQty.p7,0)) as next7Plan,SUM(nvl(padQty.p8,0)) as next8Plan,SUM(nvl(padQty.p9,0)) as next9Plan,SUM(nvl(padQty.p10,0)) as next10Plan
+    ,SUM(nvl(padQty.p11,0)) as next11Plan,SUM(nvl(padQty.p12,0)) as next12Plan
+    
+    ,SUM(nvl(saleFQty.p1,0)) as next1SalesF,
+    SUM(nvl(saleFQty.p2,0)) as next2SalesF,
+    SUM(nvl(saleFQty.p3,0)) as next3SalesF,
+    SUM(nvl(saleFQty.p4,0)) as next4SalesF,
+    SUM(nvl(saleFQty.p5,0)) as next5SalesF,
+    SUM(nvl(saleFQty.p6,0)) as next6SalesF,
+    SUM(nvl(saleFQty.p7,0)) as next7SalesF,
+    SUM(nvl(saleFQty.p8,0)) as next8SalesF,
+    SUM(nvl(saleFQty.p9,0)) as next9SalesF,
+    SUM(nvl(saleFQty.p10,0)) as next10SalesF,
+    SUM(nvl(saleFQty.p11,0)) as next11SalesF,
+    SUM(nvl(saleFQty.p12,0)) as next12SalesF
+		
+		from ps_pad_plan_detail detail 
+		inner join ps_pad_plan plan on detail.main_id = plan.id 
+		inner join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+		and m.mate_code = detail.mat_code
+		left join 
+		(select * from 
+		(select plan.plan_month,detail.mat_code,ROUND(nvl(detail.pad_plan_qty,0)) as pad_plan_qty from ps_pad_plan_detail detail
+		inner join ps_pad_plan plan on detail.main_id = plan.id
+		where 1=1 ) pivot (max(ROUND(nvl(pad_plan_qty,0))) for  plan_month in (${months}))
+		) padQty on padQty.mat_code = detail.mat_code
+		left join (
+		select * from 
+		(select plan.plan_month,detail.mat_code,ROUND(nvl(detail.sale_fore_qty,0)) as sale_fore_qty from ps_pad_plan_detail detail
+		inner join ps_pad_plan plan on detail.main_id = plan.id
+		where 1=1 ) pivot (max(ROUND(nvl(sale_fore_qty,0))) for  plan_month in (${months}))
+		) saleFQty on saleFQty.mat_code = detail.mat_code
+		left join 
+		(select * from 
+      (select matnr,month,zbyxl from t_ora_cxjh where year = #{preYear})
+      pivot (max(ROUND(nvl(zbyxl,0))) for  month in ('01' as jan,'02' as feb,'03' as mar,'04' as apr,'05' as may ,'06' as jun,
+      '07' as jul,'08' as aug,'09' as sep,'10' as oct,'11' as nov,'12' as dec))) preYear on preYear.matnr = detail.mat_code
+      left join 
+		(select * from 
+      (select matnr,month,zbyxl from t_ora_cxjh where year = #{currYear})
+      pivot (max(ROUND(nvl(zbyxl,0))) for  month in ('01' as jan,'02' as feb,'03' as mar,'04' as apr,'05' as may ,'06' as jun,
+      '07' as jul,'08' as aug,'09' as sep,'10' as oct,'11' as nov,'12' as dec))) currYear on currYear.matnr = detail.mat_code
+  		WHERE 1=1 and m.MATE_STATUS in ('Z1','Z2') 
+  		<if test="planMonth!=null and planMonth!=''">
+  			and plan.PLAN_MONTH = #{planMonth}
+  		</if>
+      group by m.produ_code,detail.PROD_SERIES_CODE,detail.PROD_SERIES,detail.BIG_ITEM_CODE,detail.BIG_ITEM_EXPL
+      order by m.produ_code,detail.PROD_SERIES_CODE,detail.BIG_ITEM_CODE
+      ) b on a.series_code = b.PROD_SERIES_CODE and a.BIG_ITEM_CODE = b.BIG_ITEM_CODE 
+      where b.PROD_SERIES_CODE is not null 
+	</select>
+	
+	
+	<select id="getYearPadDetailByMap" parameterType="Map" resultMap="padPlanDetailMap">
+	  select t1.*,t2.plan_month
+	    from PS_PAD_PLAN_DETAIL t1
+	    left join ps_pad_plan t2
+	      on t1.main_id = t2.id
+	   where t1.mat_code = #{mateCode}
+	     and t2.plan_month in 
+	     <foreach collection="list" item="month" separator="," open="(" close=")">
+	     	#{month}
+	     </foreach>
+	     order by to_date(t2.plan_month,'yyyy-MM')
+	</select>
+	
+	
+	<select id="getMateByPlanCodeAndMatCode" parameterType="String" resultType="String">
+		select p.id from ps_pad_plan p left join ps_pad_plan_detail d 
+	    on p.id = d.main_id
+	    where p.plan_code=#{planCode}
+	    and d.mat_code=#{matCode}
+	</select>
+	
+	<resultMap type="com.faujor.entity.bam.psm.PadMateMess" id="PadMateMessMap">
+		<result column="id" property="id"/>
+		<result column="plan_Code" property="planCode"/>
+		<result column="plan_Month" property="planMonth"/>
+		<result column="pad_Plan_Qty" property="padPlanQty"/>
+		<result column="turn_Over_Days" property="turnOverDays"/>
+	</resultMap>
+	<select id="getPlanMessageListOfMateByMatCode" parameterType="String" resultMap="PadMateMessMap">
+		 select p.plan_code,p.plan_month,d.id,d.pad_plan_qty,d.turn_over_days
+	     from ps_pad_plan p left join ps_pad_plan_detail d 
+	    on p.id = d.main_id
+	    where d.mat_code=#{matCode}
+	    and p.status='已保存'
+	    order by p.plan_month
+	</select>
+	
+	<update id="updatePadPlanDetailByid" parameterType="Map">
+		  update ps_pad_plan_detail d 
+		  set d.pad_plan_qty = #{padPlanQty}
+		  where d.id=#{id}
+	</update>
+	
+	<select id="getMateByPlanMonthAndMatCode" parameterType="String" resultMap="padPlanDetailMap">
+		   select p.plan_month,d.*
+		     from ps_pad_plan p left join ps_pad_plan_detail d 
+		    on p.id = d.main_id
+		    where d.mat_code=#{matCode}
+		    and p.status='已保存'
+		    <![CDATA[and p.plan_month >= #{minPlanMonthFormat}]]>
+		    order by p.plan_month
+	</select>
+	
+	<update id="updatePadPlandDetailsById" parameterType="com.faujor.entity.bam.psm.PadPlanDetail">
+		 update ps_pad_plan_detail d 
+	    set d.nation_stock1= #{nationStock1},
+	    d.nation_stock2 =#{nationStock2},
+	    d.turn_over_days=#{turnOverDays}
+	    where d.id=#{id}
+	</update>
+	
+	
+	<insert id="copyPadPlanData" parameterType="Map">
+		insert into ps_pad_plan_copy (id,sn,plan_code,plan_name,plan_month,status,
+		     crt_date,crt_user,upt_date,upt_user,crt_user_code,submit_user_code,submit_user_name,submit_date,SYNC_FLAG,version_code,version_desc)
+		select #{uuid},t.sn,t.plan_code,t.plan_name,t.plan_month,t.status,t.crt_date,
+		t.crt_user,t.upt_date,t.upt_user,t.crt_user_code,t.submit_user_code,
+		t.submit_user_name,t.submit_date,t.sync_flag,#{versionCode} as version_code,#{versionDesc} as version_desc
+		 from PS_PAD_PLAN t where t.id=#{id}
+	</insert>
+	
+	<insert id="copyPadPlanDetailListData" parameterType="Map">
+		insert into PS_PAD_PLAN_DETAIL_copy (id,sn,main_id,mat_code,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series,version_code,version_desc)
+		select sys_guid(),d.sn,#{uuid},d.mat_code,d.rank,d.three_avg_sales,d.nation_stock1,d.nation_stock2,
+		d.nation_stock3,d.pad_plan_qty,d.sale_fore_qty,d.turn_over_days,d.next_sale_fore_qty,d.est_deli_qty,
+		d.est_sale_qty,d.act_sale_qty,d.act_deli_qty,d.act_turn_over_days,d.big_item_code,d.big_item_expl,
+		d.mat_name,d.prod_series_code,d.prod_series,#{versionCode} as version_code,#{versionDesc} as version_desc
+		 from ps_pad_plan_detail d
+		 where d.main_id=#{id}
+	</insert>
+	
+	<resultMap type="com.faujor.entity.bam.psm.PadPlanRecord" id="padPlanRecordMap">
+		<result property="rank" column="rank"/>
+		<result property="matCode" column="mat_Code"/>
+		<result property="matName" column="mat_Name"/>
+		<result property="prodSeriesCode" column="prod_Series_Code"/>
+		<result property="prodSeries" column="prod_Series"/>
+		<result property="startVersion" column="start_Version"/>
+		<result property="endVersion" column="end_Version"/>
+		<result property="bigItemCode" column="big_Item_Code"/>
+		<result property="bigItemExpl" column="big_Item_Expl"/>
+		<result property="produCode" column="produ_Code"/>
+		<result property="produExpl" column="produ_Expl"/>
+		<result property="planMonth" column="plan_Month"/>
+		<result property="qtyOne" column="qty_One"/>
+		<result property="qtyTwo" column="qty_Two"/>
+		<result property="qtyThree" column="qty_Three"/>
+		<result property="qtyFour" column="qty_Four"/>
+		<result property="qtyFive" column="qty_Five"/>
+		<result property="qtySix" column="qty_Six"/>
+		<result property="qtySeven" column="qty_Seven"/>
+		<result property="qtyEight" column="qty_Eight"/>
+		<result property="qtyNine" column="qty_Nine"/>
+		<result property="qtyTen" column="qty_Ten"/>
+		<result property="qtyEleven" column="qty_Eleven"/>
+		<result property="qtyTwelve" column="qty_Twelve"/>
+	</resultMap>
+	
+	
+	<select id="getPadPlanRecordListByPage" parameterType="Map" resultMap="padPlanRecordMap">
+		select main.* from (
+		select a.*,rownum rn from (
+		select mate.mat_code,mate.mat_name,mate.rank,mate.prod_series_code,mate.prod_series,
+		mate.big_item_code,mate.big_item_expl,mate.plan_month,mate.produ_code,mate.produ_expl,
+		sum(decode(mate.version_code,#{one},mate.pad_plan_qty,0)) as qty_one,
+		sum(decode(mate.version_code,#{two},mate.pad_plan_qty,0)) as qty_two,
+		sum(decode(mate.version_code,#{three},mate.pad_plan_qty,0)) as qty_three,
+		sum(decode(mate.version_code,#{four},mate.pad_plan_qty,0)) as qty_four,
+		sum(decode(mate.version_code,#{five},mate.pad_plan_qty,0)) as qty_five,
+		sum(decode(mate.version_code,#{six},mate.pad_plan_qty,0)) as qty_six,
+		sum(decode(mate.version_code,#{seven},mate.pad_plan_qty,0)) as qty_seven,
+		sum(decode(mate.version_code,#{eight},mate.pad_plan_qty,0)) as qty_eight,
+		sum(decode(mate.version_code,#{nine},mate.pad_plan_qty,0)) as qty_nine,
+		sum(decode(mate.version_code,#{ten},mate.pad_plan_qty,0)) as qty_ten,
+		sum(decode(mate.version_code,#{eleven},mate.pad_plan_qty,0)) as qty_eleven,
+		sum(decode(mate.version_code,#{twelve},mate.pad_plan_qty,0)) as qty_twelve
+		 from (
+		select d.mat_code,d.mat_name,d.rank,d.prod_series_code,d.prod_series,
+		d.big_item_code,d.big_item_expl,d.version_code,d.version_desc,p.plan_month,m.produ_code,m.produ_expl,d.pad_plan_qty
+		 from ps_pad_plan_detail_copy d right join ps_pad_plan_copy p
+		on p.id = d.main_id
+		left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+				and m.mate_code = d.mat_code
+		  <if test="userList != null">
+      		inner join (
+		      		select case when m3.fin_mate_id is null or m3.fin_mate_id =''then m3.mate_code 
+			               else m3.fin_mate_id end as mate_code
+			          from (
+		              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+		             on m.mate_id = bsm.mate_id
+		             where m.mate_id is not null and 
+		              bsm.buyer_id in 
+		                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+			    			#{item.id}
+			    		</foreach> 
+			    	)m2 left join mdm_mate m3 on m2.mate_code = m3.mate_code      
+		         	)ma  on ma.mate_code =  d.mat_code
+      	</if>
+		  where p.plan_month=#{paForm.planMonth}
+		  <if test="mateCodeList != null ">
+		  	and d.mat_code in 
+				<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+					#{item}
+				</foreach>		  	
+		  </if>
+		  <if test="judge != null and judge != '' ">
+		  	and d.mat_code = #{judge} 
+		  </if>
+		  <if test="paForm.matName != null and paForm.matName != '' ">
+		  	and (
+		  		d.mat_code like '%'||#{paForm.matName}||'%'
+		  		or d.mat_name like '%'||#{paForm.matName}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.prodSeries != null and paForm.prodSeries != '' ">
+		  	and (
+		  		d.prod_series like '%'||#{paForm.prodSeries}||'%'
+		  		or d.prod_series_code like '%'||#{paForm.prodSeries}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.bigItemExpl != null and paForm.bigItemExpl != '' ">
+		  	and (
+		  		d.big_item_code like '%'||#{paForm.bigItemExpl}||'%'
+		  		or d.big_item_expl like '%'||#{paForm.bigItemExpl}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.produExpl != null and paForm.produExpl != '' ">
+		  	and (
+		  		m.produ_code like '%'||#{paForm.produExpl}||'%'
+		  		or m.produ_expl like '%'||#{paForm.produExpl}||'%'
+		  	)
+		  </if>
+		   )mate
+		  group by mate.mat_code,mate.mat_name,mate.rank,mate.prod_series_code,mate.prod_series,
+		mate.big_item_code,mate.big_item_expl,mate.plan_month,mate.produ_code,mate.produ_expl
+		order by mate.produ_code,mate.prod_series_code,mate.big_item_code,mate.mat_name)a
+		<![CDATA[where rownum <=#{end})main]]>
+		<![CDATA[where main.rn>=#{start}]]>
+	</select>
+	
+	<select id="getPadPlanRecordListByPageCount" parameterType="Map" resultType="Int">
+		select count(*) from(
+		select mate.mat_code,mate.mat_name,mate.rank,mate.prod_series_code,mate.prod_series,
+		mate.big_item_code,mate.big_item_expl,mate.plan_month,mate.produ_code,mate.produ_expl,
+		sum(decode(mate.version_code,#{one},mate.pad_plan_qty,0)) as qty_one,
+		sum(decode(mate.version_code,#{two},mate.pad_plan_qty,0)) as qty_two,
+		sum(decode(mate.version_code,#{three},mate.pad_plan_qty,0)) as qty_three,
+		sum(decode(mate.version_code,#{four},mate.pad_plan_qty,0)) as qty_four,
+		sum(decode(mate.version_code,#{five},mate.pad_plan_qty,0)) as qty_five,
+		sum(decode(mate.version_code,#{six},mate.pad_plan_qty,0)) as qty_six,
+		sum(decode(mate.version_code,#{seven},mate.pad_plan_qty,0)) as qty_seven,
+		sum(decode(mate.version_code,#{eight},mate.pad_plan_qty,0)) as qty_eight,
+		sum(decode(mate.version_code,#{nine},mate.pad_plan_qty,0)) as qty_nine,
+		sum(decode(mate.version_code,#{ten},mate.pad_plan_qty,0)) as qty_ten,
+		sum(decode(mate.version_code,#{eleven},mate.pad_plan_qty,0)) as qty_eleven,
+		sum(decode(mate.version_code,#{twelve},mate.pad_plan_qty,0)) as qty_twelve
+		 from (
+		select d.mat_code,d.mat_name,d.rank,d.prod_series_code,d.prod_series,
+		d.big_item_code,d.big_item_expl,d.version_code,d.version_desc,p.plan_month,m.produ_code,m.produ_expl,d.pad_plan_qty
+		 from ps_pad_plan_detail_copy d right join ps_pad_plan_copy p
+		on p.id = d.main_id
+		left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+				and m.mate_code = d.mat_code
+				<if test="userList != null">
+		      		inner join (
+		      		select case when m3.fin_mate_id is null or m3.fin_mate_id =''then m3.mate_code 
+			               else m3.fin_mate_id end as mate_code
+			          from (
+		              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+		             on m.mate_id = bsm.mate_id
+		             where m.mate_id is not null and 
+		              bsm.buyer_id in 
+		                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+			    			#{item.id}
+			    		</foreach> 
+			    	)m2 left join mdm_mate m3 on m2.mate_code = m3.mate_code      
+		         	)ma  on ma.mate_code =  d.mat_code
+		      	</if>
+		  where p.plan_month=#{paForm.planMonth} 
+		  <if test="mateCodeList != null ">
+		  	and d.mat_code in 
+				<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+					#{item}
+				</foreach>		  	
+		  </if>
+		  <if test="judge != null and judge != '' ">
+		  	and d.mat_code = #{judge} 
+		  </if>
+		  <if test="paForm.matName != null and paForm.matName != '' ">
+		  	and (
+		  		d.mat_code like '%'||#{paForm.matName}||'%'
+		  		or d.mat_name like '%'||#{paForm.matName}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.prodSeries != null and paForm.prodSeries != '' ">
+		  	and (
+		  		d.prod_series like '%'||#{paForm.prodSeries}||'%'
+		  		or d.prod_series_code like '%'||#{paForm.prodSeries}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.bigItemExpl != null and paForm.bigItemExpl != '' ">
+		  	and (
+		  		d.big_item_code like '%'||#{paForm.bigItemExpl}||'%'
+		  		or d.big_item_expl like '%'||#{paForm.bigItemExpl}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.produExpl != null and paForm.produExpl != '' ">
+		  	and (
+		  		m.produ_code like '%'||#{paForm.produExpl}||'%'
+		  		or m.produ_expl like '%'||#{paForm.produExpl}||'%'
+		  	)
+		  </if>
+		  )mate
+		  group by mate.mat_code,mate.mat_name,mate.rank,mate.prod_series_code,mate.prod_series,
+		mate.big_item_code,mate.big_item_expl,mate.plan_month,mate.produ_code,mate.produ_expl)a
+	</select>
+	
+	
+	<select id="getPadPlanRecordList" parameterType="Map" resultMap="padPlanRecordMap">
+		select mate.mat_code,mate.mat_name,mate.rank,mate.prod_series_code,mate.prod_series,
+		mate.big_item_code,mate.big_item_expl,mate.plan_month,mate.produ_code,mate.produ_expl,
+		sum(decode(mate.version_code,#{one},mate.pad_plan_qty,0)) as qty_one,
+		sum(decode(mate.version_code,#{two},mate.pad_plan_qty,0)) as qty_two,
+		sum(decode(mate.version_code,#{three},mate.pad_plan_qty,0)) as qty_three,
+		sum(decode(mate.version_code,#{four},mate.pad_plan_qty,0)) as qty_four,
+		sum(decode(mate.version_code,#{five},mate.pad_plan_qty,0)) as qty_five,
+		sum(decode(mate.version_code,#{six},mate.pad_plan_qty,0)) as qty_six,
+		sum(decode(mate.version_code,#{seven},mate.pad_plan_qty,0)) as qty_seven,
+		sum(decode(mate.version_code,#{eight},mate.pad_plan_qty,0)) as qty_eight,
+		sum(decode(mate.version_code,#{nine},mate.pad_plan_qty,0)) as qty_nine,
+		sum(decode(mate.version_code,#{ten},mate.pad_plan_qty,0)) as qty_ten,
+		sum(decode(mate.version_code,#{eleven},mate.pad_plan_qty,0)) as qty_eleven,
+		sum(decode(mate.version_code,#{twelve},mate.pad_plan_qty,0)) as qty_twelve
+		 from (
+		select d.mat_code,d.mat_name,d.rank,d.prod_series_code,d.prod_series,
+		d.big_item_code,d.big_item_expl,d.version_code,d.version_desc,p.plan_month,m.produ_code,m.produ_expl,d.pad_plan_qty
+		 from ps_pad_plan_detail_copy d right join ps_pad_plan_copy p
+		on p.id = d.main_id
+		left join mdm_mate m on m.mate_type = '0005' and nvl(m.is_delete,'1') != 'X'
+				and m.mate_code = d.mat_code
+				<if test="userList != null">
+		      		inner join (
+		      		select case when m3.fin_mate_id is null or m3.fin_mate_id =''then m3.mate_code 
+			               else m3.fin_mate_id end as mate_code
+			          from (
+		              select distinct m.mate_code from mdm_mate m right join mdm_buyer_supp_mate bsm 
+		             on m.mate_id = bsm.mate_id
+		             where m.mate_id is not null and 
+		              bsm.buyer_id in 
+		                <foreach collection="userList" open="(" close=")" index="index" item="item" separator=",">
+			    			#{item.id}
+			    		</foreach> 
+			    	)m2 left join mdm_mate m3 on m2.mate_code = m3.mate_code      
+		         	)ma  on ma.mate_code =  d.mat_code
+		      	</if>
+		  where p.plan_month=#{paForm.planMonth}
+		  <if test="mateCodeList != null ">
+		  	and d.mat_code in 
+				<foreach collection="mateCodeList" open="(" close=")" index="index" item="item" separator=",">
+					#{item}
+				</foreach>		  	
+		  </if>
+		  <if test="judge != null and judge != '' ">
+		  	and d.mat_code = #{judge} 
+		  </if>
+		  <if test="paForm.matName != null and paForm.matName != '' ">
+		  	and (
+		  		d.mat_code like '%'||#{paForm.matName}||'%'
+		  		or d.mat_name like '%'||#{paForm.matName}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.prodSeries != null and paForm.prodSeries != '' ">
+		  	and (
+		  		d.prod_series like '%'||#{paForm.prodSeries}||'%'
+		  		or d.prod_series_code like '%'||#{paForm.prodSeries}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.bigItemExpl != null and paForm.bigItemExpl != '' ">
+		  	and (
+		  		d.big_item_code like '%'||#{paForm.bigItemExpl}||'%'
+		  		or d.big_item_expl like '%'||#{paForm.bigItemExpl}||'%'
+		  	)
+		  </if>
+		  <if test="paForm.produExpl != null and paForm.produExpl != '' ">
+		  	and (
+		  		m.produ_code like '%'||#{paForm.produExpl}||'%'
+		  		or m.produ_expl like '%'||#{paForm.produExpl}||'%'
+		  	)
+		  </if>
+		   )mate
+		  group by mate.mat_code,mate.mat_name,mate.rank,mate.prod_series_code,mate.prod_series,
+		mate.big_item_code,mate.big_item_expl,mate.plan_month,mate.produ_code,mate.produ_expl
+		order by mate.produ_code,mate.prod_series_code,mate.big_item_code,mate.mat_name
+	</select>
+</mapper>

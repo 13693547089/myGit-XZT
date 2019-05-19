@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>打切联络单列表</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<body class='fau-body-list'>
+	<div class="demoTable MarginTop">
+		<form action="" class="layui-form">
+		<div class="layui-row">
+			<div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label"  >供应商</label>
+			    <div class="layui-input-block">
+			      <input type="text"  name="suppInfo" id="suppInfo" placeholder="供应商编码/名称"   class="layui-input " >
+			    </div>
+			  </div>
+		  </div>  
+		  <div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" >打切月份</label>
+			    <div class="layui-input-block"  >
+			      <input type="text"  name="cutMonth" id="cutMonth" placeholder="yyyy-MM"   class="layui-input ">
+			    </div>
+			  </div>
+		  </div>  
+		  <div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" >状态</label>
+			    <div class="layui-input-block"  >
+			           <select name="status"   id="status">
+					        <option id="aaa" value=""></option>
+					        <option th:each="cutLiaiStatus:${cutLiaiStatusList}" th:value="${cutLiaiStatus.dicName}" th:text="${cutLiaiStatus.dicName}"></option>
+					    </select>
+			    </div>
+			  </div>
+		  </div>  
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label"  >打切联络单号</label>
+			    <div class="layui-input-block">
+			      <input type="text"  name="liaiCode" id="liaiCode" placeholder="打切联络单号"   class="layui-input " >
+			    </div>
+			  </div>
+		  	</div>
+		</div>
+		<div class="layui-row "> 	  	  
+		  	  <div class="layui-col-sm9">
+					<button class="layui-btn layui-btn-xs blueHollow" type="button" id="addBut" sec:authorize="hasRole('ROLE_CUTLIAISON_ADD')">创建</button>
+					<button class="layui-btn layui-btn-xs blueHollow" type="button" id="submitBut" sec:authorize="hasRole('ROLE_CUTLIAISON_SUBMIT')">提交</button>
+					<button class="layui-btn layui-btn-xs blueHollow" type="button" id="removeBut" sec:authorize="hasRole('ROLE_CUTLIAISON_REMOVE')">删除</button>
+					<button class="layui-btn layui-btn-xs blueHollow" type="button" id="citeAddBut" sec:authorize="hasRole('ROLE_CUTLIAISON_CITEADD')">引用创建</button>
+			</div> 
+			<div class="layui-col-md3 textRight">
+					<button class="layui-btn layui-btn-xs yellowSolid" data-type="reload" type="button" id="search">搜索</button>
+					<button class="layui-btn layui-btn-xs yellowHollow" type="reset" id="Reset" >重置</button>
+			</div> 	  
+		</div>
+		</form>
+		<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="cutLiaisonTable" lay-filter="cutLiaisonTable">
+		</table>
+		</div>
+	</div>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="check">查看</a>
+  <a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+</script>
+</body>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/placut/ContactSheet/ContactSheetList.js}"></script>	
+</html>

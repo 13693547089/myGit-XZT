@@ -1,0 +1,18 @@
+1、<dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+   </dependency>
+   
+2、自定义UserDetailsService，实现相应的接口，校验当前用户，给当前用户给予所有权限
+
+3、配置security
+
+4、html编写：
+   <html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+      
+5、标签权限sec:authorize="hasRole('ROLE_USER')"（注意权限命名必须 以“ROLE_”开头）
+
+6、@PreAuthorize("hasRole('ROLE_ADMIN')")控制访问方法
+
+7、Role---->>>permission :hasPermission()

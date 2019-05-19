@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link th:href="@{/css/chosen/chosen.css}" rel="stylesheet" />
+<link th:href="@{/css/chosen/select2/select2.min.css}" rel="stylesheet" />
+<link th:href="@{/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet" />
+<link th:href="@{/css/plugins/jsTree/style.min.css}" rel="stylesheet" />
+<link th:href="@{/css/plugins/jqTreeGrid/jquery.treegrid.css}" rel="stylesheet" />
+<link th:href="@{/css/plugins/fileinput/fileinput.css}" rel="stylesheet" />
+<link th:href="@{/css/bootstrap-table/bootstrapValidator.css}" rel="stylesheet" />
+<script>
+	if (window.top !== window.self) {
+		window.top.location = window.location;
+	}
+</script>
+<style>
+.middle-box {
+	padding-top: 0px !important;
+}
+
+.loginscreen.middle-box {
+	width: 450px !important;
+	height: 450px !important;
+}
+
+.middle-box {
+	max-width: 500px !important;
+	max-height: 500px !important;
+	min-width: 400px;
+	min-height: 420px;
+	position: relative;
+	top: 20%;
+	border-radius: 10px;;
+}
+
+.zindeX {
+	position: relative;
+	z-index: 2;
+}
+</style>
+<title>TOP-SRM</title>
+</head>
+<body class="gray-bg"
+	style="background: url('/img/bg_srm.jpg') 0 0 no-repeat scroll transparent; background-size: 100% 100%; overflow: hidden;">
+
+	<div class="middle-box text-center loginscreen  animated fadeInDown">
+		<div class='zindeX' style='padding: 10%;'>
+			<div>
+				<img src="/img/top.png"></img>
+			</div>
+			<h3
+				style="font-size: 26px; color: black; font-weight: bold; margin-top: 10%;">供应商协同管理平台</h3>
+			<form class="m-t" style='margin-top: 26px !important;' role="form"
+				name="form" th:action="@{/login}" action="/login" method="post">
+				<div class="form-group">
+					<div class="input-group" style="border-radius: 5px; height: 40px;">
+						<span class="input-group-addon"
+							style="border-radius: 5px 0px 0px 5px;"><span
+							class="glyphicon glyphicon-user"></span></span> <input type="text"
+							class="form-control" placeholder="用户名" name="username"
+							style="border-radius: 0px 5px 5px 0px; height: 100%;">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="input-group" style='height: 40px;'>
+						<span class="input-group-addon"
+							style="border-radius: 5px 0px 0px 5px; height: 40px;"><span
+							class="glyphicon glyphicon-lock"></span></span> <input type="password"
+							class="form-control" placeholder="密码" name="password"
+							style="border-radius: 0px 5px 5px 0px; height: 100%;">
+					</div>
+				</div>
+				<button type="submit" class="btn"
+					style="background-color: #2879f1; color: white; height: 40px; width: 100%;"
+					id="login" value="Login">登 录</button>
+				<p class="text-muted text-center"
+					style='margin-top: 10px; margin-bottom: 0px;'>
+					<a href="/suppReg/getLatentSuppLogRegHtml" target="_blank"
+						style='font-size: 14px;'>供应商登记</a>
+				</p>
+				<div
+					style='position: absolute; right: 20%; bottom: 59px; height: 10%;'>
+					<div th:if="${param.logout}"
+						style="display: inline-block; color: white">(已注销)</div>
+					<div th:if="${param.error}"
+						style="display: inline-block; color: white">(有错误，请重试)</div>
+				</div>
+			</form>
+		</div>
+		<div
+			style='position: absolute; width: 100%; height: 100%; background: white; z-index: 0; opacity: 0.76; top: 0px; border-radius: 10px;'></div>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+</body>
+</html>

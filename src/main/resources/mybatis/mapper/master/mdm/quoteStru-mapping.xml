@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.QuoteStruMapper">
+	<resultMap type="com.faujor.entity.mdm.QuoteStru" id="struMap">
+		<id property="id" column="id" />
+		<result property="mateId" column="mate_id" />
+		<result property="quoteTempId" column="quote_temp_id" />
+		<result property="quoteUnit" column="quote_unit" />
+		<result property="remark" column="remark" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="modifier" column="modifier" />
+		<result property="modifierName" column="modifier_name" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.mdm.QuoteStruDetails" id="struDetailsMap">
+		<id property="id" column="id" />
+		<result property="struId" column="stru_id" />
+		<result property="menuId" column="temp_details_id" />
+		<result property="segmCode" column="segm_code" />
+		<result property="segmName" column="segm_name" />
+		<result property="asseCode" column="asse_code" />
+		<result property="asseName" column="asse_name" />
+		<result property="mateCode" column="mate_code" />
+		<result property="detailsNum" column="details_num" />
+		<result property="unit" column="unit" />
+		<result property="standard" column="standard" />
+		<result property="material" column="material" />
+		<result property="remark" column="remark" />
+		<result property="parentId" column="parent_id" />
+		<result property="nodeKind" column="node_kind" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="modifier" column="modifier" />
+		<result property="modifierName" column="modifier_name" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.mdm.QuoteStruDO" id="struDoMap">
+		<id property="id" column="id" />
+		<result property="mateId" column="mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="enName" column="sku_english" />
+		<result property="chName" column="chin_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="basicUnit" column="repe_unit" />
+		<result property="quoteTempId" column="quote_temp_id" />
+		<result property="tempCode" column="temp_code" />
+		<result property="tempName" column="temp_name" />
+		<result property="quoteUnit" column="quote_unit" />
+		<result property="remark" column="remark" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="modifier" column="modifier" />
+		<result property="modifierName" column="modifier_name" />
+	</resultMap>
+
+	<select id="findQuoteStruDoById" resultMap="struDoMap"
+		parameterType="String">
+		select t1.*, t2.mate_code, t2.sku_english, t2.chin_name,
+		t2.mate_type, t2.repe_unit, t3.temp_code, t3.temp_name from
+		mdm_quote_stru t1
+		left join mdm_mate t2
+		on t1.mate_id = t2.mate_id
+		left
+		join mdm_quote_temp t3
+		on t1.quote_temp_id = t3.id
+		where t1.id = #{id}
+	</select>
+	<select id="findQuoteStruListByPage" resultMap="struDoMap"
+		parameterType="map">
+		select t1.*, t2.mate_code, t2.mate_name, t2.sku_english,
+		t2.chin_name,
+		t2.mate_type, t2.repe_unit, t3.temp_code, t3.temp_name
+		from
+		mdm_quote_stru t1 left join mdm_mate t2 on t1.mate_id =
+		t2.mate_id left
+		join mdm_quote_temp t3 on t1.quote_temp_id = t3.id
+		where 1=1
+		<if test="struDo.tempCode != '' and struDo.tempCode != null">
+			and (t3.temp_code like
+			concat(concat('%',#{struDo.tempCode}),'%') or t3.temp_name like
+			concat(concat('%',#{struDo.tempCode}),'%'))
+		</if>
+		<if test="struDo.mateCode !='' and struDo.mateCode != null">
+			and (t2.mate_code like
+			concat(concat('%',#{struDo.mateCode}),'%') or t2.mate_name like
+			concat(concat('%',#{struDo.mateCode}),'%') )
+		</if>
+		<if test="mate != null">
+			and t2.mate_code in 
+			(select m.mate_code from mdm_mate m left join mdm_buyer_mate bm on m.mate_id = bm.mate_id 
+			where m.is_delete is null and bm.buyer_id in 
+			<foreach collection="mate" index="index" item="item" separator="," open="(" close=")">
+				#{item.id}
+			</foreach>)
+		</if>
+		<if test="users != null ">
+			and t1.creator in
+			<foreach collection="users" item="item" index="index" open="("
+				close=")" separator=",">
+				#{item.id}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="countQuoteStruListByPage" parameterType="map"
+		resultType="Integer">
+		select count(1) from mdm_quote_stru t1 left join mdm_mate t2 on
+		t1.mate_id = t2.mate_id left join mdm_quote_temp t3 on
+		t1.quote_temp_id = t3.id where 1=1
+		<if test="struDo.tempCode != '' and struDo.tempCode != null">
+			and (t3.temp_code like
+			concat(concat('%',#{struDo.tempCode}),'%') or t3.temp_name like
+			concat(concat('%',#{struDo.tempCode}),'%'))
+		</if>
+		<if test="struDo.mateCode !='' and struDo.mateCode != null">
+			and (t2.mate_code like
+			concat(concat('%',#{struDo.mateCode}),'%') or t2.mate_name like
+			concat(concat('%',#{struDo.mateCode}),'%') )
+		</if>
+		<if test="mate != null">
+			and t2.mate_code in 
+			(select m.mate_code from mdm_mate m left join mdm_buyer_mate bm on m.mate_id = bm.mate_id 
+			where m.is_delete is null and bm.buyer_id in 
+			<foreach collection="mate" index="index" item="item" separator="," open="(" close=")">
+				#{item.id}
+			</foreach>)
+		</if>
+		<if test="users != null ">
+			and t1.creator in
+			<foreach collection="users" item="item" index="index" open="("
+				close=")" separator=",">
+				#{item.id}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="findQuoteStruDoList" resultMap="struDoMap"
+		parameterType="com.faujor.entity.mdm.QuoteStruDO">
+		select t1.*, t2.mate_code, t2.mate_name, t2.sku_english,
+		t2.chin_name,
+		t2.mate_type, t2.repe_unit, t3.temp_code, t3.temp_name
+		from
+		mdm_quote_stru t1 left join mdm_mate t2 on t1.mate_id =
+		t2.mate_id left
+		join mdm_quote_temp t3 on t1.quote_temp_id = t3.id
+		where 1=1
+		<if test="tempCode != '' and tempCode != null">
+			and t3.temp_code like concat(concat('%',#{tempCode}),'%')
+		</if>
+		<if test="tempName !='' and tempName != null">
+			and t3.temp_name like concat(concat('%',#{tempName}),'%')
+		</if>
+		<if test="creator != null and creator != ''">
+			and t1.creator = #{creator}
+		</if>
+	</select>
+
+	<select id="findQuoteStruDetailsByStruId" resultMap="struDetailsMap"
+		parameterType="String">
+		select * from mdm_quote_stru_details where stru_id =
+		#{struId} order by asse_code asc
+	</select>
+
+	<insert id="saveStruData" parameterType="com.faujor.entity.mdm.QuoteStruDO">
+		insert into
+		mdm_quote_stru (id, mate_id, quote_temp_id, quote_unit, remark,
+		create_time, creator, creator_name) values (#{id}, #{mateId},
+		#{quoteTempId}, #{quoteUnit}, #{remark}, #{createTime}, #{creator},
+		#{creatorName})
+	</insert>
+	<update id="updateStruData" parameterType="com.faujor.entity.mdm.QuoteStruDO">
+		update mdm_quote_stru
+		t set t.mate_id = #{mateId}, t.quote_temp_id = #{quoteTempId},
+		t.quote_unit=#{quoteUnit}, t.remark=#{remark}, t.modifier=#{modifier},
+		t.modify_time=#{modifyTime}, t.modifier_name=#{modifierName} where
+		t.id = #{id}
+	</update>
+
+	<insert id="batchSaveStruDetails" parameterType="Map">
+		insert all into
+		mdm_quote_stru_details (id, temp_details_id, stru_id,
+		segm_name, segm_code, asse_name,
+		asse_code, mate_code, details_num,
+		unit, standard, material, remark,
+		parent_id, node_kind, create_time,
+		creator, creator_name) values
+		<foreach collection="list" item="item" index="index" open=""
+			close=""
+			separator="into mdm_quote_stru_details 
+			(id, temp_details_id, stru_id, segm_name, segm_code, asse_name, asse_code, 
+			mate_code, details_num, unit, standard, material, remark, 
+			parent_id, node_kind, create_time, creator, creator_name) 
+			values">
+			(#{item.id}, #{item.menuId},#{struId}, #{item.segmName},
+			#{item.segmCode}, #{item.asseName}, #{item.asseCode},
+			#{item.mateCode}, #{item.detailsNum}, #{item.unit}, #{item.standard},
+			#{item.material}, #{item.remark}, #{item.parentId}, #{item.nodeKind},
+			#{item.createTime},#{item.creator}, #{item.creatorName})
+		</foreach>
+		select 1 from dual
+	</insert>
+	<select id="getDetailsByMateId" resultMap="struDetailsMap"
+		parameterType="Map">
+		select t1.* from mdm_quote_stru_details t1
+		left join
+		mdm_quote_stru t2
+		on t1.stru_id=t2.id where t2.mate_id=#{mateId}
+		order
+		by
+		t1.segm_code ,t1.asse_Code
+	</select>
+	<delete id="batchRemoveDetails" parameterType="list">
+		delete from mdm_quote_stru_details where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<update id="batchUpdateStruDetails" parameterType="list">
+		<foreach collection="list" item="item" index="index" open=""
+			close="" separator=";">
+			update mdm_quote_stru_details set details_num =
+			#{item.detailsNum} where id = #{item.id}
+		</foreach>
+	</update>
+
+	<update id="updateStruDetails" parameterType="com.faujor.entity.mdm.QuoteStruDetails">
+		update
+		mdm_quote_stru_details set asse_name = #{asseName}, mate_code = #{mateCode}, details_num = #{detailsNum}, 
+		unit = #{unit}, standard = #{standard}, material = #{material}, remark = #{remark}
+		where id = #{id}
+	</update>
+
+	<select id="findMateStruList" resultMap="struDoMap"
+		parameterType="Long">
+		select t1.mate_id as id, t1.mate_id, t1.mate_code,
+		t1.mate_name from mdm_mate t1 left join mdm_quote_stru t2 on
+		t1.mate_id = t2.mate_id left join mdm_buyer_mate t3 on t3.mate_id =
+		t1.mate_id where t2.id is null and t3.buyer_id = #{userId}
+	</select>
+
+	<delete id="batchRemoveDetailsByStruIds" parameterType="list">
+		delete from mdm_quote_stru_details where stru_id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item.id}
+		</foreach>
+	</delete>
+
+	<delete id="batchRemoveStruData" parameterType="list">
+		delete from mdm_quote_stru where id in
+		<foreach collection="list" index="index" item="item" open="("
+			close=")" separator=",">
+			#{item.id}
+		</foreach>
+	</delete>
+</mapper>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+<style type="text/css">
+.margin {
+	margin: 10px 10px;
+}
+
+.blueHollow {
+	background: #fff;
+	border: 1px solid #458ffc;
+	color: #458ffc;
+}
+
+.blueHollow:hover {
+	background: #458ffc;
+}
+</style>
+<body>
+	<div class='margin '>
+		<button class="layui-btn layui-btn-xs blueHollow" id="saveBtn">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+	</div>
+	<form class="layui-form" action="" id="signForm"
+		style="margin-top: 20px;">
+		<input name="handleList" id="handleList" class="layui-hide"
+			th:value="${handleList}" /> <input type="text" name="id"
+			id="processId" class="layui-hide" th:value="${process.id}"> <input
+			id="detailsData" name="detailsData" class="layui-hide" />
+
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">流程名称</label>
+				<div class="layui-input-inline">
+					<input type="text" name="processName" lay-verify="required|phone"
+						autocomplete="off" class="layui-input"
+						th:value="${process.processName}">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">流程编码</label>
+				<div class="layui-input-inline">
+					<input type="text" name="processCode" lay-verify="email"
+						autocomplete="off" class="layui-input"
+						th:value="${process.processCode}">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">流程页面</label>
+				<div class="layui-input-inline">
+					<input type="text" name="actionUrl" lay-verify="email"
+						autocomplete="off" class="layui-input"
+						th:value="${process.actionUrl}">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">是否启用</label>
+				<div class="layui-input-inline">
+					<input type="radio" id="isUsed" name="isUsed" value="1" title="启用"
+						th:checked="${isUsed != 0 }" /> <input type="radio" name="isUsed"
+						value="0" title="禁用" th:checked="${isUsed == 0 }" />
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">回退节点</label>
+				<div class="layui-input-inline">
+					<input type="text" id="backNode" name="backNode"
+						class="layui-input" th:value="${process.backNode}" />
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">默认审批人</label>
+				<div class="layui-input-inline">
+					<input type="checkbox" name="isLeader" title="直接上级" value="1"
+						lay-skin="primary" th:checked="${process.isLeader == 1}">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-itemlayui-form-text">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+				<textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+			</div>
+		</div>
+	</form>
+	<div class="layui-form-item margin">
+		<button class="layui-btn layui-btn-xs blueHollow" id="addBtn">添加</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="delBtn">删除</button>
+		<span>节点类型（01：活动节点；02：条件节点）</span>
+		<div class="layui-fluid tableCont" style='padding: 0px;'>
+			<table id="detailsTable" lay-filter="demoEvent"></table>
+		</div>
+	</div>
+	<script type="text/html" id="handleWay">
+  		<!-- 这里的 checked 的状态只是演示 -->
+  		<input type="checkbox" name="handWay" value="{{d.node}}" lay-skin="switch" lay-text="并|或" lay-filter="handWayDemo" {{ d.handWay == 'AND' ? 'checked' : '' }}>
+	</script>
+	<script type="text/html" id="isBack">
+  		<!-- 这里的 checked 的状态只是演示 -->
+  		<input type="checkbox" name="isBack" value="{{d.node}}" lay-skin="switch" lay-text="是|否" lay-filter="isBackDemo" {{ d.isBack == 1 ? 'checked' : '' }}>
+	</script>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/config/edit.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>打切联络单新建</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+.layui-table, .layui-table-view{width:100% !important;margin-left:1%;}
+td:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+th:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+html,body{overflow:auto !important;}
+</style>
+<body>
+<div class="layui-row "> 	  	  
+	<div class="layui-col-md6" style='margin-left:15px;margin-top:5px;'>
+		<button class="layui-btn layui-btn-xs blueHollow" data-type="reload" id="Submit">提交</button>
+		<button class="layui-btn layui-btn-xs blueHollow" data-type="reload" id="SaveBut">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>   
+</div>
+<form action="" method="post" id="cutLiaisonForm" class="layui-form">
+<input type="text" id="liaiId" name="liaiId"    style="display: none;" class="layui-input " >
+<input type="text" id="suppId" name="suppId"  th:value="${cutLiai.suppId}"  style="display: none;" class="layui-input " >
+<input type="text" id="cutLiaiMateData" name="cutLiaiMateData"    style="display: none;" class="layui-input " >
+<input type="text" id="fields" name="fields"    style="display: none;" class="layui-input " >
+<div class="layui-row MarginTop">
+			<div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">打切联络单号</label>
+			    <div class="layui-input-block">
+			      <input type="text" id="liaiCode" name="liaiCode"  th:value="${cutLiai.liaiCode}"  style="width: 100%" class="layui-input " readonly="readonly">
+			    </div>
+			  </div>
+		  </div>  
+		  <div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 114px;">状态</label>
+			    <div class="layui-input-block" style='margin-left:124px;'>
+			      <input type="text" id="status" name="status"     style="width: 100%" class="layui-input " readonly="readonly">
+			    </div>
+			  </div>
+		  </div>  
+		  <div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 114px;">创建日期</label>
+			    <div class="layui-input-block" style='margin-left:124px;'>
+			      <input type="date" id="createDate" name="createDate"  th:value="${cutLiai.createDate == null ? '': #dates.format(cutLiai.createDate,'yyyy-MM-dd') }"   style="width: 100%" class="layui-input " readonly="readonly">
+			    </div>
+			  </div>
+		  </div> 
+		</div>
+		<div class="layui-row">
+		    <div class="layui-col-md8" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">供应商</label>
+			    <div class="layui-input-block">
+			      <input type="text" id="suppName" name="suppName"  th:value="${cutLiai.suppName}" style="width: 100%" class="layui-input " readonly="readonly">
+			    </div>
+			  </div>
+		  </div>  
+		  <div class="layui-col-md4" >
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 114px;"><i class="red xinghao">*</i>打切月份</label>
+			    <div class="layui-input-block" style='margin-left:124px;'>
+			      <input type="text" id="cutMonth" name="cutMonth" placeholder="yyyy-MM"   style="width: 100%" class="layui-input must ">
+			    </div>
+			  </div>
+		  </div>
+		    
+</div>
+</form>
+<div class="layui-fluid tableCont" style='padding:0px;'>
+<table class="layui-hide" id="cutLiaiMateTable" lay-filter="cutLiaiMateTable"></table>
+</div>
+</body>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+ <script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>	
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/placut/ContactSheet/ContactSheetDetail.js}"></script>	
+</html>

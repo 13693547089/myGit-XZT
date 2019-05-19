@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.cluster.mdm.ClusterSuppMapper">
+	<resultMap type="com.faujor.entity.cluster.mdm.SupplierDO"
+		id="suppMap">
+		<id property="suppId" column="supp_id" />
+		<result property="sapId" column="PMC01" />
+		<result property="category" column="PMC02" />
+		<result property="subGroup" column="PMC02A" />
+		<result property="suppName" column="PMC081" />
+		<result property="suppAbbre" column="PMC03" />
+		<result property="provCode" column="TA_PMC006" />
+		<result property="provName" column="TA_PMC006A" />
+		<result property="cityCode" column="TA_PMC007" />
+		<result property="cityName" column="TC_PMC007A" />
+		<result property="address" column="PMC091" />
+		<result property="holderPhone" column="PMC10" />
+		<result property="faxNumber" column="PMC11" />
+		<result property="email" column="PMC11A" />
+		<result property="bankCode" column="PMC55" />
+		<result property="accountHolder" column="PMC56" />
+		<result property="bankAccount" column="PMC56A" />
+		<result property="bankName" column="PMC56B" />
+		<result property="busiLicense" column="TA_PMC014" />
+		<result property="clientId" column="TA_PMC020" />
+		<result property="pmc12" column="PMC12" />
+		<result property="pmc13" column="PMC13" />
+		<result property="pmc14" column="PMC14" />
+		<result property="pmc15" column="PMC15" />
+		<result property="pmc16" column="PMC16" />
+		<result property="pmc17" column="PMC17" />
+		<result property="pmc18" column="PMC18" />
+		<result property="pmc19" column="PMC19" />
+		<result property="pmc20" column="PMC20" />
+		<result property="pmc21" column="PMC21" />
+		<result property="pmc22" column="PMC22" />
+		<result property="pmc23" column="PMC23" />
+		<result property="taPmc016" column="TA_PMC016" />
+		<result property="pmc24" column="PMC24" />
+		<result property="pmc25" column="PMC25" />
+		<result property="pmc26" column="PMC26" />
+		<result property="pmc27" column="PMC27" />
+		<result property="pmc28" column="PMC28" />
+		<result property="pmc29" column="PMC29" />
+		<result property="pmc30" column="PMC30" />
+		<result property="pmc31" column="PMC31" />
+		<result property="pmc32" column="PMC32" />
+		<result property="pmc33" column="PMC33" />
+		<result property="pmc34" column="PMC34" />
+		<result property="pmc35" column="PMC35" />
+		<result property="pmc36" column="PMC36" />
+		<result property="pmc37" column="PMC37" />
+		<result property="contacts" column="PMC38" />
+		<result property="phone" column="PMC39" />
+		<result property="isDelete" column="PMC40" />
+		<result property="compCode" column="PMC41" />
+		<result property="akont" column="PMC48" />
+		<result property="proGroup" column="PMC42" />
+		<result property="srmId" column="PMC01B" />
+		<result property="oaId" column="PMC01C" />
+		<collection property="suppPurcList" column="PMC01"
+			ofType="com.faujor.entity.cluster.mdm.SuppPurcDO">
+			<id property="id" column="id" />
+			<result property="suppId" column="main_id" />
+			<result property="sapId" column="PMC_CG00" />
+			<result property="purcOrga" column="PMC_CG01" />
+			<result property="purcOrgaDesc" column="PMC_CG02" />
+			<result property="suppRange" column="PMC_CG03" />
+			<result property="suppRangeDesc" column="PMC_CG04" />
+			<result property="payClause" column="PMC_CG05" />
+			<result property="payClauseDesc" column="PMC_CG06" />
+			<result property="currCode" column="PMC_CG07" />
+			<result property="abcIden" column="PMC_CG08" />
+			<result property="suppGroup" column="PMC_CG09" />
+		</collection>
+	</resultMap>
+	<resultMap type="com.faujor.entity.cluster.mdm.SuppPurcDO"
+		id="suppPurcMap">
+		<id property="id" column="id" />
+		<result property="suppId" column="main_id" />
+		<result property="sapId" column="PMC_CG00" />
+		<result property="purcOrga" column="PMC_CG01" />
+		<result property="purcOrgaDesc" column="PMC_CG02" />
+		<result property="suppRange" column="PMC_CG03" />
+		<result property="suppRangeDesc" column="PMC_CG04" />
+		<result property="payClause" column="PMC_CG05" />
+		<result property="payClauseDesc" column="PMC_CG06" />
+		<result property="currCode" column="PMC_CG07" />
+		<result property="abcIden" column="PMC_CG08" />
+		<result property="suppGroup" column="PMC_CG09" />
+	</resultMap>
+
+	<select id="getSuppPurcListBySuppId" resultMap="suppPurcMap"
+		parameterType="String">
+		select sys_guid() as id, concat('s', t.PMC_CG00) as
+		main_id, t.* from t_sap_inte_pmc_cg t where t.pmc_cg00 = #{sapId}
+	</select>
+	<select id="findSupplierList" resultMap="suppMap">
+		select concat('s',
+		t1.pmc01) as supp_id, t1.*, sys_guid() as id, concat('s', t2.PMC_CG00)
+		as main_id, t2.* from pmc_file t1 left join t_sap_inte_pmc_cg t2 on
+		t2.pmc_cg00 = t1.PMC01
+	</select>
+	
+	<select id="getSuppRangeDescBySapIdAndSuppRange" parameterType="String" resultType="String">
+		select g.pmc_cg04 from t_sap_inte_pmc_cg g where g.pmc_cg00=#{sapId} and g.pmc_cg03 =#{suppRange}
+	</select>
+</mapper>

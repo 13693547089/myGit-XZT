@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+</head>
+<style type="text/css">
+body {
+	overflow: hidden;
+}
+
+h2, h3 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+hr {
+	margin-top: 0px !important;
+	margin-bottom: 0px;
+	border-top: 1px solid #393D49
+}
+
+.layui-input-block {
+	margin-left: 101px;
+}
+</style>
+<body class='fau-body'>
+
+	<div class='divMargin divMargin1'>
+		<button class="layui-btn layui-btn-xs blueHollow" id="saveBtn" lay-submit lay-filter="signForm" onclick="saveTemp()">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn" onclick="back()">返回</button>
+	</div>
+	<form class="layui-form" action="" id="signForm">
+		<input type="text" id="tempId" name="id" th:value="${temp.id}" class="layui-input layui-hide"> 
+		<input type="text" id="dVersion" name="dVersion" th:value="${temp.dVersion}" class="layui-input layui-hide"> 
+		<input type="text" id="status" name="status" th:value="${temp.status}" class="layui-input layui-hide"> 
+		<input id="detailsList" name="detailsList" class="layui-hide" />
+		<div class="layui-form-item MarginTop">
+			<div class="layui-inline">
+				<label class="layui-form-label">模板编码</label>
+				<div class="layui-input-inline">
+					<input type="text" id="tempCode" name="tempCode" th:value="${temp.tempCode}" class="layui-input" readonly>
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">模板名称</label>
+				<div class="layui-input-inline">
+					<input type="text" name="tempName" id="tempName" th:value="${temp.tempName}" lay-verify="tempName" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block marginLeft">
+				<textarea name="remark" id="remark" placeholder="请输入备注" th:text="${temp.remark}" class="layui-textarea"></textarea>
+			</div>
+		</div>
+	</form>
+	<div class='divMargin'>
+		<button class="layui-btn layui-btn-xs blueHollow" id="addBtn"
+			onclick="addSeg('0')">添加段</button>
+	</div>
+	<fieldset class="layui-elem-field site-demo-button">
+		<!-- <legend>模板详情</legend> -->
+		<table id="tempDetailsTable"></table>
+		<div>
+			<script type="text/javascript">
+				var s_add_h = 'hidden';
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+			</script>
+		</div>
+		<div>
+			<script type="text/javascript">
+				s_add_h = '';
+			</script>
+		</div>
+		<div>
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div>
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+	</fieldset>
+	<div th:include="include::layuiCommonJS"></div>
+	<div th:include="include::layuiOthersJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/tempEdit.js}"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader"></head>
+<body class='fau-body-list'>
+	<div class="layui-row" style="padding-top: 10px;">
+		<button class="layui-btn layui-btn-xs yellowSolid" id="backBtn">返回</button>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-xs3">
+			<form class="layui-form" action="">
+				<div class="layui-form-item">
+					<label class="layui-form-label">姓名</label>
+					<div class="layui-input-block">
+						<input type="text" name="title" th:value="${logDO.realName}"
+							class="layui-input" readonly="readonly">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">登录名</label>
+					<div class="layui-input-block">
+						<input type="text" id="userName" name="userName"
+							th:value="${logDO.userName}" class="layui-input"
+							readonly="readonly">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">首次访问时间</label>
+					<div class="layui-input-block">
+						<input type="text" name="title" class="layui-input"
+							readonly="readonly"
+							th:value="${logDO.firstTime == null ? '' : #dates.format(logDO.firstTime,'yyyy-MM-dd HH:mm:ss')}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">最近一次访问时间</label>
+					<div class="layui-input-block">
+						<input type="text" name="title" class="layui-input"
+							readonly="readonly"
+							th:value="${logDO.lastTime == null ? '' : #dates.format(logDO.lastTime,'yyyy-MM-dd HH:mm:ss')}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">系统状态</label>
+					<div class="layui-input-block">
+						<input type="text" name="title" th:value="${logDO.isOnline}"
+							class="layui-input" readonly="readonly">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="layui-col-xs9" style="padding-left: 18px;">
+			<div class="tableCont">
+				<table class="layui-hide" id="logDetailsTable"
+					lay-filter="logDetailsTable">
+				</table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/basic/log/logDetails.js}"></script>
+</body>
+</html>

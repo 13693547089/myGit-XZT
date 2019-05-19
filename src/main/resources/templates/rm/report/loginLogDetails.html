@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+</head>
+<body class='fau-body-list'>
+	<input id="day_date" th:value="${day_date}" class="layui-hide">
+	<input id="username" th:value="${username}" class="layui-hide">
+	<input id="userId" th:value="${userId}" class="layui-hide">
+	<button class="layui-btn layui-btn-xs yellowSolid" type="button" id="btn_back">返回</button>
+	<div class="layui-fluid tableCont" style='padding: 0px;'>
+		<table class="layui-hide" id="logDetailsTable" lay-filter="logTable">
+		</table>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/rm/report/loginLogDetails.js}"></script>
+</body>
+</html>

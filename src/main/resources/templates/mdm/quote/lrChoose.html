@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+</head>
+<body>
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<div class="layui-input-inline">
+				<input type="text" name="mateType" id="mateType" class="layui-input">
+				<input type="text" name="selected" id="selected"
+					th:value="${selectedRow}" class="layui-hide"> <input
+					type="text" name="type" id="type" th:value="${type}"
+					class="layui-hide">
+			</div>
+		</div>
+	</div>
+	<div>
+		<div class="" style='width: 45%; float: left;'>
+			<table id="toChooseTable"></table>
+		</div>
+		<div class="" style='width: 9%; float: left'>
+			<button class="layui-btn layui-btn-sm" id="chooseBtn">选择</button>
+			<button class="layui-btn layui-btn-sm" id="removeBtn">移除</button>
+		</div>
+		<div class="" style='width: 45%; float: right;'>
+			<table id="selectedTable" lay-filter="stable"></table>
+		</div>
+	</div>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/lrChoose.js}"></script>
+</body>
+</html>

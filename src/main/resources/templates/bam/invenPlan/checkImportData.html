@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<title>备货计划</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.layui-col-md9{border: 1px solid white;}
+	.red{color: red}
+	.green{color: green}
+</style>
+<body class='fau-body-list'>
+	<div class="layui-fluid">
+		<div class="layui-row margin-top20">
+			<div class="layui-col-md4  layui-col-md-offset8 textRight">
+				<input name="planCode" hidden="hidden" id="planCode" th:value="${planCode}">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="excelBtn">excel</button>
+				<button class="layui-btn layui-btn-xs yellowSolid" id="checkBtn">校验</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="confirmBtn">确认</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="checkImportTable" lay-filter="checkImportTable">
+		</table>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/invenPlan/checkImportData.js}"></script>
+</body>
+</html>

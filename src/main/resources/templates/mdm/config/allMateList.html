@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+</head>
+<title>所有物料</title>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+body {
+	overflow: auto !important;
+	overflow-x: hidden;
+}
+
+html,body {
+	overflow: auto !important;
+}
+</style>
+<body class="gray-bg">
+	<div class="demoTable">
+		<form class="layui-form" action="" method="post">
+			<div class="layui-row layui-col-space10"
+				style="width: 900px; margin-top: 10px; margin-left: 10px;">
+				<div class="layui-col-sm3">
+					<input type="text" id="mateInfo" name="mateInfo"
+						placeholder="物料编码/名称" class="layui-input">
+				</div>
+				<div class="layui-col-sm3">
+					<input type="text" id="mateGroupInfo" name="mateGroupInfo"
+						placeholder="物料组" class="layui-input">
+				</div>
+				<div class="layui-col-sm3">
+					<input type="text" id="mateTypeInfo" name="mateTypeInfo"
+						placeholder="物料类型编码" class="layui-input">
+				</div>
+				<div class="layui-col-sm2 ">
+					<div class="layui-btn-group1">
+						<button class="layui-btn layui-btn-xs yellowSolid"
+							data-type="reload" id="serachSuppBut" type="button"
+							style='margin-top: 6px;'>搜索</button>
+						<button class="layui-btn layui-btn-xs yellowHollow" id="resetBut"
+							type="reset" style='margin-top: 6px;'>重置</button>
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+		<input type="hidden" id="userId" th:value="${userId}" />
+		<div class="layui-fluid tableCont" style='padding: 0px;'>
+			<table id="mateTable" class="layui-table" lay-filter="demo">
+			</table>
+		</div>
+	</div>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/config/allMateList.js}"></script>
+</body>
+</html>

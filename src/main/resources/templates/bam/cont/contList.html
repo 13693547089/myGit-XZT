@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<title>文档管理</title>
+</head>
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {
+    margin-top: 0px;
+    margin-bottom: 0px;}
+.layui-form-label {
+    width: 105px;
+}
+.margin-left4{margin-left:4%}
+</style>
+<body class='fau-body-list'>
+
+	<div class="layui-row main-body">
+		<form action="" id="searchForm" class="layui-form">
+			<div class="layui-row">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">合同类型</label>
+						<div class="layui-input-block">
+							<select name="contType" id="contType" lay-verify="required">
+								<option value="">请选择</option>
+								<option th:each="dic:${contTypeList}" th:value="${dic.dicCode}" th:text="${dic.dicName}" value="0">北京</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">合同名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="contName" id="contName" lay-verify="required"
+								placeholder="请输入合同名称/合同编码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+
+				
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">创建日期</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" id="startDate" name="startDate" placeholder="开始日期" class="layui-input">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							<input type="text" id="endDate" name="endDate" placeholder="截止日期" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">供应商</label>
+						<div class="layui-input-block">
+							<input type="text" name="suppName" id="suppName" lay-verify="required"
+								placeholder="请输入供应商名称/编码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">有效期</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" id="vaildStart" name="vaildStart" placeholder="开始日期" class="layui-input">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							<input type="text" id="vaildEnd" name="vaildEnd" placeholder="截止日期" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md9  ">
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONT_UPLOAD')" id="createBtn">上传</button>
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONT_REMOVE')" id="deleteBtn">删除</button>
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONT_EXPORT')" id="exportBtn">导出</button>
+		</div>
+		<div class="layui-col-md3 textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+	</div>
+	<div class="layui-row">
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+			<table class="layui-table" id="cont-table" class="cont-table"  lay-filter="docTool"></table>
+	</div>
+	</div>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="edit" style="text-decoration:none;" >编辑</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="view" style="text-decoration:none;" >查看</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del" style="text-decoration:none;" >删除</a>
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/cont/contList.js}"></script>
+</body>
+</html>

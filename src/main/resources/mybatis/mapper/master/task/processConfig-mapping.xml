@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.task.ProcessConfigMapper">
+	<resultMap type="com.faujor.entity.task.ProcessConfig" id="processConfig">
+		<id property="id" column="ID" />
+		<result property="processName" column="PROCESS_NAME" />
+		<result property="processCode" column="PROCESS_CODE" />
+		<result property="isUsed" column="IS_USED" />
+		<result property="isLeader" column="IS_LEADER" />
+		<result property="backNode" column="BACK_NODE" />
+		<result property="actionUrl" column="action_url" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="creator" column="CREATOR" />
+		<result property="creatorName" column="CREATOR_NAME" />
+		<result property="modifyTime" column="MODIFY_TIME" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifierName" column="MODIFIER_NAME" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.task.ProcessConfigDetails"
+		id="processConfigDetails">
+		<id property="id" column="ID" />
+		<result property="confId" column="CONF_ID" />
+		<result property="node" column="NODE" />
+		<result property="nodeName" column="NODE_NAME" />
+		<result property="executor" column="EXECUTOR" />
+		<result property="execName" column="EXEC_NAME" />
+		<result property="execType" column="EXEC_TYPE" />
+		<result property="execRule" column="exec_rule" />
+		<result property="handWay" column="hand_way" />
+		<result property="handWayDesc" column="hand_way_desc" />
+		<result property="backWay" column="back_way" />
+		<result property="backWayDesc" column="back_way_desc" />
+		<result property="backNode" column="back_node" />
+		<result property="isBack" column="is_back" />
+		<result property="nodeCondition" column="node_condition" />
+		<result property="transmitRule" column="transmit_rule" />
+		<result property="noticeRule" column="notice_rule" />
+		<result property="processRule" column="process_rule" />
+		<result property="backRule" column="back_rule" />
+		<result property="nodeType" column="node_type" />
+		<result property="nodeTypeDesc" column="node_type_desc" />
+	</resultMap>
+
+	<select id="findProcessConfigList" resultMap="processConfig">
+		select * from
+		tm_process_config
+	</select>
+	<select id="findProcessConfigCount" resultType="Integer">
+		select count(*)
+		from tm_process_config
+	</select>
+
+	<select id="findProcessConfigById" resultMap="processConfig"
+		parameterType="String">
+		select * from tm_process_config t where t.id = #{id}
+	</select>
+
+	<select id="findConfigDetailsByProcessId" resultMap="processConfigDetails"
+		parameterType="String">
+		select * from TM_PROCESS_DETAILS t where t.CONF_ID =
+		#{processId} order by t.node asc
+	</select>
+
+	<insert id="save" parameterType="com.faujor.entity.task.ProcessConfig">
+		insert into tm_process_config
+		(ID, PROCESS_NAME, PROCESS_CODE, IS_USED, BACK_NODE, IS_LEADER)
+		VALUES(#{id}, #{processName}, #{processCode}, #{isUsed}, #{backNode},
+		#{isLeader})
+	</insert>
+	<update id="update" parameterType="com.faujor.entity.task.ProcessConfig">
+		update tm_process_config t set
+		t.action_url = #{actionUrl}, t.is_used = #{isUsed}, t.back_node =
+		#{backNode}, t.is_leader = #{isLeader} where t.id = #{id}
+	</update>
+
+	<insert id="saveDetailsInfo" parameterType="List">
+		insert all into TM_PROCESS_DETAILS (id, conf_id, node, node_name,
+		executor, exec_name, exec_type, hand_way, hand_way_desc, is_back,
+		exec_rule, node_condition , transmit_rule, notice_rule, process_rule,
+		back_rule, node_type, node_type_desc) values
+		<foreach collection="list" item="item" index="index"
+			separator="into TM_PROCESS_DETAILS (id, conf_id, node, node_name,
+		executor, exec_name, exec_type, hand_way, hand_way_desc, is_back,
+		exec_rule, node_condition , transmit_rule, notice_rule, process_rule,
+		back_rule, node_type, node_type_desc) values ">
+			(#{item.id}, #{item.confId}, #{item.node},
+			#{item.nodeName}, #{item.executor}, #{item.execName},
+			#{item.execType}, #{item.handWay}, #{item.handWayDesc},
+			#{item.isBack}, #{item.execRule}, #{item.nodeCondition},
+			#{item.transmitRule}, #{item.noticeRule}, #{item.processRule},
+			#{item.backRule}, #{item.nodeType}, #{item.nodeTypeDesc})
+		</foreach>
+		select 1 from dual
+	</insert>
+	<update id="updateDetailsInfo" parameterType="com.faujor.entity.task.ProcessConfigDetails">
+		update
+		TM_PROCESS_DETAILS t set t.node = #{node}, t.node_name = #{nodeName},
+		t.executor = #{executor}, t.exec_name = #{execName},
+		t.exec_type=#{execType}, t.hand_way = #{handWay}, t.hand_way_desc =
+		#{handWayDesc}, t.is_back = #{isBack}, t.exec_rule = #{execRule},
+		t.node_condition = #{nodeCondition}, t.transmit_rule =
+		#{transmitRule}, t.notice_rule = #{noticeRule}, t.process_rule =
+		#{processRule}, t.back_rule = #{backRule}, t.node_type = #{nodeType},
+		t.node_type_desc = #{nodeTypeDesc} where t.id = #{id}
+	</update>
+
+	<delete id="removeDetailsInfo" parameterType="List">
+		delete from TM_PROCESS_DETAILS t where t.id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item.id}
+		</foreach>
+	</delete>
+
+	<select id="findProcessConfigByCode" parameterType="String"
+		resultMap="processConfig">
+		select t.* from tm_process_config t where t.process_code =
+		#{processCode}
+	</select>
+
+	<select id="findConfigDetailsByPIdANDNode" parameterType="map"
+		resultMap="processConfigDetails">
+		select t.* from TM_PROCESS_DETAILS t where t.CONF_ID =
+		#{processId} and t.node > #{node} order by t.node asc
+	</select>
+
+	<select id="findConfigDetailsById" resultMap="processConfigDetails"
+		parameterType="String">
+		select * from tm_process_details where id = #{detailsId}
+	</select>
+
+	<delete id="batchRemoveConfigByIDs" parameterType="list">
+		delete from tm_process_config where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="findConfigDetailsByProcessCodeAndNode" resultMap="processConfigDetails">
+		select t.* from tm_process_details t left join
+		tm_process_config c on
+		t.conf_id = c.id where c.PROCESS_CODE = #{0}
+		and t.node = #{1}
+	</select>
+
+	<select id="findConfigDetailsByProcessCode" resultMap="processConfigDetails">
+		select t.*
+		from tm_process_details t left join
+		tm_process_config c on t.conf_id =
+		c.id where c.PROCESS_CODE = #{processCode} and c.is_used = 1
+	</select>
+
+	<select id="findConfigDetailsListByProcess" resultMap="processConfigDetails"
+		parameterType="com.faujor.entity.task.ProcessConfig">
+		select t.* from tm_process_details t left join
+		tm_process_config c on
+		t.conf_id = c.id where c.is_used = 1
+		<if test="processCode != null and processCode != ''">
+			and c.process_code = #{processCode}
+		</if>
+		<if test="id != null and id != ''">
+			and c.id = #{id}
+		</if>
+	</select>
+
+	<resultMap type="com.faujor.entity.task.RelationValuesResultDO"
+		id="resultMap">
+		<id property="id" column="id" />
+		<result property="result" column="result" />
+	</resultMap>
+	<select id="relationValues" parameterType="com.faujor.entity.task.RelationValuesParamsDO"
+		resultMap="resultMap" statementType="STATEMENT">
+		select ${idName} as id,
+		${returnRelation} as result from ${tableName} where ${idName} =
+		${idValue}
+	</select>
+	<resultMap type="com.faujor.entity.task.ProcessRuleDO" id="ruleMap">
+		<id property="id" column="id" />
+		<result property="mainId" column="main_id" />
+		<result property="node" column="node" />
+		<result property="taskName" column="task_name" />
+		<result property="defaultAudit" column="default_audit" />
+		<result property="execType" column="exec_type" />
+		<result property="execStr" column="exec_str" />
+		<result property="execRange" column="exec_range" />
+		<result property="ruleType" column="rule_type" />
+	</resultMap>
+	<select id="findConfigRuleByRuleDO" parameterType="com.faujor.entity.task.ProcessRuleDO"
+		resultMap="ruleMap">
+		select t.* from tm_process_rule t
+		<where>
+			<if test="mainId !=null and mainId !=''">
+				and t.main_id = #{mainId}
+			</if>
+			<if test="node != null">
+				and t.node = #{node}
+			</if>
+		</where>
+	</select>
+
+	<insert id="saveExecRule" parameterType="com.faujor.entity.task.ProcessRuleDO">
+		insert into
+		tm_process_rule (id, main_id, node, task_name, default_audit,
+		exec_type, exec_str, exec_range, rule_type) values(#{id}, #{mainId},
+		#{node}, #{taskName}, #{defaultAudit}, #{execType}, #{execStr},
+		#{execRange}, #{ruleType})
+	</insert>
+	<update id="updateExecRule" parameterType="com.faujor.entity.task.ProcessRuleDO">
+		update tm_process_rule
+		set task_name=#{taskName}, default_audit =#{defaultAudit}, exec_type =
+		#{execType}, exec_str=#{execStr}, exec_range=#{execRange},
+		rule_type=#{ruleType} where id = #{id}
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

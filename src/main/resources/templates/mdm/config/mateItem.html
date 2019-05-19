@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>物料管理</title>
+</head>
+<style>
+.vertical-center {
+	margin-top: 8px;
+}
+
+.btn-padding {
+	padding: 5px 0px 5px 0px;
+}
+
+.chosen-container-single .chosen-single {
+	background: #ffffff;
+	box-shadow: none;
+	-moz-box-sizing: border-box;
+	background-color: #FFFFFF;
+	border: 1px solid #CBD5DD;
+	border-radius: 2px;
+	cursor: text;
+	height: auto !important;
+	margin: 0;
+	min-height: 30px;
+	overflow: hidden;
+	padding: 4px 12px;
+	position: relative;
+	width: 100%;
+}
+
+.chosen-select {
+	width: 150px !important;
+}
+
+.red {
+	color: red
+}
+
+.green {
+	color: green
+}
+</style>
+<body>
+	<div class="panel-body">
+		<div style="width: 50%; float: left;">
+			<form class="form-inline">
+				<div class="form-group" style="width: 49%;">
+					<label for="name">物料信息：</label> <input type="text"
+						class="form-control" name="mateCode" id="mateCode"
+						placeholder="物料编码/名称"></input>
+				</div>
+				<div class="form-group" style="width: 49%;">
+					<label for="name">物料类别：</label> <select
+						class="form-control must select-width chosen-select"
+						name="mateType" id="mateType">
+						<option value="">全部</option>
+						<option th:each="mateType:${mateType}"
+							th:value="${mateType.dicName}" th:text="${mateType.dicName}"></option>
+					</select>
+				</div>
+			</form>
+		</div>
+		<div style="width: 20%; float: left;">
+			<button id="searchBtn" class="btn btn-primary">查询</button>
+		</div>
+		<div class="pull-right">
+			<button type="button" class="btn btn-primary" id="batchBtn">批量修改</button>
+		</div>
+	</div>
+	<div class="panel-default ">
+		<div class="col-md-12 table-responsive">
+			<table
+				class="table table-striped table-bordered table-hover text-nowrap"
+				id="mateTable"></table>
+		</div>
+	</div>
+	
+	<!--批量修改弹框-->
+	<div class="modal fade" id="batchUpdate" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog ">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">修改详细</h4>
+				</div>
+				<div class="modal-body row">
+					<div class=" panel-default ">
+						<div class=" btn-padding">
+							<a class="btn " data-toggle="collapse" href="#collapseFour1">
+								<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;修改项
+							</a>
+							<div id="collapseFour1" class="panel-collapse collapse in">
+								<div class="panel-body">
+									<div class="formGroup form-group">
+										<label>类型：</label> 
+										<select name="itemType" id="itemTypeID" class="form-control" >
+											<option value="">请选择</option>
+											<option th:each="dic:${itemTypeList}" th:value="${dic.dicCode}" th:text="${dic.dicName}" ></option>
+										</select>
+									</div>
+									<div class="formGroup form-group">
+										<label>机台：</label> 
+										<select name="board" id="boardID" class="form-control" >
+											<option value="">请选择</option>
+											<option th:each="dic:${boardList}" th:value="${dic.dicCode}" th:text="${dic.dicName}" ></option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="comfirmBtn" class="btn btn-primary">确定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/editTable/plus/import.inc.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/config/itemInfo.js}"></script>
+</body>
+</html>

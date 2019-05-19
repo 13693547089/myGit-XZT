@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader"></head>
+<body class='fau-body-list' style="padding-top: 10px">
+	<form action="" id="signForm">
+		<input id="id" name="id" th:value="${notice.id}" class="layui-hide" />
+		<input id="type" th:value="${type}" class="layui-hide"/>
+		<input id="userName" name="userName" th:value="${notice.userName}" class="layui-hide">
+		<div class="layui-row">
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label class="layui-form-label">通知时间：</label>
+					<div class="layui-input-block">
+						<input type="text" id="noticeTime" name="noticeTime"
+							placeholder="通知时间"
+							th:value="${notice.noticeTime == null ? '' : #dates.format(notice.noticeTime,'yyyy-MM-dd HH:mm:ss')}"
+							readonly="readonly" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label class="layui-form-label">发通知者：</label>
+					<div class="layui-input-block">
+						<input type="text" id="name" name="name" placeholder="发通知者"
+							th:value="${notice.name}" readonly="readonly" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">通知内容：</label>
+					<div class="layui-input-block">
+						<textarea name="noticeContent" id="noticeContent" class="layui-textarea" th:text="${notice.noticeContent}"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiCommonJS"></div>
+
+	<script type="text/javascript">
+		layui.use([ "form" ], function() {
+			var $ = layui.$;
+			var type = $("#type").val();
+			if(type == "read") {
+				$("#noticeContent").attr("readOnly","readOnly");
+			}
+			//提交数据
+			window.submitData = function() {
+				debugger;
+				var form = $("#signForm").serialize();
+				var id = $("#id").val();
+				var result = "";
+				$.ajax({
+					url : "/notices/saveNotice",
+					data : form,
+					async : false,
+					error : function() {
+						result = "error";
+					},
+					success : function() {
+						result = id;
+					}
+				});
+				return result;
+			}
+		});
+	</script>
+</body>
+</html>

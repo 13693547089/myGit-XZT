@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8"></meta>
+<head th:include="include :: layuiHeader"></head>
+<body class="gray-bg">
+	<form action="" class="layui-form"
+		style="padding-top: 10px; margin-right: 20px;">
+		<input id="id" name="id" th:value="${user.userId}" class="layui-hide" />
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户名：</label>
+			<div class="layui-input-block">
+				<input type="text" name="name" th:value="${user.name}"
+					readonly="readonly" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">Email：</label>
+			<div class="layui-input-block">
+				<input type="text" name="email" th:value="${user.email}"
+					readonly="readonly" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">电话：</label>
+			<div class="layui-input-block">
+				<input type="text" name="mobile" th:value="${user.mobile}"
+					readonly="readonly" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item layui-hide">
+			<label class="layui-form-label">旧密码：</label>
+			<div class="layui-input-block">
+				<input type="password" name="oldPassword"
+					th:value="${user.password}" readonly="readonly" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">新密码：</label>
+			<div class="layui-input-block">
+				<input type="password" id="newPwd" placeholder="请输入新密码！"
+					class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">校验新密码：</label>
+			<div class="layui-input-block">
+				<input type="password" id="newPwd1" placeholder="请重新输入新密码！"
+					class="layui-input">
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript">
+		layui.use([ 'form' ], function() {
+			var $ = layui.$;
+
+			window.getData = function() {
+				var id = $("#id").val();
+				var newPwd = $("#newPwd").val();
+				var newPwd1 = $("#newPwd1").val();
+				var arr = {
+					id : id,
+					newPwd : newPwd,
+					newPwd1 : newPwd1
+				}
+				return arr;
+			}
+		});
+	</script>
+</body>
+</html>

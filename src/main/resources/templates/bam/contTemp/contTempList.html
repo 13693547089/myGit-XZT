@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>文档管理</title>
+</head>
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+input {height: 30px;}
+.main-body{margin-top:10px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {
+    margin-top: 0px;
+    margin-bottom: 0px;}
+.layui-form-label {
+    width: 105px;
+}
+.margin-left4{margin-left:4%}
+</style>
+<body class='fau-body-list'>
+	
+	<div class="layui-row main-body">
+		<form action="" id="searchForm" class="layui-form">
+			<div class="layui-row ">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">模板状态</label>
+						<div class="layui-input-block">
+							<select name="tempStatus" id="tempStatus" lay-verify="required" >
+								<option value="">请选择</option>
+								<option th:each="dic:${statusList}" th:value="${dic.dicCode}"  th:text="${dic.dicName}">北京</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">合同类型</label>
+						<div class="layui-input-block">
+							<select name="contType" id="contType" lay-verify="required">
+								<option value="">请选择</option>
+								<option th:each="dic:${contTypeList}" th:value="${dic.dicCode}" th:text="${dic.dicName}" value="0">北京</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">模板名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="tempName" id="tempName" lay-verify="required"
+								placeholder="请输入模板名称/模板编码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md9 ">
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONTTEMP_ADD')" id="createBtn">新建</button>
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONTTEMP_PUBLISH')" id="publishBtn">发布</button>
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONTTEMP_RECALL')" id="revokeBtn">撤回</button>
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONTTEMP_REMOVE')" id="deleteBtn">删除</button>
+			<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_CONTTEMP_EXPORT')" id="exportBtn">导出</button>
+		</div>
+		<div class="layui-col-md3 textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowSolid" id="resetBtn">重置</button>
+		</div>
+	</div>
+	<div class="layui-row">
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+			<table class="layui-table" id="temp-table" class="temp-table"  lay-filter="docTool"></table>
+	</div>
+	</div>
+	<script type="text/html" id="barDemo">
+  		
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="view" style="text-decoration:none">查看</a>
+		<a class="layui-btn layui-btn-xs blueInline" lay-event="edit" style="text-decoration:none">编辑</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="publish" style="text-decoration:none">发布</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="revoke" style="text-decoration:none">撤回</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del" style="text-decoration:none">删除</a>
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/contTemp/contTempList.js}"></script>
+</body>
+</html>

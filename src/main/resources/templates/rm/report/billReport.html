@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+</head>
+<style type="text/css">
+.cube_div {
+	display: block;
+	width: 250px;
+	height: 150px;
+	background: rgba(255, 255, 255, 1);
+	border-radius: 4px;
+}
+.title_span {
+	padding-top: 12px;
+    padding-left: 26px;
+    padding-bottom: 11px;
+    border-bottom: 2px solid rgba(246,246,246,1);
+}
+.cube_div_span {
+	font-size: 16px;
+	font-family: MicrosoftYaHei-Bold;
+	font-weight: bold;
+	color: rgba(74, 74, 74, 1);
+	line-height: 21px;
+}
+
+.cube_item_div {
+	text-align: center;
+	color: blue;
+}
+
+.cube_item_div span {
+	padding: 5px;
+}
+
+.cube_item_div_span {
+	border-radius: 4px;
+	font-size: 36px;
+	font-family: DINOT-Medium;
+	font-weight: 500;
+	color: rgba(47, 119, 239, 1);
+	line-height: 46px;
+}
+
+.cube_item_div_span_span {
+	font-size: 20px;
+	font-family: PingFang-SC-Heavy;
+	font-weight: 800;
+	color: rgba(105, 105, 105, 1);
+	line-height: 28px;
+}
+.cube_item_div_span_span_span {
+	font-size: 16px;
+	font-family: PingFang-SC-Heavy;
+	font-weight: 800;
+	color: rgba(105, 105, 105, 1);
+	line-height: 28px;
+}
+.glyphicon-bookmark {
+	color: rgba(47,119,239,1);
+}
+.btn {
+	color:rgba(47,119,239,1);
+}
+</style>
+
+<body class="gray-bg">
+	<form action="" class="layui-form" style="margin-top: 10px;">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">月份</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" id="month_date"
+							name="month_date" placeholder=" - "> <input id="dateStr"
+							th:value="${dateStr}" class="layui-hide"> <input
+							id="currentDate" th:value="${currentDate}" class="layui-hide">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4"
+				style="padding-left: 10px; padding-top: 4px;">
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button"
+					id="btn_details">查看详情</button>
+			</div>
+		</div>
+
+	</form>
+	<div class="layui-row" id="data_refresh" th:fragment="data_refresh">
+		<div class="panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;采购订单
+				</a>
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="layui-row">
+							<div class="layui-col-xs3 ">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">报价单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.quoteNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.quoteDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">采购合同</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span"
+											th:text="${br.purchaseContractNum}"></span><span class="cube_item_div_span_span">单</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">采购订单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.purchaseOrderNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.purchaseOrderDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3"></div>
+						</div>
+					</div>
+				</div>
+
+				<a class="btn " data-toggle="collapse" href="#collapseTwo"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;打切管理
+				</a>
+				<div id="collapseTwo" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="layui-row">
+							<div class="layui-col-xs3 ">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">打切联络单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.cutLiaiNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.cutLiaiDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">打切计划</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.cutPlanNum}"></span><span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.cutPlanDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3"></div>
+							<div class="layui-col-xs3"></div>
+						</div>
+					</div>
+				</div>
+
+				<a class="btn " data-toggle="collapse" href="#collapseThird"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;产销管理
+				</a>
+				<div id="collapseThird" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="layui-row">
+							<div class="layui-col-xs3 ">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">生产/交货计划</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.prodDeliNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.prodDeliDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">备货计划</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.stockPrePlanNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.stockPrePlanDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">排产计划</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.schedulPlanNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+								</div>
+
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">产能上报</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.capacityReportNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.capacityReportDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;预约送货管理
+				</a>
+				<div id="collapseFour" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="layui-row">
+							<div class="layui-col-xs3 ">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">预约申请</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.appoApplyNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.appoApplyDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">直发通知</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.directNoticeNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.directNoticeDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">送货单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.deliveryNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.deliveryDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">收货单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.receiveNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.reveiveDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<a class="btn " data-toggle="collapse" href="#collapseFive"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;财务协同管理
+				</a>
+				<div id="collapseFive" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="layui-row">
+							<div class="layui-col-xs3 ">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">财务稽核</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.financialAuditNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.financialAuditDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">财务往来</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.financialTransNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.financialTransDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">采购对账</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.purchRecoNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.purchRecoDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3"></div>
+						</div>
+					</div>
+				</div>
+
+				<a class="btn " data-toggle="collapse" href="#collapseSix"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;OEM供应商与包材供应商相关单据统计
+				</a>
+				<div id="collapseSix" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="layui-row">
+							<div class="layui-col-xs3 ">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">OEM包材订单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.OEMOrderNum}"></span>
+										<span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.OEMOrderDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">包材联络单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.OEMLiaiNum}"></span><span class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.OEMLiaiDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3">
+								<div class="gray-bg cube_div">
+									<div class="title_span">
+										<span class="cube_div_span">包材产能月报</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.OEMCapacityReportNum}"></span>
+										<span class="cube_item_div_span" class="cube_item_div_span_span">单</span>
+									</div>
+									<div class="cube_item_div">
+										<span class="cube_item_div_span" th:text="${br.OEMCapacityReportDetailsNum}"></span>
+										<span class="cube_item_div_span_span_span">行</span>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs3"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/rm/report/billReport.js}"></script>
+</body>
+</html>

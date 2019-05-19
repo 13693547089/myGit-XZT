@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.rm.UserSuppMateMapper">
+	
+	
+	<resultMap type="com.faujor.entity.rm.UserSuppMate" id="UserSuppMateMap">
+		<result property="userId" column="user_Id"/>
+		<result property="name" column="name"/>
+		<result property="suppName" column="supp_Name"/>
+		<result property="sapId" column="sap_Id"/>
+		<result property="mateCode" column="mate_Code"/>
+		<result property="mateName" column="mate_Name"/>
+		<result property="mateGroupExpl" column="mate_Group_Expl"/>
+		<result property="mateType" column="mate_Type"/>
+		<result property="basicUnit" column="basic_Unit"/>
+		<result property="procUnit" column="proc_Unit"/>
+	</resultMap>
+	<select id="getUserSuppMateListByPage" parameterType="Map" resultMap="UserSuppMateMap">
+		select * from(
+		select h.*,rownum rn from (
+		select mdm.* from(
+		select u.user_id,u.name,s.supp_name,s.sap_id,m.mate_code,m.mate_name,
+		m.mate_group_expl,m.mate_type,m.basic_unit,m.proc_unit
+		from mdm_buyer_supp_mate bsm left join mdm_mate m on bsm.mate_id=m.mate_id
+		left join mdm_qual_supp s on bsm.supp_id = s.supp_id
+		left join sys_user u on bsm.buyer_id = u.user_id
+		where m.is_delete is null
+		union
+		select u.user_id,u.name,s.supp_name,s.sap_id,m.mate_code,m.mate_name,
+		m.mate_group_expl,m.mate_type,m.basic_unit,m.proc_unit
+		from (
+		select bm.buyer_id,'' as supp_id,bm.mate_id
+		from mdm_buyer_supp_mate bsm right join mdm_buyer_mate bm on bsm.buyer_id = bm.buyer_id and bsm.mate_id = bm.mate_id
+		where bsm.id is null
+		union
+		select bs.buyer_id,bs.supp_id,'' as mate_id
+		from mdm_buyer_supp_mate bsm right join mdm_buyer_supp bs on bsm.buyer_id = bs.buyer_id and bsm.supp_id = bs.supp_id
+		where bsm.id is null)main
+		left join mdm_mate m on main.mate_id=m.mate_id
+		left join mdm_qual_supp s on main.supp_id = s.supp_id
+		left join sys_user u on main.buyer_id = u.user_id
+		where m.is_delete is null
+		)mdm
+		<where>
+			<if test="userSuppMate.name != null and userSuppMate.name != '' ">
+		 		and (mdm.user_id like '%${userSuppMate.name}%' or mdm.name like '%${userSuppMate.name}%')
+		 	</if>		
+			<if test="userSuppMate.suppName != null and userSuppMate.suppName != '' ">
+		 		and (mdm.supp_name like '%${userSuppMate.suppName}%' or mdm.sap_id like '%${userSuppMate.suppName}%')
+		 	</if>		
+			<if test="userSuppMate.mateName != null and userSuppMate.mateName != '' ">
+		 		and (mdm.mate_code like '%${userSuppMate.mateName}%' or mdm.mate_name like '%${userSuppMate.mateName}%')
+		 	</if>		
+			<if test="userSuppMate.mateGroupExpl != null and userSuppMate.mateGroupExpl != '' ">
+		 		and mdm.mate_group_expl like '%${userSuppMate.mateGroupExpl}%' 
+		 	</if>		
+			<if test="userSuppMate.mateType != null and userSuppMate.mateType != '' ">
+		 		and mdm.mate_type like '%${userSuppMate.mateType}%' 
+		 	</if>		
+			<if test="userSuppMate.basicUnit != null and userSuppMate.basicUnit != '' ">
+		 		and mdm.basic_unit like '%${userSuppMate.basicUnit}%' 
+		 	</if>		
+			<if test="userSuppMate.procUnit != null and userSuppMate.procUnit != '' ">
+		 		and mdm.proc_unit like '%${userSuppMate.procUnit}%' 
+		 	</if>		
+		</where>
+		order by mdm.user_id,mdm.sap_id,mdm.mate_code)h)k
+		<![CDATA[where k.rn>=#{start} and k.rn<=#{end}]]>
+	</select>
+	
+	<select id="getUserSuppMateListByPageCount" parameterType="Map" resultType="Integer">
+		select count(*) from(
+		select u.user_id,u.name,s.supp_name,s.sap_id,m.mate_code,m.mate_name,
+		m.mate_group_expl,m.mate_type,m.basic_unit,m.proc_unit
+		from mdm_buyer_supp_mate bsm left join mdm_mate m on bsm.mate_id=m.mate_id
+		left join mdm_qual_supp s on bsm.supp_id = s.supp_id
+		left join sys_user u on bsm.buyer_id = u.user_id
+		where m.is_delete is null
+		union
+		select u.user_id,u.name,s.supp_name,s.sap_id,m.mate_code,m.mate_name,
+		m.mate_group_expl,m.mate_type,m.basic_unit,m.proc_unit
+		from (
+		select bm.buyer_id,'' as supp_id,bm.mate_id
+		from mdm_buyer_supp_mate bsm right join mdm_buyer_mate bm on bsm.buyer_id = bm.buyer_id and bsm.mate_id = bm.mate_id
+		where bsm.id is null
+		union
+		select bs.buyer_id,bs.supp_id,'' as mate_id
+		from mdm_buyer_supp_mate bsm right join mdm_buyer_supp bs on bsm.buyer_id = bs.buyer_id and bsm.supp_id = bs.supp_id
+		where bsm.id is null)main
+		left join mdm_mate m on main.mate_id=m.mate_id
+		left join mdm_qual_supp s on main.supp_id = s.supp_id
+		left join sys_user u on main.buyer_id = u.user_id
+		where m.is_delete is null
+		)mdm
+		<where>
+			<if test="userSuppMate.name != null and userSuppMate.name != '' ">
+		 		and (mdm.user_id like '%${userSuppMate.name}%' or mdm.name like '%${userSuppMate.name}%')
+		 	</if>		
+			<if test="userSuppMate.suppName != null and userSuppMate.suppName != '' ">
+		 		and (mdm.supp_name like '%${userSuppMate.suppName}%' or mdm.sap_id like '%${userSuppMate.suppName}%')
+		 	</if>		
+			<if test="userSuppMate.mateName != null and userSuppMate.mateName != '' ">
+		 		and (mdm.mate_code like '%${userSuppMate.mateName}%' or mdm.mate_name like '%${userSuppMate.mateName}%')
+		 	</if>		
+			<if test="userSuppMate.mateGroupExpl != null and userSuppMate.mateGroupExpl != '' ">
+		 		and mdm.mate_group_expl like '%${userSuppMate.mateGroupExpl}%' 
+		 	</if>		
+			<if test="userSuppMate.mateType != null and userSuppMate.mateType != '' ">
+		 		and mdm.mate_type like '%${userSuppMate.mateType}%' 
+		 	</if>		
+			<if test="userSuppMate.basicUnit != null and userSuppMate.basicUnit != '' ">
+		 		and mdm.basic_unit like '%${userSuppMate.basicUnit}%' 
+		 	</if>		
+			<if test="userSuppMate.procUnit != null and userSuppMate.procUnit != '' ">
+		 		and mdm.proc_unit like '%${userSuppMate.procUnit}%' 
+		 	</if>		
+		</where>
+	</select>
+	
+	<select id="getUserSuppMateList" parameterType="com.faujor.entity.rm.UserSuppMate" resultMap="UserSuppMateMap">
+		select mdm.* from(
+		select u.user_id,u.name,s.supp_name,s.sap_id,m.mate_code,m.mate_name,
+		m.mate_group_expl,m.mate_type,m.basic_unit,m.proc_unit
+		from mdm_buyer_supp_mate bsm left join mdm_mate m on bsm.mate_id=m.mate_id
+		left join mdm_qual_supp s on bsm.supp_id = s.supp_id
+		left join sys_user u on bsm.buyer_id = u.user_id
+		where m.is_delete is null
+		union
+		select u.user_id,u.name,s.supp_name,s.sap_id,m.mate_code,m.mate_name,
+		m.mate_group_expl,m.mate_type,m.basic_unit,m.proc_unit
+		from (
+		select bm.buyer_id,'' as supp_id,bm.mate_id
+		from mdm_buyer_supp_mate bsm right join mdm_buyer_mate bm on bsm.buyer_id = bm.buyer_id and bsm.mate_id = bm.mate_id
+		where bsm.id is null
+		union
+		select bs.buyer_id,bs.supp_id,'' as mate_id
+		from mdm_buyer_supp_mate bsm right join mdm_buyer_supp bs on bsm.buyer_id = bs.buyer_id and bsm.supp_id = bs.supp_id
+		where bsm.id is null)main
+		left join mdm_mate m on main.mate_id=m.mate_id
+		left join mdm_qual_supp s on main.supp_id = s.supp_id
+		left join sys_user u on main.buyer_id = u.user_id
+		where m.is_delete is null
+		)mdm
+		<where>
+			<if test="name != null and name != '' ">
+		 		and (mdm.user_id like '%${name}%' or mdm.name like '%${name}%')
+		 	</if>		
+			<if test="suppName != null and suppName != '' ">
+		 		and (mdm.supp_name like '%${suppName}%' or mdm.sap_id like '%${suppName}%')
+		 	</if>		
+			<if test="mateName != null and mateName != '' ">
+		 		and (mdm.mate_code like '%${mateName}%' or mdm.mate_name like '%${mateName}%')
+		 	</if>		
+			<if test="mateGroupExpl != null and mateGroupExpl != '' ">
+		 		and mdm.mate_group_expl like '%${mateGroupExpl}%' 
+		 	</if>		
+			<if test="mateType != null and mateType != '' ">
+		 		and mdm.mate_type like '%${mateType}%' 
+		 	</if>		
+			<if test="basicUnit != null and basicUnit != '' ">
+		 		and mdm.basic_unit like '%${basicUnit}%' 
+		 	</if>		
+			<if test="procUnit != null and procUnit != '' ">
+		 		and mdm.proc_unit like '%${procUnit}%' 
+		 	</if>		
+		</where>
+		order by mdm.user_id,mdm.sap_id,mdm.mate_code
+	</select>
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.QuoteTempMapper">
+	<resultMap type="com.faujor.entity.mdm.QuoteTemp" id="tempMap">
+		<id property="id" column="id" />
+		<result property="dVersion" column="d_version" />
+		<result property="tempName" column="temp_name" />
+		<result property="tempCode" column="temp_code" />
+		<result property="remark" column="remark" />
+		<result property="status" column="status" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="modifier" column="modifier" />
+		<result property="modifierName" column="modifier_name" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.mdm.QuoteTempDetails" id="tempDetailsMap">
+		<id property="menuId" column="id" />
+		<result property="tempId" column="temp_id" />
+		<result property="segmName" column="segm_name" />
+		<result property="segmCode" column="segm_code" />
+		<result property="asseName" column="asse_name" />
+		<result property="asseCode" column="asse_code" />
+		<result property="mateCode" column="mate_code" />
+		<result property="detailsNum" column="details_num" />
+		<result property="unit" column="unit" />
+		<result property="standard" column="standard" />
+		<result property="material" column="material" />
+		<result property="remark" column="remark" />
+		<result property="parentId" column="parent_id" />
+		<result property="nodeKind" column="node_kind" />
+		<result property="createTime" column="create_time" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="modifier" column="modifier" />
+		<result property="modifierName" column="modifier_name" />
+	</resultMap>
+
+	<insert id="saveTemp" parameterType="com.faujor.entity.mdm.QuoteTemp">
+		insert into mdm_quote_temp
+		(id, d_version, temp_name, temp_code, remark, status, create_time,
+		creator, creator_name)
+		values (#{id}, #{dVersion}, #{tempName},
+		#{tempCode}, #{remark}, #{status}, #{createTime},#{creator},
+		#{creatorName})
+	</insert>
+	<update id="updateTemp" parameterType="com.faujor.entity.mdm.QuoteTemp">
+		update mdm_quote_temp t
+		<set>
+			<if test="dVersion != null"> t.d_version = #{dVersion},</if>
+			<if test="tempName != null"> t.temp_name = #{tempName},</if>
+			<if test="remark != null"> t.remark = #{remark},</if>
+			<if test="status != null"> t.status = #{status},</if>
+			<if test="modifyTime !=null"> t.modify_time = #{modifyTime},</if>
+			<if test="modifier != null"> t.modifier=#{modifier},</if>
+			<if test="modifierName != null"> t.modifier_name = #{modifierName},</if>
+		</set>
+		where t.id = #{id}
+	</update>
+
+	<delete id="removeTemp" parameterType="com.faujor.entity.mdm.QuoteTemp">
+		delete from mdm_quote_temp
+		where id = #{id}
+	</delete>
+
+	<select id="tempList" resultMap="tempMap" parameterType="Map">
+		select * from mdm_quote_temp where 1=1
+		<if test="tempCode !=null and tempCode != ''">
+			<bind name="tc" value="'%'+tempCode+'%'" />
+			and temp_code like #{tc}
+		</if>
+		<if test="tempName != null and tempName != ''">
+			<bind name="tn" value="'%'+tempName+'%'" />
+			and temp_name like #{tn}
+		</if>
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		order by temp_code desc
+	</select>
+
+	<select id="tempListMap" resultMap="tempMap" parameterType="Map">
+		select * from mdm_quote_temp where 1=1
+		<if test="tempCode !=null and tempCode != ''">
+			<bind name="tc" value="'%'+tempCode+'%'" />
+			and temp_code like #{tc}
+		</if>
+		<if test="tempName != null and tempName != ''">
+			<bind name="tn" value="'%'+tempName+'%'" />
+			and temp_name like #{tn}
+		</if>
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		order by temp_code desc
+	</select>
+
+	<select id="countTempList" resultType="Integer" parameterType="Map">
+		select count(*) from mdm_quote_temp
+	</select>
+
+	<select id="findTempById" resultMap="tempMap" parameterType="String">
+		select * from mdm_quote_temp where id = #{id}
+	</select>
+
+	<insert id="batchSaveTempDetails" parameterType="List">
+		insert all into mdm_quote_temp_details
+		(id, temp_id, segm_code,
+		segm_name, asse_code, asse_name, mate_code, details_num, unit,
+		standard,material, remark, parent_id, node_kind) values
+		<foreach collection="list" item="item" index="index" open=""
+			close=""
+			separator="into mdm_quote_temp_details 
+			(id, temp_id, segm_code, segm_name, asse_code, asse_name, 
+			mate_code, details_num, unit, standard,material, remark, 
+			parent_id, node_kind) values ">
+			(#{item.menuId}, #{item.tempId}, #{item.segmCode},
+			#{item.segmName}, #{item.asseCode}, #{item.asseName},
+			#{item.mateCode}, #{item.detailsNum}, #{item.unit}, #{item.standard},
+			#{item.material}, #{item.remark}, #{item.parentId}, #{item.nodeKind})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<select id="detailsList" resultMap="tempDetailsMap">
+		select * from
+		mdm_quote_temp_details
+	</select>
+
+	<insert id="saveTempDetails" parameterType="com.faujor.entity.mdm.QuoteTempDetails">
+		insert into
+		mdm_quote_temp_details(id, temp_id, segm_name, segm_code, asse_name,
+		asse_code, mate_code, details_num, unit, standard, material, remark,
+		parent_id, node_kind, create_time, creator, creator_name) values (
+		#{menuId}, #{tempId}, #{segmName}, #{segmCode}, #{asseName},
+		#{asseCode}, #{mateCode}, #{detailsNum}, #{unit}, #{standard},
+		#{material}, #{remark}, #{parentId}, #{nodeKind}, #{createTime},
+		#{creator}, #{creatorName})
+	</insert>
+
+	<delete id="removeTempDetailsByTempId" parameterType="String">
+		delete from
+		mdm_quote_temp_details t where t.temp_id = #{tempId}
+	</delete>
+
+	<delete id="removeTempDetails" parameterType="com.faujor.entity.mdm.QuoteTempDetails">
+		delete from
+		mdm_quote_temp_details t where t.id = #{menuId} or t.parent_id
+		=
+		#{parentId}
+	</delete>
+
+	<select id="tempDetailsList" resultMap="tempDetailsMap">
+		select * from
+		mdm_quote_temp_details
+	</select>
+
+	<select id="tempDetailsListByTempId" resultMap="tempDetailsMap"
+		parameterType="String">
+		select t.* from mdm_quote_temp_details t where
+		t.temp_id
+		= #{tempId} order by t.asse_code asc
+	</select>
+
+	<select id="findTempDetailsById" resultMap="tempDetailsMap"
+		parameterType="String">
+		select * from mdm_quote_temp_details where id =
+		#{detailsId}
+	</select>
+
+	<delete id="batchRemoveTempDetailsByTempIds" parameterType="List">
+		delete from mdm_quote_temp_details t where t.temp_id in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<delete id="batchRemoveTemp" parameterType="List">
+		delete from mdm_quote_temp t where t.id in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">#{item}
+		</foreach>
+	</delete>
+
+	<update id="updateTempDetails" parameterType="com.faujor.entity.mdm.QuoteTempDetails">
+		update
+		mdm_quote_temp_details set segm_name = #{segmName}, segm_code =
+		#{segmCode}, asse_name = #{asseName}, asse_code = #{asseCode},
+		mate_code = #{mateCode}, details_num = #{detailsNum}, unit = #{unit},
+		standard = #{standard}, material = #{material}, remark = #{remark}
+		where id = #{menuId}
+	</update>
+
+	<delete id="batchRemoveTempDetailsByIDs" parameterType="List">
+		delete from mdm_quote_temp_details t where t.id in
+		<foreach collection="list" item="item" index="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<select id="findTempListForSelected" resultMap="tempMap">
+		select id,
+		temp_name, temp_code, concat(temp_name,concat(' | ', temp_code)) as
+		remark from mdm_quote_temp where status = '0'
+	</select>
+</mapper>

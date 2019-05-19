@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><!-- th:include="include::layuiHeader" -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" href="/larryMS/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/larryMS/layui/css/style.css" media="all">
+<title>销售预测明细</title>
+</head>
+
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+<script type="text/javascript" th:src="@{/editTable/plus/import.inc.js}"></script>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/saleFcst/saleFcstDetail.js}"></script>
+
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+ input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {margin-top: 0px;margin-bottom: 0px;}
+.margin-top20{margin-top: 20px;}   
+.layui-form-label{width:100px;}
+.layui-form-label10{width:10px;}
+#endDate{margin-left: -35%;}  
+.pull-right{margin-right:20px} 
+.layui-table{margin:0px;} 
+.panel-body{padding:10px !important;}
+</style>
+<body>
+
+	<div class="layui-row main-body ">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<!-- <button class="layui-btn layui-btn-xs blueHollow btnShow" id="submitBtn">提交</button> -->
+				<button class="layui-btn layui-btn-xs blueHollow btnShow" id="saveBtn">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+			</div>
+		</div>
+		<div class="layui-row margin-top20" >
+			<div class=" panel-default ">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;基本信息
+					</a>
+					<div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<form class="layui-form" id="submitForm" >
+								<input type="hidden" name="id" id="id" th:value="${mainId}"/>
+								<input type="hidden" name="type" id="type" th:value="${type}"/>
+								<input type="hidden" name="crtUser" id="crtUser" th:value="${list.crtUser}"/>
+								<input type="hidden" name="crtUserCode" id="crtUserCode" th:value="${list.crtUserCode}"/>
+								
+								<!-- 明细数据 -->
+								<input type="hidden" name="saleFcstDetailData" id="saleFcstDetailData" />
+								<!-- 是否导入标记 -->
+								<input type="hidden" name="isImport" id="isImport" th:value="${isImport}" />
+								
+								<div class="layui-row">
+									<div class="layui-col-md3">
+										 <div class="layui-form-item">
+										    <label class="layui-form-label">预测编号</label>
+										    <div class="layui-input-block">
+										      <input type="text" name="fsctCode"  id="fsctCode" th:value="${list.fsctCode}" readonly="readonly" autocomplete="off" class="layui-input">
+										    </div>
+										  </div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-inline">
+											<label class="layui-form-label">预测期间</label>
+											<div class="layui-input-block">
+				        						<input type="text" class="layui-input" id="fsctYear" name="fsctYear" readonly="readonly" 
+				        						th:value="${list.fsctYear == null ? '' : list.fsctYear}" autocomplete="off" >
+				     	 					</div>
+										</div>
+									</div>
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label">创建日期</label>
+											<div class="layui-input-block">
+												<input type="text" readonly="readonly" name="crtDate"
+													id="crtDate"
+													th:value="${list.crtDate}" 
+													autocomplete="off" class="layui-input" >
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<div class="layui-col-md6">
+										<div class="layui-form-item">
+											<label class="layui-form-label">预测名称</label>
+											<div class="layui-input-block">
+												<input type="text" name="fsctName" id="fsctName" th:value="${list.fsctName}" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+									
+									<div class="layui-col-md3">
+										<div class="layui-form-item">
+											<label class="layui-form-label">状态</label>
+											<div class="layui-input-block">
+												<select class="form-control" name="status" id="status">
+							                        <option value="未激活" th:selected="${list.status=='未激活'}">未激活</option>
+        											<option value="激活" th:selected="${list.status=='激活'}">激活</option>
+							                    </select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layui-row">
+									<div class="layui-col-md6">
+										<div class="layui-form-item">
+											<label class="layui-form-label">备注</label>
+											<div class="layui-input-block">
+												<input type="text" name="remark" id="remark" th:value="${list.remark}" autocomplete="off" class="layui-input">
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row " >
+			<div class=" panel-default ">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseThree"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物料信息
+					</a>
+					<div class="pull-right">
+						<button type="button" class="layui-btn layui-btn-xs blueHollow" id="resetBtn">重置</button>
+						<button type="button" class="layui-btn layui-btn-xs blueHollow" id="searchBtn">筛选</button>
+						
+						<!-- <button type="button" class="layui-btn layui-btn-xs blueHollow btnShow" id="impMatBtn">导入</button> -->
+						<button type="button" class="layui-btn layui-btn-xs blueHollow btnShow" id="addMatBtn">添加</button>
+						<button type="button" class="layui-btn layui-btn-xs blueHollow btnShow" id="delMatBtn">删除</button>
+					</div>
+					<div id="collapseThree" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<div class="layui-row">
+								<div class="layui-fluid tableCont" style='padding:0px;'>
+									<table id="mat-table" class="layui-table" lay-filter="dealChangeEvent">
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

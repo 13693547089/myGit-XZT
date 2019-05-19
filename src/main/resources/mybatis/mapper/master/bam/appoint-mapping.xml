@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.AppointMapper">
+
+	<insert id="addAppoint" parameterType="com.faujor.entity.bam.Appoint">
+		insert into
+		bam_appoint(appo_id,supp_id,supp_name,appo_status,appo_code,
+		appo_date,expect_date,affirm_date,truck_type,truck_num,mate_number,
+		mate_amount,create_id,creator,create_date,priority,prod_veri_id,prod_veri_date,
+		prod_veri_status,rece_unit,rece_addr,contact,phone,post,cite_appo,supp_range,supp_range_desc)
+		values(#{appoId},#{suppId},#{suppName},
+		#{appoStatus},#{appoCode},#{appoDate},#{expectDate},#{affirmDate},#{truckType},#{truckNum},
+		#{mateNumber},#{mateAmount},#{createId},#{creator},#{createDate},#{priority},
+		#{prodVeriId},#{prodVeriDate},#{prodVeriStatus},
+		#{receUnit},#{receAddr},#{contact},#{phone},#{post},#{citeAppo},#{suppRange},#{suppRangeDesc})
+	</insert>
+
+	<resultMap type="com.faujor.entity.bam.Appoint" id="appoint">
+		<result property="appoId" column="appo_id" />
+		<result property="suppId" column="supp_id" />
+		<result property="suppName" column="supp_name" />
+		<result property="appoStatus" column="appo_status" />
+		<result property="appoCode" column="appo_code" />
+		<result property="appoDate" column="appo_date" />
+		<result property="expectDate" column="expect_date" />
+		<result property="affirmDate" column="affirm_date" />
+		<result property="truckType" column="truck_type" />
+		<result property="truckNum" column="truck_num" />
+		<result property="mateNumber" column="mate_number" />
+		<result property="mateAmount" column="mate_amount" />
+		<result property="createId" column="create_id" />
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="modifieId" column="modifie_id" />
+		<result property="modifier" column="modifier" />
+		<result property="udpateDate" column="udpate_date" />
+		<result property="priority" column="priority" />
+		<result property="prodVeriId" column="prod_veri_id" />
+		<result property="prodVeriDate" column="prod_veri_date" />
+		<result property="prodVeriStatus" column="prod_veri_status" />
+		<result property="cdcPublId" column="cdc_publ_id" />
+		<result property="cdcPublDate" column="cdc_publ_date" />
+		<result property="cdcPublStatus" column="cdc_publ_status" />
+		<result property="receUnit" column="rece_unit" />
+		<result property="receAddr" column="rece_addr" />
+		<result property="contact" column="contact" />
+		<result property="phone" column="phone" />
+		<result property="post" column="post" />
+		<result property="refuseReason" column="refuse_reason" />
+		<result property="citeAppo" column="cite_appo" />
+		<result property="suppRange" column="supp_Range" />
+		<result property="suppRangeDesc" column="supp_Range_Desc" />
+		<result property="emailStatus" column="email_Status" />
+		<collection property="appoMates" ofType="com.faujor.entity.bam.AppoMate">
+			<result property="id" column="id" />
+			<result property="appoId" column="appo_id2" />
+			<result property="mateCode" column="mate_code" />
+			<result property="mateName" column="mate_name" />
+			<result property="mateNumber" column="mate_number2" />
+			<result property="mateAmount" column="mate_amount2" />
+			<result property="mateBluk" column="mate_bluk" />
+			<result property="predAmount" column="pred_amount" />
+			<result property="remark" column="remark" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.bam.AppoCar" id="appoCar">
+		<result property="id" column="id" />
+		<result property="appoId" column="appo_id" />
+		<result property="carType" column="car_type" />
+		<result property="carNumber" column="car_number" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<select id="queryAppointOfSuppByPage" parameterType="Map"
+		resultMap="appoint">
+		select a2.* from(
+		select a1.*,rownum rn from(
+		select
+		a.appo_id,a.supp_id,a.supp_name,
+		a.appo_status,a.appo_code,a.appo_date,
+		a.expect_date,a.affirm_date,a.truck_type,
+		a.truck_num,a.mate_number,a.mate_amount,
+		a.create_id,a.creator,a.create_date,
+		a.modifie_id,a.modifier,a.udpate_date,
+		a.priority,u.name prod_veri_id
+		from bam_appoint a left join sys_user u
+		on a.prod_veri_id = u.user_id
+		where 1=1
+		<if test="suppId != null and suppId != '' ">
+			and a.supp_id=#{suppId}
+		</if>
+		<if test="status != null and status != '' ">
+			and a.appo_status !=#{status}
+		</if>
+		<if test="statusList != null">
+			and a.appo_status in
+			<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="appo.createDate != null">
+			and a.create_date = #{appo.createDate,jdbcType=VARCHAR}
+		</if>
+		<if test="appo.suppName != null and appo.suppName != '' ">
+			and a.supp_name like '%${appo.suppName}%'
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.startDate != null or appo.endDate != null ">
+			and a.appo_date between #{appo.startDate,jdbcType=VARCHAR}
+			and #{appo.endDate,jdbcType=VARCHAR}
+		</if>
+		order by a.appo_code desc,a.create_date desc)a1)a2
+		<![CDATA[where a2.rn>=#{start} and a2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryAppointOfSuppByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_appoint a left join sys_user u
+		on
+		a.prod_veri_id = u.user_id
+		where 1=1
+		<if test="suppId != null and suppId != '' ">
+			and a.supp_id=#{suppId}
+		</if>
+		<if test="status != null and status != '' ">
+			and a.appo_status !=#{status}
+		</if>
+		<if test="statusList != null">
+			and a.appo_status in
+			<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="appo.createDate != null">
+			and a.create_date = #{appo.createDate,jdbcType=VARCHAR}
+		</if>
+		<if test="appo.suppName != null and appo.suppName != '' ">
+			and a.supp_name like '%${appo.suppName}%'
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.startDate != null or appo.endDate != null ">
+			and a.appo_date between #{appo.startDate,jdbcType=VARCHAR}
+			and #{appo.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<delete id="deleteAppointByAppoId">
+		delete from bam_appoint a where a.appo_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<delete id="deleteAppoMateByAppoId">
+		delete from bam_appo_mate am where am.appo_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<insert id="addAppoMate" parameterType="com.faujor.entity.bam.AppoMate">
+		insert into bam_appo_mate(id,appo_id,mate_code,mate_name,mate_number,
+		mate_amount,mate_bluk,pred_amount,remark)
+		values(lower(sys_guid()),#{appoId},#{mateCode},#{mateName},
+		#{mateNumber},#{mateAmount},#{mateBluk},#{predAmount},#{remark})
+	</insert>
+
+	<update id="upateAppoint" parameterType="com.faujor.entity.bam.Appoint">
+		update bam_appoint a
+		<set>
+			a.appo_date=#{appoDate},a.expect_date=#{expectDate},
+			a.truck_num=#{truckNum},a.mate_number =#{mateNumber},
+			a.mate_amount=#{mateAmount},a.modifie_id=#{modifieId},a.modifier=#{modifier},
+			a.udpate_date=sysdate,a.rece_unit=#{receUnit},a.rece_addr=#{receAddr},
+			a.contact=#{contact},a.phone=#{phone},a.post=#{post}, a.cite_appo = #{citeAppo},
+			a.supp_range=#{suppRange},a.supp_range_desc=#{suppRangeDesc},
+			<if test="appoStatus != null">
+				a.appo_status =#{appoStatus}
+			</if>
+		</set>
+		where a.appo_id=#{appoId}
+	</update>
+
+	<select id="queryAppointByAppoId" parameterType="String"
+		resultMap="appoint">
+		select a.*,am.id,am.appo_id
+		appo_id2,am.mate_code,am.mate_name,am.mate_number mate_number2,
+		am.mate_amount mate_amount2,am.mate_bluk,am.pred_amount,am.remark
+		from bam_appoint a left join bam_appo_mate
+		am
+		on a.appo_id = am.appo_id
+		where a.appo_id=#{appoId}
+	</select>
+
+	<delete id="deleteAppoMateByOneAppoId" parameterType="String">
+		delete from
+		bam_appo_mate am where am.appo_id=#{appoId}
+	</delete>
+
+
+	<select id="queryAppointForManagerByPage" parameterType="Map"
+		resultMap="appoint">
+		select a2.* from(
+		select a1.*,rownum rn from(
+		select
+		a.appo_id,a.supp_id,a.supp_name,
+		a.appo_status,a.appo_code,a.appo_date,
+		a.expect_date,a.affirm_date,a.truck_type,
+		a.truck_num,a.mate_number,a.mate_amount,
+		a.create_id,a.creator,a.create_date,
+		a.modifie_id,a.modifier,a.udpate_date,
+		a.priority,u.name prod_veri_id,a.email_status
+		from bam_appoint a left join sys_user u
+		on a.prod_veri_id = u.user_id
+		where 1=1
+		and a.appo_status != '已保存'
+		<if test="statusList != null">
+			and a.appo_status in
+			<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="appo.priority != null and appo.priority != '' ">
+			and a.priority = #{appo.priority}
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.expectDate != null and appo.expectDate != '' ">
+			and a.expect_date = #{appo.expectDate}
+		</if>
+		<if test="appo.suppName != null and appo.suppName != '' ">
+			and a.supp_name like '%${appo.suppName}%'
+		</if>
+		<if test="appo.startDate != null or appo.endDate != null ">
+			and a.appo_date between #{appo.startDate,jdbcType=VARCHAR}
+			and #{appo.endDate,jdbcType=VARCHAR}
+		</if>
+		order by a.appo_date desc,a.expect_date)a1)a2
+		<![CDATA[where a2.rn>=#{start} and a2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryAppointForManagerByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_appoint a left join sys_user u
+		on
+		a.prod_veri_id = u.user_id
+		where 1=1
+		and a.appo_status != '已保存'
+		<if test="statusList != null">
+			and a.appo_status in
+			<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="appo.priority != null and appo.priority != '' ">
+			and a.priority = #{appo.priority}
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.expectDate != null and appo.expectDate != '' ">
+			and a.expect_date = #{appo.expectDate}
+		</if>
+		<if test="appo.suppName != null and appo.suppName != '' ">
+			and a.supp_name like '%${appo.suppName}%'
+		</if>
+		<if test="appo.startDate != null or appo.endDate != null ">
+			and a.appo_date between #{appo.startDate,jdbcType=VARCHAR}
+			and #{appo.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<update id="updateAppointPriorityByAppoId" parameterType="com.faujor.entity.bam.Appoint">
+		update bam_appoint a
+		<set>
+			<if test="priority != null and priority != ''">
+				a.priority=#{priority},
+			</if>
+			a.modifie_id=#{modifieId},
+			a.modifier=#{modifier},
+			a.udpate_date=sysdate,
+			<if test="appoStatus != null">
+				a.appo_status =#{appoStatus},
+			</if>
+			<if test="prodVeriId != null">
+				a.prod_veri_id =#{prodVeriId},
+			</if>
+			<if test="prodVeriDate != null">
+				a.prod_veri_date =#{prodVeriDate},
+			</if>
+			<if test="prodVeriStatus != null">
+				a.prod_veri_status =#{prodVeriStatus}
+			</if>
+		</set>
+		where a.appo_id=#{appoId}
+	</update>
+
+	<update id="updateAppoStatusByAppoId" parameterType="Map">
+		update bam_appoint a set a.appo_status=#{appo.appoStatus},
+		a.prod_veri_id=#{appo.prodVeriId},a.prod_veri_date=#{appo.prodVeriDate},
+		a.prod_veri_status=#{appo.prodVeriStatus} where a.appo_id in
+		<foreach collection="appoIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<!-- <select id="queryAppointForIssueByPage" parameterType="Map" resultMap="appoint"> 
+		select a2.* from( select a1.*,rownum rn from( select a.* from bam_appoint 
+		a where a.create_date between to_date(#{appo.createDateStart},'yyyy/mm/dd 
+		hh24:mi:ss') and to_date(#{appo.createDateEnd},'yyyy/mm/dd hh24:mi:ss') and 
+		(a.appo_status = '已确认' or a.appo_status = '已发布') <if test="appo.priority 
+		!= null and appo.priority != '' "> and a.priority = #{appo.priority} </if> 
+		<if test="appo.startDate != null or appo.endDate != null "> and a.appo_date 
+		between #{appo.startDate,jdbcType=VARCHAR} and #{appo.endDate,jdbcType=VARCHAR} 
+		</if> order by a.appo_status desc , a.create_date desc)a1)a2 <![CDATA[where 
+		a2.rn>=#{start} and a2.rn<=#{end}]]> </select> -->
+	<select id="queryAppointForIssueByPage" parameterType="Map"
+		resultMap="appoint">
+		select a2.* from(
+		select a1.*,rownum rn from(
+		select
+		a.appo_id,a.supp_id,a.supp_name,
+		a.appo_status,a.appo_code,a.appo_date,
+		a.expect_date,a.affirm_date,a.truck_type,
+		a.truck_num,a.mate_number,a.mate_amount,
+		a.create_id,a.creator,a.create_date,
+		a.modifie_id,a.modifier,a.udpate_date,
+		a.priority,u.name prod_veri_id,a.email_status
+		from bam_appoint a left join sys_user u
+		on a.prod_veri_id = u.user_id
+		where 1=1
+		and a.post=#{post}
+		and (a.appo_status = '已确认'
+		or a.appo_status
+		= '已发布' or a.appo_status =
+		'待发货' or a.appo_status = '已发货')
+		<if test="appo.priority != null and appo.priority != '' ">
+			and a.priority = #{appo.priority}
+		</if>
+		<if test="statusList != null">
+			and a.appo_status in
+			<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.affirmDate != null and appo.affirmDate != '' ">
+			and a.affirm_date = #{appo.affirmDate}
+		</if>
+		<if test="appo.startDate != null or appo.endDate != null ">
+			and a.appo_date between #{appo.startDate,jdbcType=VARCHAR}
+			and #{appo.endDate,jdbcType=VARCHAR}
+		</if>
+		order by a.appo_code desc ,a.create_date desc)a1)a2
+		<![CDATA[where a2.rn>=#{start} and a2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryAppointForIssueByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_appoint a left join sys_user u
+		on
+		a.prod_veri_id = u.user_id
+		where 1=1
+		and a.post=#{post}
+		and
+		(a.appo_status = '已确认'
+		or a.appo_status = '已发布' or a.appo_status =
+		'待发货' or a.appo_status = '已发货')
+		<if test="appo.priority != null and appo.priority != '' ">
+			and a.priority = #{appo.priority}
+		</if>
+		<if test="statusList != null">
+			and a.appo_status in
+			<foreach collection="statusList" item="item" index="index"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.affirmDate != null and appo.affirmDate != '' ">
+			and a.affirm_date = #{appo.affirmDate}
+		</if>
+		<if test="appo.startDate != null or appo.endDate != null ">
+			and a.appo_date between #{appo.startDate,jdbcType=VARCHAR}
+			and #{appo.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="queryAppointForIssueByAppoDate" parameterType="Date"
+		resultMap="appoint">
+		select * from bam_appoint a where a.appo_date=#{appoDate}
+		and (a.appo_status in('已发布','待发货','已发货'))
+	</select>
+	<update id="updateAffirmDate" parameterType="com.faujor.entity.bam.Appoint">
+		update bam_appoint a
+		<set>
+			a.affirm_date=#{affirmDate},
+			<if test="appoStatus != null">
+				a.appo_status=#{appoStatus},
+			</if>
+			<if test="cdcPublId != null">
+				a.cdc_publ_id=#{cdcPublId} ,
+			</if>
+			<if test="cdcPublDate != null">
+				a.cdc_publ_date=#{cdcPublDate} ,
+			</if>
+			<if test="cdcPublStatus != null">
+				a.cdc_publ_status=#{cdcPublStatus}
+			</if>
+		</set>
+		where a.appo_id=#{appoId}
+	</update>
+
+	<select id="queryAppoStatByAppoDate" parameterType="String"
+		resultMap="appoint">
+		select * from bam_appoint a where
+		a.appo_date=to_date(#{appoDate},'yyyy/mm/dd')
+		and a.appo_status not in
+		('已保存','已拒绝','已作废')
+	</select>
+
+
+	<select id="queryAppointByAppoCode" parameterType="String"
+		resultMap="appoint">
+		select a.*,am.id,am.appo_id
+		appo_id2,am.mate_code,am.mate_name,am.mate_number mate_number2,
+		am.mate_amount mate_amount2,am.mate_bluk,am.pred_amount,am.remark 
+		from bam_appoint a left join bam_appo_mate
+		am
+		on a.appo_id = am.appo_id
+		where a.appo_status='已发布' and
+		a.appo_code=#{appoCode}
+	</select>
+
+	<update id="updateAppoStatusByAppoCode" parameterType="Map">
+		update bam_appoint a
+		<set>
+			a.appo_status=#{appoStatus},
+			<if test="prodVeriId != null and prodVeriId != '' ">
+				a.prod_veri_id = #{prodVeriId},
+			</if>
+			<if test="prodVeriDate != null and prodVeriDate != '' ">
+				a.prod_veri_date = to_date(#{prodVeriDate},'yyyy/mm/dd'),
+			</if>
+			<if test="prodVeriStatus != null and prodVeriStatus != '' ">
+				a.prod_veri_status = #{prodVeriStatus},
+			</if>
+		</set>
+		where a.appo_code=#{appoCode}
+	</update>
+
+	<insert id="addAppoCar" parameterType="com.faujor.entity.bam.AppoCar">
+		insert into bam_appo_car
+		values(lower(sys_guid()),#{appoId},#{carType},#{carNumber},#{remark})
+	</insert>
+	<delete id="deleteAppoCarByAppoId" parameterType="String">
+		delete from
+		bam_appo_car cs where cs.appo_id=#{appoId}
+	</delete>
+
+	<select id="queryAppoCarOfAppoint" parameterType="String"
+		resultMap="appoCar">
+		select * from bam_appo_car ac where ac.appo_id=#{appoId}
+	</select>
+
+	<delete id="deleteAppoCarByManyAppoId">
+		delete from bam_appo_car cs where cs.appo_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<update id="cancellAppointForManByAppoId" parameterType="Map">
+		update bam_appoint a set a.appo_status=#{status}
+		where a.appo_id in
+		<foreach collection="appoIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<select id="queryAllPublishedAppoint" resultMap="appoint">
+		select * from bam_appoint a where a.appo_status=#{status}
+		<if test="suppId != null and suppId != '' ">
+			and a.supp_id=#{suppId}
+		</if>
+		order by a.appo_code desc
+	</select>
+
+	<select id="queryOneAppointbyAppoCode" parameterType="String"
+		resultMap="appoint">
+		  select 
+		  a.*,am.id,am.appo_id as appo_id2,am.mate_code,am.mate_name,
+		  am.mate_number as mate_number2,am.mate_amount as mate_amount2,
+		  am.pred_amount,am.mate_bluk,am.remark
+		   from bam_appoint a left join bam_appo_mate am
+		  on a.appo_id = am.appo_id
+		   where a.appo_code=#{appoCode}
+	</select>
+
+	<select id="queryManyAppointByAppoIds" parameterType="List"
+		resultMap="appoint">
+		select * from bam_appoint a where a.appo_id in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id='queryManyAppointByList' parameterType="List"
+		resultMap="appoint">
+		select a.* from bam_appoint a left join srm_dic d on a.affirm_date =
+		d.dic_name
+		where 1=1
+		and a.post=#{post}
+		and (a.appo_status = '已确认'
+		or
+		a.appo_status = '已发布' or a.appo_status = '待发货' or a.appo_status =
+		'已发货')
+		<if test="appo.priority == null and appo.priority == '' ">
+
+		</if>
+		<if test="appo.priority =='jinji' ">
+			and a.priority = '紧急'
+		</if>
+		<if test="appo.priority =='yiban' ">
+			and a.priority = '一般'
+		</if>
+		<if test="appo.appoCode != null and appo.appoCode != '' ">
+			and a.appo_code like '%${appo.appoCode}%'
+		</if>
+		<if test="appo.affirmDate != null and appo.affirmDate != '' ">
+			and a.affirm_date like '%${appo.affirmDate}%'
+		</if>
+
+		<if
+			test="appo.receUnit != null and  appo.receUnit !=''  and  appo.receAddr != null and appo.receAddr != '' ">
+			and a.appo_date between to_date(#{appo.receUnit},'yyyy/mm/dd')
+			and
+			to_date(#{appo.receAddr},'yyyy/mm/dd')
+		</if>
+		order by a.appo_date desc, d.dic_code
+	</select>
+	<!-- <if test="appo.startDate != null or appo.endDate != null "> and a.appo_date 
+		between #{appo.startDate,jdbcType=VARCHAR} and #{appo.endDate,jdbcType=VARCHAR} 
+		</if> -->
+	<update id="updateAppoDate" parameterType="com.faujor.entity.bam.Appoint">
+		update bam_appoint a
+		set a.appo_date=#{appoDate},a.affirm_date =#{affirmDate}
+		where
+		a.appo_code=#{appoCode}
+	</update>
+	<update id="updateAppoRefuseReasonByAppoIds" parameterType="Map">
+		update bam_appoint a set a.refuse_reason =#{text} where a.appo_id in
+		<foreach collection="appoIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+
+	<resultMap type="com.faujor.entity.bam.AppoQueryDO" id="reportMap">
+		<result property="reportTitle" column="report_title" />
+		<result property="billNum" column="bill_num" />
+		<result property="amountNum" column="amount_num" />
+		<result property="truckNum" column="truck_num" />
+	</resultMap>
+	<select id="queryAppoReportByParams" resultMap="reportMap"
+		parameterType="map">
+		SELECT t2.appo_status AS report_title,
+		COUNT(1) AS bill_num,
+		SUM(t2.mate_amount) AS amount_num,
+		SUM(NVL(t2.truck_num, 0)) AS
+		truck_num FROM bam_appoint t2
+		<where>
+			<if test="dateStr != null and dateStr != ''">
+				and t2.appo_date = TO_DATE(#{dateStr}, 'yyyy-MM-dd')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				and t2.appo_date between TO_DATE(#{startDate}, 'yyyy-MM-dd')
+			    and TO_DATE(#{endDate}, 'yyyy-MM-dd')
+			</if>
+			<if test="cdc != null and cdc != ''">
+				and t2.post = #{cdc}
+			</if>
+			AND t2.appo_status NOT IN('已保存', '已拒绝', '已作废')
+		</where>
+		GROUP BY t2.appo_status
+		UNION
+		SELECT '直发数量' AS report_title, COUNT(1) AS
+		bill_num, SUM(t3.mate_amount) AS amount_num, COUNT(1) AS truck_num
+		FROM bam_message t3
+		<where>
+			<if test="dateStr != null and dateStr != ''">
+				and t3.delivery_date = TO_DATE(#{dateStr}, 'yyyy-MM-dd')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				and t3.delivery_date between TO_DATE(#{startDate}, 'yyyy-MM-dd')
+			    and TO_DATE(#{endDate}, 'yyyy-MM-dd')
+			</if>
+			<if test="cdc != null and cdc != ''">
+				and t3.POST = #{cdc}
+			</if>
+			AND t3.mess_status NOT IN('已保存', '已作废')
+		</where>
+	</select>
+
+	<select id="queryAppoReportForStatus" parameterType="map"
+		resultMap="reportMap">
+		SELECT t2.appo_status AS report_title,
+		COUNT(1) AS
+		bill_num,
+		SUM(t2.mate_amount) AS amount_num,
+		SUM(NVL(t2.truck_num, 0))
+		AS
+		truck_num FROM bam_appoint t2
+		<where>
+			<if test="dateStr != null and dateStr != ''">
+				and t2.appo_date = TO_DATE(#{dateStr}, 'yyyy-MM-dd')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				and t2.appo_date between TO_DATE(#{startDate}, 'yyyy-MM-dd')
+			    and TO_DATE(#{endDate}, 'yyyy-MM-dd')
+			</if>
+			<if test="cdc != null and cdc != ''">
+				and t2.post = #{cdc}
+			</if>
+			AND t2.appo_status NOT IN('已保存', '已拒绝', '已作废')
+		</where>
+		GROUP BY t2.appo_status
+	</select>
+	<select id="queryAppoReportForDate" parameterType="map"
+		resultMap="reportMap">
+		select b.* from
+		(SELECT t1.affirm_date AS report_title, COUNT(1) AS
+		bill_num,
+		SUM(t1.mate_amount) AS amount_num, SUM(NVL(t1.truck_num, 0))
+		AS
+		truck_num FROM bam_appoint t1
+		<where>
+			<if test="dateStr != null and dateStr != ''">
+				and t1.appo_date = TO_DATE(#{dateStr}, 'yyyy-MM-dd')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				and t1.appo_date between TO_DATE(#{startDate}, 'yyyy-MM-dd')
+			    and TO_DATE(#{endDate}, 'yyyy-MM-dd')
+			</if>
+			<if test="cdc != null and cdc != ''">
+				and t1.post = #{cdc}
+			</if>
+			and t1.appo_status NOT IN('已保存', '已拒绝', '已作废')
+			and t1.affirm_date is
+			not null
+		</where>
+		GROUP BY t1.affirm_date)
+		b left join (select a1.dic_name, a1.dic_code
+		from srm_dic_category a2
+		left join srm_dic a1 on a1.cate_id = a2.id
+		where a2.cate_code =
+		'QWSHSJ') c on b.report_title = c.dic_name order
+		by c.dic_code asc
+
+	</select>
+	<select id="queryAppoReportForStra" parameterType="map"
+		resultMap="reportMap">
+		SELECT '直发数量' AS report_title, COUNT(1) AS
+		bill_num,
+		SUM(t3.mate_amount) AS amount_num, COUNT(1) AS truck_num
+		FROM
+		bam_message t3
+		<where>
+			<if test="dateStr != null and dateStr != ''">
+				and t3.delivery_date = TO_DATE(#{dateStr}, 'yyyy-MM-dd')
+			</if>
+			AND t3.mess_status NOT IN('已保存', '已作废')
+		</where>
+		)
+	</select>
+	<select id="queryRefuseAppoByAppoCode" parameterType="String"
+		resultMap="appoint">
+		select a.*,am.id,am.appo_id
+		appo_id2,am.mate_code,am.mate_name,am.mate_number mate_number2,
+		am.mate_amount mate_amount2,am.mate_bluk,am.pred_amount ,am.remark
+		from bam_appoint a left join bam_appo_mate
+		am
+		on a.appo_id = am.appo_id
+		where a.appo_status='已拒绝' and
+		a.appo_code=#{appoCode}
+	</select>
+	
+	<update id="updateEmailStatus" parameterType="Map">
+		update bam_appoint a set
+		 a.email_status=#{emailStatus},
+		 a.email_date = #{emailDate}
+		 <if test="appoId !=null and appoId != '' ">
+		 where a.appo_id=#{appoId}
+		 </if>
+		 <if test="appoCode !=null and appoCode != '' ">
+		 where a.appo_code=#{appoCode}
+		 </if>
+	</update>
+	
+	<select id="getAllCarType" parameterType="String" resultType="String">
+		select wmsys.wm_concat(c.car_type) as car_type from bam_appo_car c 
+		where c.appo_id=#{appoId}
+		group by appo_id
+	</select>
+</mapper>

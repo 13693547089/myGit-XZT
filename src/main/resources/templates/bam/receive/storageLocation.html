@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>选择库位</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" />
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<body>
+	<form class="layui-form" action="" method="post" id="receiveForm"
+		enctype="multipart/form-data">
+		<input id="dicJson" th:value="${dicJson}" class="layui-hide" />
+	</form>
+	<table id="dicTable" lay-filter="dicTable"></table>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript">
+		layui.use([ "table", "form" ], function() {
+			debugger;
+			var $ = layui.$;
+			var table = layui.table;
+			var form = layui.form;
+			var dicJson = $("#dicJson").val();
+			var tableData = [];
+			if (dicJson != "" && dicJson != null && dicJson != undefined) {
+				tableData = JSON.parse(dicJson);
+			}
+			table.render({
+				elem : "#dicTable",
+				data : tableData,
+				cols : [ [ {
+					checkbox : true,
+					fixed : 'left'
+				}, {
+					field : "dicCode",
+					title : "库位",
+					align : 'center'
+				} ] ],
+				id : "dicDemo"
+			});
+			
+			window.getCheckedData = function(){
+				var checkStatus = table.checkStatus('dicDemo');
+				return checkStatus.data;
+			}
+		});
+	</script>
+</body>
+</html>

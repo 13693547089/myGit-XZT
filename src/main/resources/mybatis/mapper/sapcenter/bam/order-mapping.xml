@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.bam.OrderMapper1">
+	<resultMap type="com.faujor.entity.bam.OrderRele1" id="order">
+		<result property="fid" column="FID" />
+		<result property="contOrdeNumb" column="EBELN" />
+		<result property="status" column="STATUS" /><!-- 未发布 -->
+		<result property="subeDate" column="BEDAT" />
+		<result property="lifnr" column="LIFNR" />
+		<result property="reswk" column="RESWK" />
+		<result property="BSART" column="BSART" />
+		<result property="remarks" column="REMARKS" />
+		<result property="zzoem" column="ZZOEM" />
+		<result property="purchOrg" column="EKORG" />
+
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.OrderMate1" id="order1">
+		<result property="mainId" column="EBELN" />
+		<result property="frequency" column="EBELP" />
+		<result property="mateNumb" column="MATNR" />
+		<result property="purcQuan" column="MENGE" />
+		<result property="company" column="MEINS" />
+		<result property="unitPric" column="NETPR" />
+		<result property="NETWR" column="NETWR" />
+		<result property="deliDate" column="EINDT" />
+		<result property="taxAmou" column="BONBA" />
+		<result property="menge" column="ZWJSL" />
+		<result property="zwmenge" column="ZYJSL" />
+		<result property="elikz" column="ELIKZ" />
+		<result property="peinh" column="PEINH" />
+		<result property="werks" column="WERKS" />
+		<result property="lgort" column="LGORT" />
+		<result property="mateVolum" column="VOLUM" />
+		<result property="suppRange" column="LTSNR" />
+	</resultMap>
+
+	<!-- 旧版获取数据 -->
+	<select id='SelectTopListFirst' resultMap="order">
+		select EBELN,to_date(BEDAT,'yyyyMMdd') as BEDAT, LIFNR, RESWK, BSART,
+		ZZOEM, EKORG from T_SAP_EKKO where BSART=#{str} and BEDAT <![CDATA[>=]]>
+		'20180501'
+	</select>
+
+	<!-- 新获取数据 -->
+	<select id='SelectTopList' resultMap="order">
+		select EBELN, to_date(BEDAT,'yyyyMMdd') as BEDAT, LIFNR, RESWK, BSART,
+		ZZOEM from T_SAP_EKKO WHERE AEDAT <![CDATA[<=]]>
+		#{0} AND AEDAT <![CDATA[>=]]>
+		#{1}
+	</select>
+	<select id='condiSelectTopList' resultMap="order">
+		select EBELN, to_date(BEDAT,'yyyyMMdd') as BEDAT, LIFNR, RESWK, BSART,
+		ZZOEM from T_SAP_EKKO WHERE AEDAT <![CDATA[<=]]>
+		#{0} AND AEDAT <![CDATA[>=]]>
+		#{1} and EBELN=#{2}
+	</select>
+
+	<select id="findPurchaseOrderSchedule" resultMap="order"
+		parameterType="String">
+		SELECT EBELN, TO_DATE(BEDAT, 'yyyyMMdd') AS BEDAT, LIFNR, RESWK,
+		BSART, ZZOEM, EKORG FROM T_SAP_EKKO
+		WHERE EBELN IN
+			( SELECT DISTINCT(a.ebeln) FROM(
+			SELECT DISTINCT(t.EBELN) FROM T_SAP_EKPO t WHERE t.AEDAT <![CDATA[<=]]> #{0} AND t.AEDAT <![CDATA[>=]]> #{1}
+			UNION
+			SELECT DISTINCT(q.EBELN) FROM T_SAP_EKBE q WHERE q.BUDAT <![CDATA[<=]]> #{0} AND q.BUDAT <![CDATA[>=]]> #{1}
+			UNION
+			SELECT DISTINCT(q.EBELN) FROM T_SAP_EKKO q WHERE q.IHRAN <![CDATA[<=]]> #{0} AND q.IHRAN <![CDATA[>=]]> #{1}
+			) a)
+	</select>
+
+	<select id="findTopOrderDetailsByOrderNo" resultMap="order1"
+		parameterType="String">
+		select a.EBELN, a.EBELP, a.MATNR, a.MENGE, a.MEINS,
+		a.NETPR, a.NETWR, a.EILDT, a.BONBA, b.ZWJSL, b.ZYJSL, a.ELIKZ,
+		a.PEINH, a.WERKS, a.LGORT, a.VOLUM, a.LTSNR from T_SAP_EKPO a left join
+		T_SAP_EKPO_JH b on a.EBELN=b.EBELN and a.EBELP=b.EBELP where
+		a.EBELN=#{0} and a.LOEKZ=' '
+	</select>
+
+
+	<!-- 不需要这部分代码 -->
+	<select id="getBypage" parameterType="Map" resultMap="order">
+		select t1.*
+		from
+		(select EBELN,to_date(BEDAT,'yyyyMMdd') BEDAT,LIFNR,BSART
+		,rownum
+		rn from T_SAP_EKKO WHERE rownum &lt;#{to}) t1
+		where t1.rn &gt;#{from}
+	</select>
+	<select id="getPageCount" parameterType="Map">
+		select count(1)
+		from
+		T_SAP_EKKO
+	</select>
+
+	<select id="findTopOrderByOrderNo" resultMap="order"
+		parameterType="map">
+		select EBELN, to_date(BEDAT,'yyyyMMdd') as BEDAT, LIFNR, RESWK, BSART,
+		ZZOEM, EKORG from T_SAP_EKKO
+		<where>
+			<if test="orderNo != null and orderNo != ''">
+				and ebeln = #{orderNo}
+			</if>
+			<if test="asyncDate != null and asyncDate != ''">
+				and ebeln in (
+				SELECT DISTINCT(a.ebeln) FROM(
+					SELECT DISTINCT(t.EBELN) FROM T_SAP_EKPO t WHERE t.AEDAT = #{asyncDate}
+					UNION
+					SELECT DISTINCT(q.EBELN) FROM T_SAP_EKBE q WHERE q.BUDAT = #{asyncDate}
+					UNION
+					SELECT DISTINCT(q.EBELN) FROM T_SAP_EKKO q WHERE q.IHRAN = #{asyncDate}
+					) a
+				)
+			</if>
+		</where>
+	</select>
+	<select id='SelectTopDetail' resultMap="order1">
+		select * from T_SAP_EKPO
+		EKPO left join T_SAP_EKPO_JH JH on
+		EKPO.EBELN=JH.EBELN and
+		EKPO.EBELP=JH.EBELP where
+		EKPO.EBELN=#{contOrdeNumb} and EKPO.LOEKZ=' '
+	</select>
+	<!-- 根据修改日期查询脱普字表 -->
+	<select id="SelectDateTopDetail" resultType="String">
+		select * from
+		T_SAP_EKPO EKPO left join T_SAP_EKPO_JH JH on
+		EKPO.EBELN=JH.EBELN and
+		EKPO.EBELP=JH.EBELP where
+		EKPO.AEDAT=#{modiDate} and EKPO.LOEKZ=' '
+
+	</select>
+	<select id='SelectEkpoType' resultType="String">
+		select DISTINCT BSART
+		from T_SAP_EKKO
+	</select>
+
+
+
+
+	<resultMap type="com.faujor.entity.bam.receive.EkbeDO" id="ekbeMap">
+		<result property="orderNo" column="ebeln" />
+		<result property="frequency" column="EBELP" />
+		<result property="inboDeliNo" column="XBLNR" />
+		<result property="successIden" column="BEWTP" />
+		<result property="pnIden" column="BWART" />
+		<result property="menge" column="MENGE" />
+	</resultMap>
+	<select id="findEkbeByReceMate" parameterType="com.faujor.entity.bam.ReceMate"
+		resultMap="ekbeMap">
+		SELECT t.EBELN, t.EBELP, t.XBLNR, t.BEWTP, t.BWART,
+		t.MENGE from
+		T_SAP_EKBE t
+		<where>
+			<if test="orderId != null and orderId != ''">
+				and t.EBELN = #{orderId}
+			</if>
+			<if test="frequency != null and frequency != ''">
+				and t.EBELP = #{frequency}
+			</if>
+			<if test="inboDeliCode != null and inboDeliCode != ''">
+				and t.XBLNR = #{inboDeliCode}
+			</if>
+			and t.BEWTP = 'E'
+		</where>
+	</select>
+</mapper>

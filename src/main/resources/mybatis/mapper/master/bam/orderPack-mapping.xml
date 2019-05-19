@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.OrderPackMapper">
+	<resultMap type="com.faujor.entity.bam.OrderPackVO" id="OrderPackVOMap">
+		<result property="id" column="id"/>
+		<result property="oemOrderCode" column="oem_Order_Code"/>
+		<result property="oemSuppName" column="supp_numb"/>
+		<result property="status" column="status"/>
+		<result property="subeDate" column="sube_Date"/>
+		<result property="purchOrg" column="purch_Org"/>
+		<result property="creator" column="creator"/>
+		<result property="createName" column="create_name"/>
+	</resultMap>
+    <resultMap type="com.faujor.entity.bam.OrderPackVO" id="OrderPackVOMap1">
+        <result property="id" column="id"/>
+        <result property="oemOrderCode" column="cont_orde_numb"/>
+        <result property="oemSuppName" column="supp_name"/>
+        <result property="oemSapId" column="sap_id"/>
+        <result property="subeDate" column="sube_date"/>
+        <result property="remarks" column="remarks"/>
+        <result property="limitThan" column="limit_than"/>
+        <result property="purchOrg" column="purch_org"/>
+        <result property="status" column="status"/>
+    </resultMap>
+	<select id="queryOrderPackByPage" parameterType="Map" resultMap="OrderPackVOMap">
+		select b.* from (
+		select a.*,rownum rn from (
+		select p.id,p.status,p.oem_order_code,r.supp_numb,r.supp_name,
+		r.sube_date,r.purch_org,p.creator,p.create_name
+		from bam_order_pack p left join bam_orde_rele r
+		on p.oem_order_code = r.cont_orde_numb
+		<where>
+			and p.creator = #{userId}
+			<if test="qualSuppList != null">
+				or (p.creator != #{userId}
+				and r.supp_name in 
+				<foreach collection="qualSuppList" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.sapId}
+				</foreach>
+				)
+			</if>
+			<if test="orderPackVO.oemSuppName != null and orderPackVO.oemSuppName != '' ">
+				and (
+					r.supp_numb like '%${orderPackVO.oemSuppName}%'
+					or r.supp_name like '%${orderPackVO.oemSuppName}%'
+				)
+			</if>
+			<if test="orderPackVO.purchOrg != null and orderPackVO.purchOrg != '' ">
+				and r.purch_org like '%${orderPackVO.purchOrg}%'
+			</if>
+			<if test="orderPackVO.oemOrderCode != null and orderPackVO.oemOrderCode != '' ">
+				and p.oem_order_code like '%${orderPackVO.oemOrderCode}%'
+			</if>
+			<if test="orderPackVO.status != null and orderPackVO.status != '' ">
+				and p.status = #{orderPackVO.status}
+			</if>
+			<if test="orderPackVO.startDate != null or orderPackVO.endDate != null ">
+				and r.sube_date between #{orderPackVO.startDate,jdbcType=VARCHAR}
+				and #{orderPackVO.endDate,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by p.oem_order_code
+		)a)b
+		<![CDATA[where b.rn>=#{start} and b.rn<=#{end}]]>
+	</select>
+	<select id="queryALLOrderPackByPackIds" parameterType="Map" resultMap="orderPackMate">
+		select * from bam_order_pack_mate m where m.order_pack_id in
+		<foreach collection="array" open="(" close=")" separator=","
+				 item="v">#{v}</foreach>
+	</select>
+		
+	<select id="queryOrderPackByPageCount" parameterType="Map" resultType="Integer">
+		select count(*)
+		from bam_order_pack p left join bam_orde_rele r
+		on p.oem_order_code = r.cont_orde_numb
+		<where>
+			and p.creator = #{userId}
+			<if test="qualSuppList != null">
+				or (p.creator != #{userId}
+				and r.supp_name in 
+				<foreach collection="qualSuppList" item="item" index="index" open="("
+				separator="," close=")">
+				#{item.sapId}
+				</foreach>
+				)
+			</if>
+			<if test="orderPackVO.oemSuppName != null and orderPackVO.oemSuppName != '' ">
+				and (
+					r.supp_numb like '%${orderPackVO.oemSuppName}%'
+					or r.supp_name like '%${orderPackVO.oemSuppName}%'
+				)
+			</if>
+			<if test="orderPackVO.purchOrg != null and orderPackVO.purchOrg != '' ">
+				and r.purch_org like '%${orderPackVO.purchOrg}%'
+			</if>
+			<if test="orderPackVO.oemOrderCode != null and orderPackVO.oemOrderCode != '' ">
+				and p.oem_order_code like '%${orderPackVO.oemOrderCode}%'
+			</if>
+			<if test="orderPackVO.status != null and orderPackVO.status != '' ">
+				and p.status = #{orderPackVO.status}
+			</if>
+			<if test="orderPackVO.startDate != null or orderPackVO.endDate != null ">
+				and r.sube_date between #{orderPackVO.startDate,jdbcType=VARCHAR}
+				and #{orderPackVO.endDate,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+
+	<resultMap type="com.faujor.entity.bam.OrderMate" id="mates">
+		<id property="fid" column="FID" />
+		<result property="mainId" column="MAIN_ID" />
+		<result property="frequency" column="FREQUENCY" />
+		<result property="mateNumb" column="MATE_NUMB" />
+		<result property="prodName" column="PROD_NAME" />
+		<result property="boxEntrNumb" column="BOX_ENTR_NUMB" />
+		<result property="purcQuan" column="PURC_QUAN" />
+		<result property="quanMate" column="QUAN_MATE" />
+		<result property="unpaQuan" column="UNPA_QUAN" />
+		<result property="company" column="COMPANY" />
+		<result property="unitPric" column="UNIT_PRIC" />
+		<result property="mone" column="MONE" />
+		<result property="deliDate" column="DELI_DATE" />
+		<result property="taxAmou" column="TAX_AMOU" />
+		<result property="mateTex" column="MATE_TEX" />
+		<result property="multRate" column="MULT_RATE" />
+		<result property="factoryAddr" column="FACTORY_ADDR" />
+		<result property="librPosi" column="LIBR_POSI" />
+		<result property="mateVolum" column="mate_volum" />
+		<result property="asseName" column="asse_name" />
+		<result property="asseCode" column="asse_code" />
+		<result property="suppRange" column="supp_Range" />
+		<result property="suppRangeDesc" column="supp_Range_Desc" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.BaoCaiInfo" id="baocaiinfo">
+		<id property="fid" column="FID" />
+		<result property="frequency" column="FREQUENCY" />
+		<result property="mateNumb" column="MATE_NUMB" />
+		<result property="prodName" column="PROD_NAME" />
+		<result property="segmName" column="SEGM_NAME" />
+		<result property="asseCode" column="ASSE_CODE" />
+		<result property="asseName" column="ASSE_NAME" />
+		<result property="mateCode" column="MATE_CODE" />
+		<result property="detailsNum" column="DETAILS_NUM" />
+		<result property="sumQuan" column="SUM_QUAN" />
+		<result property="orderedNum" column="ORDERED_NUM" />
+		<result property="noOrderNum" column="NO_ORDER_NUM" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.OrderPackForm" id="orderPackForm">
+		<id property="id" column="id" />
+		<result property="suppName" column="supp_name" />
+		<result property="suppCode" column="supp_code" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.OrderPackMess" id="orderPackMess">
+		<id property="id" column="id" />
+		<result property="orderPackId" column="ORDER_PACK_ID" />
+		<result property="frequency" column="FREQUENCY" />
+		<result property="mateCode" column="MATE_CODE" />
+		<result property="mateName" column="MATE_NAME" />
+		<result property="packElem" column="PACK_ELEM" />
+		<result property="packCode" column="PACK_CODE" />
+		<result property="packName" column="PACK_NAME" />
+		<result property="dosageNum" column="DOSAGE_NUM" />
+		<result property="packTotalNum" column="PACK_TOTAL_NUM" />
+		<result property="placedNum" column="PLACED_NUM" />
+		<result property="residueNum" column="RESIDUE_NUM" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.OrderPackMate" id="orderPackMate">
+		<id property="id" column="id" />
+		<result property="orderPackId" column="ORDER_PACK_ID" />
+		<result property="mateCode" column="MATE_CODE" />
+		<result property="mateName" column="MATE_NAME" />
+		<result property="packCode" column="PACK_CODE" />
+		<result property="packName" column="PACK_NAME" />
+		<result property="packNum" column="PACK_NUM" />
+		<result property="packSupp" column="PACK_SUPP" />
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="orderDate" column="ORDER_DATE" />
+		<result property="deliDate" column="DELI_DATE" />
+		<result property="acceFileId" column="ACCE_FILE_ID" />
+		<result property="acceFileName" column="ACCE_FILE_NAME" />
+		<result property="acceFileUrl" column="ACCE_FILE_URL" />
+	</resultMap>
+	<select id="queryOrderMessageByOEMOrderCode" parameterType="String" resultMap="OrderPackVOMap1">
+		select t.id,t.status,r.cont_orde_numb,r.sube_date,
+		r.limit_than,r.remarks,r.supp_name as sap_id,
+		r.supp_numb as supp_name,r.purch_org
+		from bam_orde_rele r left join BAM_ORDER_PACK t on t.oem_order_code = r.cont_orde_numb
+		where r.cont_orde_numb = #{oemOrderCode}
+	</select>
+	<select id="queryOrderPackById" parameterType="String" resultMap="OrderPackVOMap1">
+		select t.oem_order_code,t.status,t.supp_code,t.supp_name,t.purch_org,t.limit_than,t.remark
+		from BAM_ORDER_PACK t
+		where t.id = #{id}
+	</select>
+	<select id="queryOrderMateByContOrdeNumb" parameterType="String"
+			resultMap="mates">
+		select bom.fid fid,bom.main_id,bom.frequency,bom.mate_numb,
+		bom.prod_name,bom.box_entr_numb,bom.purc_quan,bom.quan_mate,bom.unpa_quan,bom.company,
+		bom.unit_pric,bom.mate_tex,bom.mone,bom.deli_date,bom.tax_amou, bom.mate_volum,bom.supp_range,bom.supp_range_desc from
+		bam_orde_mate
+		bom
+		where bom.main_id=#{contOrdeNumb}
+	</select>
+	<select id="queryBaocaiInfoByContOrdeNumb" parameterType="String"
+			resultMap="orderPackMess">
+	select fid id,frequency,mate_numb mate_code,prod_name mate_name,segm_name pack_elem,mate_code pack_code,asse_name pack_name,nvl(details_num,0) dosage_num,nvl((sum_quan*(1+supper_rate)),0) as pack_total_num,0 as placed_num,(nvl((sum_quan*(1+supper_rate)),0)-0) as residue_num from
+    (select bom.fid fid,
+         bom.frequency,
+         bom.mate_numb,
+         bom.prod_name,
+         de.segm_name,
+         de.asse_code,
+         de.asse_name,
+         de.mate_code,
+         de.details_num,
+         de.details_num * bom.purc_quan*nvl(bom.limit_than,100)/100 as sum_quan,
+         (select sum(t.pack_num) from BAM_ORDER_PACK_MATE t where t.mate_code = bom.mate_numb
+           and t.pack_code = de.asse_code) as ordered_num,
+         to_number(nvl((select dic.remark from SRM_DIC dic
+          left join SRM_DIC_CATEGORY cate
+            on dic.cate_id = cate.id
+           where cate.cate_code = 'overLimit'
+           and dic.dic_code = (select distinct mate.series_code from MDM_MATE mate  where mate.mate_code = de.mate_code)),100))/100 as supper_rate
+      from (select bom.main_id,bom.fid,bom.frequency,bom.mate_numb,bom.prod_name,bom.purc_quan,mate.mate_id,orderMain.limit_than
+          from bam_orde_mate bom
+          left join bam_orde_rele orderMain
+          on bom.main_id = orderMain.cont_orde_numb
+          left join mdm_mate mate
+          on mate.mate_code = bom.mate_numb  where bom.main_id = #{contOrdeNumb}) bom
+      join MDM_QUOTE_STRU stru
+      on stru.mate_id = bom.mate_id
+      join MDM_QUOTE_STRU_DETAILS de
+      on de.stru_id = stru.id and de.segm_code = '20' and de.mate_code is not null)
+	</select>
+	<insert id="saveOrderPackForm" parameterType="java.util.List">
+		insert into BAM_ORDER_PACK (id,oem_order_code,status,create_time,creator,create_name,
+		modifier,modifie_id,supp_code,supp_name,purch_org,limit_than,remark)
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+			SELECT
+			#{item.id},
+			#{item.oemOrderCode},
+			#{item.status},
+			sysdate,
+			#{item.creator},
+			#{item.create_name},
+			#{item.modifier},
+			#{item.modifieId},
+			#{item.suppCode},
+			#{item.suppName},
+			#{item.purchOrg},
+			#{item.limitThan},
+			#{item.remark}
+			FROM dual
+		</foreach>
+		) A
+	</insert>
+	<insert id="saveOrderPackMess" parameterType="java.util.List">
+		insert into BAM_ORDER_PACK_MESS (id,order_pack_id,frequency,mate_code,mate_name,pack_elem,
+		pack_code,pack_name,dosage_num,pack_total_num,placed_num,residue_num)
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+			SELECT
+			#{item.id},
+			#{item.orderPackId},
+			#{item.frequency},
+			#{item.mateCode},
+			#{item.mateName},
+			#{item.packElem},
+			#{item.packCode},
+			#{item.packName},
+			#{item.dosageNum},
+			#{item.packTotalNum},
+			#{item.placedNum},
+			#{item.residueNum}
+			FROM dual
+		</foreach>
+		) A
+	</insert>
+	<insert id="saveOrderPackMate" parameterType="java.util.List">
+		insert into BAM_ORDER_PACK_MATE (id,order_pack_id,mate_code,mate_name,pack_supp,pack_code,pack_name,
+		pack_num,order_code,order_date,deli_date,acce_file_name,ACCE_FILE_URL,ACCE_FILE_ID)
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+			SELECT
+			#{item.id},
+			#{item.orderPackId},
+			#{item.mateCode},
+			#{item.mateName},
+			#{item.packSupp},
+			#{item.packCode},
+			#{item.packName},
+			#{item.packNum},
+			#{item.orderCode},
+			#{item.orderDate},
+			#{item.deliDate},
+			#{item.acceFileName},
+			#{item.acceFileUrl},
+			#{item.acceFileId}
+			FROM dual
+		</foreach>
+		) A
+	</insert>
+	<select id="queryBaocaiInfo2ByContOrdeNumb" parameterType="String"
+			resultMap="orderPackMess">
+		select t.* from BAM_ORDER_PACK_MESS t where t.order_pack_id=
+		(select id from BAM_ORDER_PACK where oem_order_code = #{contOrdeNumb})
+	</select>
+	<select id="queryBaocaiOrderDetailByContOrdeNumb" parameterType="String"
+			resultMap="orderPackMate">
+		select t.* from BAM_ORDER_PACK_MATE t where t.order_pack_id=
+		(select id from BAM_ORDER_PACK where oem_order_code = #{contOrdeNumb})
+	</select>
+	<select id="queryOrderPackMateByOrderPackID" parameterType="String"
+			resultMap="orderPackMate">
+		select t.* from BAM_ORDER_PACK_MATE t where t.order_pack_id = #{orderPackID}
+	</select>
+	<select id="queryOrderPackFormByCode" parameterType="String"
+			resultMap="orderPackForm">
+		select t.supp_code,t.supp_name from BAM_ORDER_PACK t where t.oem_order_code = #{oemOrderCode}
+	</select>
+
+	<delete id="deleteOrderPackById">
+		delete from BAM_ORDER_PACK a where a.id in
+		<foreach collection="array" open="(" close=")" separator=","
+				 item="v">#{v}</foreach>
+	</delete>
+	<delete id="deleteOrderPackMessById">
+		delete from BAM_ORDER_PACK_MESS a where a.order_pack_id in
+		<foreach collection="array" open="(" close=")" separator=","
+				 item="v">#{v}</foreach>
+	</delete>
+	<delete id="deleteOrderPackMateById">
+		delete from BAM_ORDER_PACK_MATE a where a.order_pack_id in
+		<foreach collection="array" open="(" close=")" separator=","
+				 item="v">#{v}</foreach>
+	</delete>
+	<delete id="deleteOrderPackMateByMainId">
+		delete from BAM_ORDER_PACK_MATE a where a.id in
+		<foreach collection="array" open="(" close=")" separator=","
+				 item="v">#{v}</foreach>
+	</delete>
+	<update id="updateOrderStatus" >
+		update BAM_ORDER_PACK set
+		status=#{status}
+		where oem_order_code=#{oemOrderCode}
+	</update>
+	<update id="updateOrderParckUserTime" >
+		update BAM_ORDER_PACK set
+		modifier=#{userName},modifie_id=#{userId},udpate_date=sysdate where id=#{orderPackID}
+	</update>
+	<update id="updateOrderPackLimitThan" >
+		update BAM_ORDER_PACK set
+		limit_than=#{limitThan} where id=#{packId}
+	</update>
+	<update id="updateOrderMessOrderedAndNoOrderedNum" >
+		update BAM_ORDER_PACK_MESS set
+		pack_total_num=#{packTotalNum},placed_num=#{placedNum},residue_num=#{residueNum}
+		where id=#{id}
+	</update>
+	<select id="queryMateNumbByOrderCode" parameterType="String"
+			resultMap="mates">
+		 select bom.fid fid,bom.main_id,bom.frequency,bom.mate_numb,
+		bom.prod_name,bom.box_entr_numb,bom.purc_quan,bom.quan_mate,bom.unpa_quan,bom.company,
+		bom.unit_pric,bom.mone,bom.deli_date,bom.tax_amou,bom.mate_volum,de.mate_code asse_code,de.asse_name
+	  from ((select bom.*,mate.mate_id
+			  from bam_orde_mate bom
+			  left join mdm_mate mate
+				on mate.mate_code = bom.mate_numb  where bom.main_id = #{contOrdeNumb}) bom
+	  join MDM_QUOTE_STRU stru
+		on stru.mate_id = bom.mate_id
+	  join MDM_QUOTE_STRU_DETAILS de
+		on de.stru_id = stru.id and de.segm_code = '20' and de.mate_code is not null)
+	</select>
+	<update id="updateOrderPackMate" parameterType="com.faujor.entity.bam.OrderPackMate">
+		update BAM_ORDER_PACK_MATE mate set mate_code=#{mateCode},mate_name=#{mateName},pack_supp=#{packSupp},
+		pack_code=#{packCode},pack_name=#{packName},pack_num=#{packNum},order_code=#{orderCode},order_date=#{orderDate},
+		deli_date=#{deliDate},acce_file_id=#{acceFileId},acce_file_name=#{acceFileName},acce_file_url=#{acceFileUrl}
+		 where mate.id = #{id}
+	</update>
+	<select id="queryMateNameByMateNumb" parameterType="String" resultType="String">
+		select bom.prod_name from bam_orde_mate bom where bom.mate_numb=#{mateCode} and rownum=1
+	</select>
+	<select id="queryOrderMessListByOrderTypeAndSapId" parameterType="String" resultType="String">
+		select r.cont_orde_numb
+		from bam_orde_rele r
+		where r.ortype=#{orderType}
+		and r.status = '已确认'
+		and r.supp_name=#{sapId} and not exists(select * from BAM_ORDER_PACK p where p.oem_order_code = r.cont_orde_numb)
+	</select>
+</mapper>

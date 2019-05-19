@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>增加一行订单</title>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}"> -->
+</head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+body{overflow:hidden;}
+.margi75{margin-left:75%;}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="demoTable">
+	<form class="layui-form" action="" method="post">
+	  <div class="layui-row">
+	  	  <div class="layui-col-xs4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 78px;">采购订单号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="receUnit" id="receUnit"     class="layui-input" >
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-xs4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 78px;">物料剩余</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="mateNum"  id="mateNum" readonly="readonly"    class="layui-input" >
+			    </div>
+			  </div>
+		  </div>  
+	  </div>
+	</form>
+	</div>
+	<table id="orderDOTable" class="layui-table"  lay-filter="demo">
+	</table>
+	<!-- <div class="layui-row layui-col-space10" >
+		<div class="layui-col-xs1 margi75" >
+			   <button class="layui-btn layui-btn-sm"   id="confirm" type="button">确定</button>
+		</div>
+		<div class="layui-col-xs1 layui-col-xs-offset9"style='margin-left:2%;'>
+			   <button class="layui-btn layui-btn-sm "  id="cancel" type="button">取消</button>
+		</div>
+	</div> -->
+	</div>
+<div th:include="include::layuiJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/delivery/orderList.js}"></script>	
+</body>
+</html>
+		 

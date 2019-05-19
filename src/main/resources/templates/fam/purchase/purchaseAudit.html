@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>采购对账审核页面</title>
+<!-- <meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" />
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<style type="text/css">
+#suppDiv {
+	width: 83%;
+	!
+	important
+}
+
+.layui-form-label {
+	width: 100px;
+}
+/* .koukuan:nth-child(1) */
+.blueHollow {
+	background: #fff;
+	border: 1px solid #458ffc;
+	color: #458ffc;
+}
+
+.blueHollow:hover {
+	color: white;
+	background: #458ffc;
+}
+.tabOpt{float: right;}
+.validDate{width:199px;float: left;
+    margin-right: 20px;}
+#synchBtn{margin-top: 3%;
+    margin-left: 65%;}
+</style>
+<body>
+	<div class="layui-row main-body ">
+		<div class="layui-row">
+			<div class="layui-col-md4" style="margin: 5px 15px;">
+				<span th:if="${taskPDO.pagePattern == 'write'}">
+				<button class="layui-btn layui-btn-xs blueHollow"
+					id="saveBtn">保存</button>
+				<button class="layui-btn layui-btn-xs blueHollow"
+					id="submitBtn">提交</button>
+				<button class="layui-btn layui-btn-xs blueHollow" 
+				    hidden="hidden" id="confirmBtn">提交</button>	
+				<button class="layui-btn layui-btn-xs blueHollow" 
+				    hidden="hidden" id="userConfirmBtn">确认</button>	
+				<button class="layui-btn layui-btn-xs blueHollow" 
+				    hidden="hidden" id="userBackBtn">回退</button>	
+				</span>
+				<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+			</div>
+		</div>
+		<form class="layui-form" method="post" action="" id="recon-form">
+			<input type="hidden" id="matesJson" name="matesJson" /> <input
+				type="hidden" id="debitsJson" name="debitsJson" /> <input
+				type="hidden" id="type" name="type" th:value="${type}" /> <input
+				type="hidden" id="suppName" name="suppName"
+				th:value="${purchRecon.suppName}" /> <input type="hidden"
+				id="plantDesc" name="plantDesc" th:value="${purchRecon.plantDesc}" />
+			<input type="hidden" id="reconStatus" name="reconStatus"
+				th:value="${purchRecon.reconStatus}" />
+				<input type="hidden" id="id" name="id" th:value="${purchRecon.id}" />
+				<input  id="taskName" th:value="${taskPDO.taskName}" name="taskName" type="hidden"></input>
+		        <input  id="processCode" th:value="${taskPDO.processCode}" name="processCode" type="hidden"></input> 
+		        <input  id="pagePattern" th:value="${taskPDO.pagePattern}" name="pagePattern" type="hidden"></input> 
+			<div class="layui-row">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">对账单号</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" id="reconCode"
+								name="reconCode" th:value="${purchRecon.reconCode}"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="reconStatusDesc"
+								id="reconStatusDesc" th:value="${purchRecon.reconStatusDesc}"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">创建日期</label>
+						<div class="layui-input-inline">
+							<input type="text" readonly="readonly" name="createDate"
+								id="createDate"
+								th:value="${purchRecon.createDate== null} ? '':${#dates.format(purchRecon.createDate, 'yyyy-MM-dd')} "
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item ">
+						<label class="layui-form-label suppInput">供应商</label>
+						<div class="layui-input-inline suppDiv" id="suppDiv">
+							<select name="suppNo" id="suppNo" lay-verify="" lay-search=""
+								lay-filter="suppNo" class="must">
+								<option value="">请选择...</option>
+								<option th:each="supp:${suppList}" th:value="${supp.sapId}"
+									th:text="${supp.sapId}+${supp.suppName}"
+									th:selected="${supp.sapId == purchRecon.suppNo}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label">工厂</label>
+						<div class="layui-input-inline" id="suppDiv">
+							<select name="plantCode" id="plantCode" lay-verify=""
+								lay-search="" lay-filter="plantCode" class="must">
+								<option value="">请选择...</option>
+								<option th:each="dic:${plantList}" th:value="${dic.dicCode}"
+									th:text="${dic.dicCode}+${dic.dicName}"
+									th:selected="${dic.dicCode == purchRecon.plantCode}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md5">
+						<div class="layui-form-item">
+							<label class="layui-form-label">对账日期</label>
+							<div class="layui-input-inline">
+								<input placeholder="开始日期" type="text" name="startDate"
+									id="startDate"
+									th:value="${purchRecon.startDate== null} ? '':${#dates.format(purchRecon.startDate, 'yyyy-MM-dd')} "
+									class="layui-input validDate disa must">
+								<input placeholder="截止日期"  type="text" name="endDate"
+									id="endDate"
+									th:value="${purchRecon.endDate== null} ? '':${#dates.format(purchRecon.endDate, 'yyyy-MM-dd')} "
+									class="layui-input validDate must">
+							</div>
+						</div>
+					</div>
+					<!-- <div class="layui-col-md3">
+						<div class="layui-form-item">
+							<div class="layui-input-inline">
+								<input placeholder="截止日期" type="text" name="endDate"
+									id="endDate"
+									th:value="${purchRecon.endDate== null} ? '':${#dates.format(purchRecon.endDate, 'yyyy-MM-dd')} "
+									class="layui-input disa must">
+							</div>
+						</div>
+					</div> -->
+					<div class="layui-col-md1">
+						<div class="layui-btn layui-btn-xs blueHollow disableBtn"
+							id="synchBtn">同步</div>
+					</div>
+					<div class="layui-col-md3 suma">
+						<div class="layui-form-item">
+							<label class="layui-form-label">含税总额</label>
+							<div class="layui-input-inline">
+								<input type="text" name="sumAmount" id="sumAmount"
+									th:value="${purchRecon.sumAmount}" class="layui-input disa">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- 物料信息 开始-->
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物料信息
+				</a>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse in">
+				<div class="panel-body">
+					<div class="layui-row ">
+						<div class="layui-row ">
+							<div class="layui-btn layui-btn-xs blueHollow" id="exportBtn">导出</div>
+						</div>
+						<div class="layui-fluid tableCont" style='padding: 0px;'>
+							<table id="mate-table" lay-filter="mate-table"></table>
+						</div>
+						<div class="layui-row">
+							<div class="layui-col-md3">
+								<div class="layui-form-item">
+									<label class="layui-form-label">入库数量</label>
+									<div class="layui-input-inline">
+										<input type="text" readonly="readonly" id="totalNum"
+											class="layui-input">
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-md3">
+								<div class="layui-form-item">
+									<label class="layui-form-label">入库总价</label>
+									<div class="layui-input-inline">
+										<input type="text" readonly="readonly" id="totalMoney"
+											class="layui-input">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 物料信息 结束-->
+		<!-- 扣款信息 开始-->
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseTwo"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;扣款信息
+				</a>
+			</div>
+			<div id="collapseTwo" class="panel-collapse collapse in">
+				<div class="panel-body">
+					<div class="layui-row">
+						<div class="layui-col-md2 layui-col-md-offset10">
+							<div class="layui-btn layui-btn-xs blueHollow  disableBtn"
+								id="addDebitBtn">添加</div>
+							<div class="layui-btn layui-btn-xs blueHollow disableBtn"
+								id="delDebitBtn">删除</div>
+						</div>
+					</div>
+					<button id="uploadBtn2" class="layui-hide"></button>
+					<div class="layui-row debitDiv">
+						<div class="layui-fluid tableCont" style='padding: 0px;'>
+							<table id="debit-table" lay-filter="debit-table" class='koukuan'></table>
+							<div class="layui-row">
+								<div class="layui-col-md3">
+									<div class="layui-form-item">
+										<label class="layui-form-label">扣款金额</label>
+										<div class="layui-input-inline">
+											<input type="text" readonly="readonly" id="debitMoney"
+												class="layui-input">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 发票信息 开始-->
+		<div class=" panel-default ">
+			<div class="btn-padding">
+				<div style="float: left;">
+					<a class="btn" data-toggle="collapse" href="#collapseFour"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;发票信息
+					</a>
+				</div>
+			</div>
+			<div id="collapseFour" class="panel-collapse collapse in">
+				<div class="panel-body">
+				 	<div class="layui-row addBut">
+						<div class="layui-col-md2 layui-col-md-offset10">
+							<div class="layui-btn layui-btn-xs blueHollow" 
+								id="addInvoiceBtn">添加</div>
+						</div>
+					</div>
+					<button id="uploadBtn" class="layui-hide"></button>
+					<div class="layui-row invoiceDiv">
+						<div class="layui-fluid tableCont" style='padding: 0px;'>
+							<table id="invoice-table" lay-filter="invoice-table"></table>
+						</div>
+						<div class="layui-row">
+							<div class="layui-col-md3">
+								<div class="layui-form-item">
+									<label class="layui-form-label">税金汇总</label>
+									<div class="layui-input-inline">
+										<input type="text" readonly="readonly" id="sumTaxMoney"
+											class="layui-input">
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-md3">
+								<div class="layui-form-item">
+									<label class="layui-form-label">总额汇总</label>
+									<div class="layui-input-inline">
+										<input type="text" readonly="readonly" id="sumTotalMoney" class="layui-input">
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-md3">
+								<div class="layui-form-item">
+									<label class="layui-form-label">不含税金额</label>
+									<div class="layui-input-inline">
+										<input type="text" readonly="readonly" id="sumNoTaxMoney" class="layui-input">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<script type="text/html" id="operateBar2">
+  				<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="upload">上传</a>
+  				<a class="layui-btn layui-btn-danger layui-btn-xs redInline " lay-event="del">删除</a>
+		    </script>
+			
+			<script type="text/html" id="debitOperateBar">
+  			<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="upload">上传</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="download">下载</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs redInline " lay-event="del">删除</a>
+		</script>
+			<script type="text/html" id="debitOperateBar1">
+  			<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="download">下载</a>
+		</script>
+			<script type="text/html" id="invoceOperateBar">
+  			<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="upload">上传</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="download">下载</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs redInline " lay-event="del">删除</a>
+		</script>
+			<script type="text/html" id="invoceOperateBar1">
+  			<a class="layui-btn layui-btn-danger layui-btn-xs blueInline " lay-event="download">下载</a>
+		</script>
+		</div>
+		<!-- 扣款信息 结束-->
+	</div>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>	
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript" th:src="@{/editTable/plus/import.inc.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/fam/purchase/purchaseAudit.js}"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader">
+</head>
+<body class='popOver'>
+	<input id="segmJson" th:value="${segmJson}" class="layui-hide" />
+	<input id="mateJson" th:value="${mateJson}" class="layui-hide" />
+	<form class="layui-form" action=""
+		style="padding-top: 10px; width: 95%">
+		<input type="text" id="parentId" name="parentId"
+			th:value="${parentId}" class="layui-input layui-hide">
+		<div class="layui-form-item">
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">段号</label>
+				<div class="layui-input-inline">
+					<select id="segmCode" name="segmCode" lay-search="" lay-verify="segmCode" 
+						lay-filter="segmCodeSelected" th:disabled="${parentId != '0'}">
+						<option value="">请选择...</option>
+						<option th:each="sl:${segmList}" th:value="${sl.dicCode}" th:text="${sl.dicCode}" th:selected="${sl.dicCode == td.segmCode}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">段名</label>
+				<div class="layui-input-inline">
+					<input type="text" id="segmName" name="segmName" th:value="${td.segmName}" class="layui-input" readonly>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">物料编号</label>
+				<div class="layui-input-inline" style="width: 172%;">
+					<select name="mateCode" lay-search="" lay-verify="mateCode" id="mateCode" lay-filter="mateSelected">
+						<option value="">请选择...</option>
+						<option th:each="ml:${mateList}" th:value="${ml.mateCode}" th:text="${ml.mateCode+' '+ml.mateName}" th:selected="${ml.mateCode == td.mateCode}"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">组件编号</label>
+				<div class="layui-input-inline">
+					<input type="text" name="asseCode" id="asseCode" readonly th:value="${td.asseCode}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">组件名称</label>
+				<div class="layui-input-inline">
+					<input type="text" id="asseName" name="asseName" lay-verify="asseName" th:value="${td.asseName}" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">用量</label>
+				<div class="layui-input-inline">
+					<input type="text" name="detailsNum" id="detailsNum" lay-verify="detailsNum" th:value="${td.detailsNum}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">用量单位</label>
+				<div class="layui-input-inline">
+					<input type="text" id="unit" name="unit" th:value="${td.unit}" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">规格</label>
+				<div class="layui-input-inline">
+					<input type="text" name="standard" id="standard" th:value="${td.standard}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">材料</label>
+				<div class="layui-input-inline">
+					<input type="text" id="material" name="material" th:value="${td.material}" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline" style="width: 48%">
+				<label class="layui-form-label">备注</label>
+				<div class="layui-input-inline">
+					<input type="text" name="remark" id="remark" th:value="${td.remark}" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-input-block popBtn"
+			style="float: right; padding-right: 74px;">
+			<button class="layui-btn" lay-submit lay-filter="signForm" style="border-color: #4898d5; background-color: #2e8ded; color: #fff; height: 28px; line-height: 28px; margin: 0 6px; padding: 0 15px; border: 1px solid #dedede; border-radius: 2px; font-weight: 400; cursor: pointer; text-decoration: none;">确定</button>
+			<button class="layui-btn" id="cancleBtn" type="button" style="border-color: #4898d5; background-color: #f1f1f1; color: #333; height: 28px; line-height: 28px; margin: 0 6px; padding: 0 15px; border: 1px solid #dedede; border-radius: 2px; font-weight: 400; cursor: pointer; text-decoration: none;">取消</button>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/tempAdd.js}"></script>
+</body>
+</html>

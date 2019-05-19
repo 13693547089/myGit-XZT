@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<title>财务稽核列表</title>
+<!-- <meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<body class='fau-body-list'>
+	<form class="layui-form" id="searchForm" action="" method="post">
+		<input type="text" id="id" name="id" class="layui-input layui-hide">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">供应商</label>
+					<div class="layui-input-block">
+						<input type="text" id="suppName" name="suppName"
+							placeholder="供应商名称或者编码" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">稽核单号</label>
+					<div class="layui-input-block">
+						<input type="text" id="auditCode" name="auditCode"
+							placeholder="稽核单号" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">创建日期</label>
+					<div class="layui-input-inline" style="display: flex;">
+						<input type="text" id="startDate" name="startDate"
+							placeholder="yyyy-MM-dd" class="layui-input">
+						<div class="layui-form-mid" style='margin-left: 10px;'>-</div>
+						<input type="text" id="endDate" name="endDate" placeholder="yyyy-MM-dd"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<div class="layui-col-sm9">
+
+				<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_AUDIT_ADD')" id="addBtn">新建</button>
+				<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_AUDIT_REMOVE')" id="batchDelBtn">批量删除</button>
+
+			</div>
+			<div class="layui-col-md3 textRight">
+				<button class="layui-btn layui-btn-xs yellowSolid" id="serachInfo">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" id="reset">重置</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-fluid">
+		<div class="layui-fluid tableCont" style='padding: 0px;'>
+			<table class="layui-hide" id="auditTable" lay-filter="audit">
+			</table>
+		</div>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+  			<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="detail">查看</a>
+ 			<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  			<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+		</script>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/fam/audit/audit.js}"></script>
+</body>
+</html>

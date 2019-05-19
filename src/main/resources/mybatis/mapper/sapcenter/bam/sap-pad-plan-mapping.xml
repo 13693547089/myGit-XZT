@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.bam.SapPadPlanMapper">
+	<resultMap id="padPlanMap" type="com.faujor.entity.bam.psm.PadPlan">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="planCode" column="PLAN_CODE"/>
+			<result property="planName" column="PLAN_NAME"/>
+			<result property="planMonth" column="PLAN_MONTH"/>
+			<result property="status" column="STATUS"/>
+			<result property="crtDate" column="CRT_DATE"/>
+			<result property="crtUser" column="CRT_USER"/>
+			<result property="uptDate" column="UPT_DATE"/>
+			<result property="uptUser" column="UPT_USER"/>
+			<result property="crtUserCode" column="CRT_USER_CODE"/>
+			<result property="submitUserCode" column="SUBMIT_USER_CODE"/>
+			<result property="submitUserName" column="SUBMIT_USER_NAME"/>
+			<result property="submitDate" column="SUBMIT_DATE"/>
+	</resultMap>
+	
+	<resultMap id="padPlanDetailMap" type="com.faujor.entity.bam.psm.PadPlanDetail">
+			<id property="id" column="ID"/>
+			<result property="sn" column="SN"/>
+			<result property="mainId" column="MAIN_ID"/>
+			<result property="matCode" column="MAT_CODE"/>
+			<result property="matName" column="MAT_NAME"/>
+			<result property="prodSeriesCode" column="PROD_SERIES_CODE"/>
+			<result property="prodSeries" column="PROD_SERIES"/>
+			<result property="rank" column="RANK"/>
+			<result property="threeAvgSales" column="THREE_AVG_SALES"/>
+			<result property="nationStock1" column="NATION_STOCK1"/>
+			<result property="nationStock2" column="NATION_STOCK2"/>
+			<result property="nationStock3" column="NATION_STOCK3"/>
+			<result property="padPlanQty" column="PAD_PLAN_QTY"/>
+			<result property="saleForeQty" column="SALE_FORE_QTY"/>
+			<result property="turnOverDays" column="TURN_OVER_DAYS"/>
+			<result property="nextSaleForeQty" column="NEXT_SALE_FORE_QTY"/>
+			<result property="estDeliQty" column="EST_DELI_QTY"/>
+			<result property="estSaleQty" column="EST_SALE_QTY"/>
+			<result property="actSaleQty" column="ACT_SALE_QTY"/>
+			<result property="actDeliQty" column="ACT_DELI_QTY"/>
+			<result property="actTurnOverDays" column="ACT_TURN_OVER_DAYS"/>
+			<result property="bigItemCode" column="BIG_ITEM_CODE"/>
+			<result property="bigItemExpl" column="BIG_ITEM_EXPL"/>
+	</resultMap>
+	
+	<delete id="delPadPlanById" parameterType="String">
+		delete from t_srm_PS_PAD_PLAN where ID=#{id}
+	</delete>
+	
+	<insert id="savePadPlan" parameterType="com.faujor.entity.bam.psm.PadPlan">
+		insert into t_srm_PS_PAD_PLAN (id,sn,plan_code,plan_name,plan_month,status,
+  		crt_date,crt_user,crt_user_code,submit_user_code,submit_user_name,submit_date)
+		values
+		(#{id},#{sn},#{planCode},#{planName},#{planMonth},
+		#{status},#{crtDate},#{crtUser},#{crtUserCode},#{submitUserCode},#{submitUserName},#{submitDate})
+	</insert>
+	
+	<insert id="savePadPlanDetailList" parameterType="java.util.List">
+		insert into t_srm_PS_PAD_PLAN_DETAIL (id,sn,main_id,mat_code,
+  		rank,three_avg_sales,nation_stock1,nation_stock2,nation_stock3,pad_plan_qty,
+  		sale_fore_qty,turn_over_days,NEXT_SALE_FORE_QTY,EST_DELI_QTY,EST_SALE_QTY,ACT_SALE_QTY,
+  		ACT_DELI_QTY,ACT_turn_over_days,BIG_ITEM_CODE,BIG_ITEM_EXPL,mat_name,PROD_SERIES_CODE,prod_series) 
+		SELECT A.* from (
+		<foreach collection="list" item="item" index= "index" separator="UNION ALL">
+	    SELECT 
+	    	#{item.id},
+	        #{item.sn},
+	        #{item.mainId},
+	        #{item.matCode} as mat_code,
+	        #{item.rank},
+	        #{item.threeAvgSales},
+	        #{item.nationStock1},
+	        #{item.nationStock2},
+	        #{item.nationStock3},
+	        #{item.padPlanQty},
+	        #{item.saleForeQty},
+	        #{item.turnOverDays},
+	        #{item.nextSaleForeQty},
+	        #{item.estDeliQty},
+	        #{item.estSaleQty},
+	        #{item.actSaleQty},
+	        #{item.actDeliQty},
+	        #{item.actTurnOverDays},
+	        #{item.bigItemCode},
+	        #{item.bigItemExpl},
+	        #{item.matName},
+	        #{item.prodSeriesCode},
+	        #{item.prodSeries}
+   		FROM dual 
+    	</foreach>
+    	) A
+	</insert>
+	
+	<delete id="delPadPlanDetailByMainId" parameterType="String">
+		delete from t_srm_PS_PAD_PLAN_DETAIL where MAIN_ID=#{mainId}
+	</delete>
+</mapper>

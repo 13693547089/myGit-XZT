@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.document.DocumentMapper">
+
+	<resultMap id="docMap" type="com.faujor.entity.document.Document">
+			<id property="id" column="id"/>
+			<result property="fileUrl" column="file_url"/>
+			<result property="fileName" column="file_name"/>
+			<result property="realName" column="real_name"/>
+			<result property="direCode" column="dire_code"/>
+			<result property="docType" column="doc_type"/>
+			<result property="docSize" column="doc_size"/>
+			<result property="docCate" column="doc_cate"/>
+			<result property="linkNo" column="link_no"/>
+			<result property="attachType" column="attach_Type"/>
+			<result property="createUser" column="create_user"/>
+			<result property="creater" column="creater"/>
+			<result property="createTime" column="create_time"/>
+			<result property="modifyUser" column="modify_user"/>
+			<result property="modifyTime" column="modify_time"/>
+	</resultMap>
+	<select id="getDocByPage" resultMap="docMap" parameterType="Map">
+		select * from (
+			select tb.*,rownum  rn from
+				(select t2.* ,t3.name creater from doc_document t2 
+				left join sys_user t3 
+				on t2.create_user=t3.username
+				  where 1=1
+					<if test="docName!=null and docName!=''">
+						and t2.real_name like #{docName}
+					</if>
+					<if test="linkNo!=null and linkNo!=''">
+						and t2.link_no like #{linkNo}
+					</if>
+					<if test="createUser!=null and createUser!=''">
+						and( t3.username like #{createUser} or t3.name like #{createUser}) 
+					</if>
+					<if test="startDate!=null">
+						and t2.create_time &gt;=  #{startDate}
+					</if>
+					<if test="endDate!=null">
+						and t2.create_time &lt;=  #{endDate}
+					</if>
+					and t2.dire_code =#{direCode}
+					and t2.link_no is not null
+				order by t2.create_time desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	<select id="getDocNum" resultType="Integer" parameterType="Map">
+		select count(1) from doc_document t2
+		left join sys_user t3 
+		on t2.create_user=t3.username
+		where 1=1
+		<if test="docName!=null and docName!=''">
+			and t2.real_name like #{docName}
+		</if>
+		<if test="linkNo!=null and linkNo!=''">
+			and t2.link_no like #{linkNo}
+		</if>
+		<if test="createUser!=null and createUser!=''">
+			and( t3.username like #{createUser} or t3.name like #{createUser}) 
+		</if>
+		<if test="startDate!=null">
+			and t2.create_time &gt;=  #{startDate}
+		</if>
+		<if test="endDate!=null">
+			and t2.create_time &lt;=  #{endDate}
+		</if>
+			and t2.dire_code =#{direCode}
+			and t2.link_no is not null
+			
+	</select>
+	<select id="getDoc" resultMap="docMap" >
+		select * from doc_document tb where 1=1
+		<if test="docName!=null and docName!=''">
+			and file_name = #{docName}
+		</if>
+		<if test="docId!=null and docId!=''">
+			and id =#{docId}
+		</if>
+	</select>
+	<delete id="deleteDoc" parameterType="String">
+		delete from doc_document tb where tb.id= #{id}
+	</delete>
+	<update id="updateDocLink" parameterType="com.faujor.entity.document.Document">
+		update doc_document tb 
+		set tb.link_no=#{linkNo},
+		<if test="docCate!=null and docCate!=''">
+			 tb.doc_cate=#{docCate},
+		</if>
+		tb.attach_type=#{attachType} 
+		where tb.id=#{id}
+	</update>
+	<insert id="saveDoc" parameterType="com.faujor.entity.document.Document">
+	insert into doc_document
+		(id,file_url,file_name,
+		real_name,dire_code,doc_type,
+		doc_size,doc_cate,link_no,link_id,
+		create_user,create_time,modify_user,
+		modify_time,attach_type)
+		values
+		(#{id},#{fileUrl},#{fileName},
+		#{realName},#{direCode},#{docType},
+		#{docSize},#{docCate},#{linkNo},#{linkId},
+		#{createUser},#{createTime},#{modifyUser},
+		#{modifyTime},#{attachType})
+	</insert>
+	<select id="getDocByLinkNo" parameterType="Map" resultMap="docMap">
+		select * from doc_document where link_no=#{linkNo}
+		<if test="docCate!=null and docCate!=''">
+			and doc_Cate=#{docCate}
+		</if>
+		<if test="excludeDocId!=null and excludeDocId!=''">
+			and id!=#{excludeDocId}
+		</if>
+	</select>
+	<delete id="deleteDocByLinkNo" parameterType="Map">
+		delete from doc_document where link_no=#{linkNo} and doc_cate=#{docCate}
+	</delete>
+	<select id="getDocByMenuId" parameterType="Long" resultMap="docMap">
+		select t3.*
+		from doc_temp_menu t1
+		left join doc_document t3
+		on t3.link_no = t1.temp_no
+		where t1.menu_id = #{menuId}
+		and t3.doc_cate = 'doc_template'
+	</select>
+</mapper>

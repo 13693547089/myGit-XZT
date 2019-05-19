@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.LatentSuppMapper">
+	
+
+	<insert id="insertLatentSupp" parameterType="com.faujor.entity.mdm.LatentSupp">
+		insert into mdm_latent_supp(supp_id,srm_id,category_id,category,supp_name,
+		supp_abbre,prov_code,prov_name,city_code,city_name,
+		postcode,address,contacts,phone,bank_code,bank_abbre,bank_name,bank_account,
+		account_holder,holder_phone,fax_number,email,
+		pay_clause_id,currency_id,taxe_kind_id,remark,is_delete,status,register_time,
+		first_trial_id,buyer_audit_time,mini_id,subOA_time) 
+
+		values(#{suppId},#{srmId},#{categoryId},#{category},#{suppName},#{suppAbbre},
+		#{provCode},#{provName},#{cityCode},#{cityName},
+		#{postcode},#{address},#{contacts},#{phone},#{bankCode},#{bankAbbre},#{bankName},#{bankAccount},
+		#{accountHolder},#{holderPhone},#{faxNumber},#{email},
+		#{payClauseId},#{currencyId},#{taxeKindId},#{remark},'1', #{status},sysdate,
+		#{firstTrialId},#{buyerAuditTime},#{miniId},#{subOATime})
+	</insert>
+	
+	
+	<resultMap type="com.faujor.entity.mdm.LatentSupp" id="latentSupp">
+		<result property="suppId" column="supp_id"/>
+		<result property="srmId" column="srm_id"/>
+		<result property="categoryId" column="category_id"/>
+		<result property="category" column="category"/>
+		<result property="suppName" column="supp_name"/>
+		<result property="suppAbbre" column="supp_abbre"/>
+		<result property="provCode" column="prov_code"/>
+		<result property="provName" column="prov_name"/>
+		<result property="cityCode" column="city_code"/>
+		<result property="cityName" column="city_name"/>
+		<result property="postcode" column="postcode"/>
+		<result property="address" column="address"/>
+		<result property="contacts" column="contacts"/>
+		<result property="phone" column="phone"/>
+		<result property="bankCode" column="bank_code"/>
+		<result property="bankAbbre" column="bank_abbre"/>
+		<result property="bankName" column="bank_name"/>
+		<result property="bankAccount" column="bank_account"/>
+		<result property="accountHolder" column="account_holder"/>
+		<result property="holderPhone" column="holder_phone"/>
+		<result property="faxNumber" column="fax_number"/>
+		<result property="email" column="email"/>
+		<result property="payClauseId" column="pay_clause_id"/>
+		<result property="currencyId" column="currency_id"/>
+		<result property="taxeKindId" column="taxe_kind_id"/>
+		<result property="remark" column="remark"/>
+		<result property="isDelete" column="is_delete"/>
+		<result property="status" column="status"/>
+		<result property="registerTime" column="register_time"/>
+		<result property="firstTrialId" column="first_trial_id"/>
+		<result property="buyerAuditTime" column="buyer_audit_time"/>
+		<result property="miniId" column="mini_id"/>
+		<result property="subOATime" column="subOA_time"/>
+	</resultMap>
+	<select id="queryLatentSuppByPage" parameterType="Map" resultMap="latentSupp">
+		select s2.* from(
+		select s1.*,rownum rn from(
+		select s.* from mdm_latent_supp s where 1=1 
+		and s.is_delete='1'
+		<if test="latentSupp.status != null and latentSupp.status != '' ">
+			and s.status =#{latentSupp.status}
+		</if>
+		<if test="latentSupp.category != null and latentSupp.category != '' ">
+			and s.category like '%${latentSupp.category}%'
+		</if>
+		<if test="latentSupp.suppInfo != null and latentSupp.suppInfo != '' ">
+			and (
+				s.supp_id like '%${latentSupp.suppInfo}%'
+				or s.supp_name like '%${latentSupp.suppInfo}%'
+			)
+		</if> 
+		order by s.register_time desc)s1)s2
+		<![CDATA[where s2.rn>=#{start}  and s2.rn<=#{end}]]>
+	</select>
+	
+	<select id="queryLatentSuppCount" parameterType="Map" resultType="int">
+		select count(*) from mdm_latent_supp s where 1=1
+		and s.is_delete='1'
+		<if test="latentSupp.status != null and latentSupp.status != '' ">
+			and s.status =#{latentSupp.status}
+		</if>
+		<if test="latentSupp.category != null and latentSupp.category != '' ">
+			and s.category like '%${latentSupp.category}%'
+		</if>
+		<if test="latentSupp.suppInfo != null and latentSupp.suppInfo != '' ">
+			and (
+				s.supp_id like '%${latentSupp.suppInfo}%'
+				or s.supp_name like '%${latentSupp.suppInfo}%'
+			)
+		</if> 
+	</select>
+	
+	<insert id="insertLatentPapers" parameterType="com.faujor.entity.mdm.LatentPapers">
+		insert into mdm_latent_papers values(lower(sys_guid()),
+		#{papersId},#{papersName},#{papersType},#{startDate},#{endDate},#{acceUrl},
+		#{acceOldName},#{acceNewName},#{suppId},#{fileId})
+	</insert>
+	
+	<delete id="deleteLatentSuppBySuppId">
+		delete from mdm_latent_supp s where s.supp_id in
+		<foreach collection="array" open="(" close=")" separator="," item="v">#{v}</foreach> 
+	</delete>
+	
+	<select id="queryOneLatentSuppBySuppId" parameterType="String" resultMap="latentSupp">
+		select * from mdm_latent_supp s where s.supp_id=#{suppId}
+	</select>
+	
+	<update id="updateLatentSuppBySuppId" parameterType="com.faujor.entity.mdm.LatentSupp">
+		update mdm_latent_supp 
+		<set>
+		<if test="status != null and status != ''">
+			status=#{status},
+		</if>
+		category_id=#{categoryId},category=#{category},
+		supp_name=#{suppName},supp_abbre=#{suppAbbre},prov_name=#{provName},
+		city_name=#{cityName},postcode=#{postcode},address=#{address},
+		contacts=#{contacts},phone=#{phone},bank_abbre=#{bankAbbre},
+		bank_name=#{bankName},bank_account=#{bankAccount},account_holder=#{accountHolder},
+		holder_phone=#{holderPhone},fax_number=#{faxNumber},
+		email=#{email},pay_clause_id=#{payClauseId},currency_id=#{currencyId},
+		taxe_kind_id=#{taxeKindId},remark=#{remark}
+		</set> 
+		where supp_id=#{suppId}
+	</update>
+	
+	
+	<update id="updateLatentSuppAtAudit" parameterType="com.faujor.entity.mdm.LatentSupp">
+		update mdm_latent_supp set category_id=#{categoryId},category=#{category},
+		pay_clause_id=#{payClauseId},currency_id=#{currencyId},taxe_kind_id=#{taxeKindId},
+		remark=#{remark},status=#{status},first_trial_id=#{firstTrialId},
+		buyer_audit_time=#{buyerAuditTime} where supp_id=#{suppId}
+	</update>
+	
+	
+	<select id="queryLatentSuppToMini" parameterType="Map" resultMap="latentSupp">
+		select s2.* from(
+		select s1.*,rownum rn from(
+		select s.* from mdm_latent_supp s 
+		where 1=1
+		and s.audit_status is null 
+		and s.is_delete='1'
+		<if test="userIds != null">
+		and  s.first_trial_id in 
+		<foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		</if>
+		<if test="latentSupp.status != null and latentSupp.status != '' ">
+			and s.status =#{latentSupp.status}
+		</if>
+		<if test="latentSupp.category != null and latentSupp.category != '' ">
+			and s.category like '%${latentSupp.category}%'
+		</if>
+		<if test="latentSupp.suppInfo != null and latentSupp.suppInfo != '' ">
+			and (
+				s.supp_id like '%${latentSupp.suppInfo}%'
+				or s.supp_name like '%${latentSupp.suppInfo}%'
+			)
+		</if> 
+		order by s.register_time desc)s1)s2
+		<![CDATA[where s2.rn>=#{start}  and s2.rn<=#{end}]]>
+	</select>
+	
+	<select id="queryLatentSuppToMiniCount" parameterType="Map" resultType="int">
+		select count(*) from mdm_latent_supp s 
+		where 1=1
+		and s.audit_status is null 
+		and s.is_delete='1'
+		<if test="userIds != null">
+		and  s.first_trial_id in 
+		<foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		</if>
+		<if test="latentSupp.status != null and latentSupp.status != '' ">
+			and s.status =#{latentSupp.status}
+		</if>
+		<if test="latentSupp.category != null and latentSupp.category != '' ">
+			and s.category like '%${latentSupp.category}%'
+		</if>
+		<if test="latentSupp.suppInfo != null and latentSupp.suppInfo != '' ">
+			and (
+				s.supp_id like '%${latentSupp.suppInfo}%'
+				or s.supp_name like '%${latentSupp.suppInfo}%'
+			)
+		</if> 
+	</select>
+	
+	<update id="subLatentSuppToOA" parameterType="com.faujor.entity.mdm.LatentSupp">
+		update mdm_latent_supp ls set
+		ls.status=#{status},
+		ls.mini_id=#{miniId},
+		ls.suboa_time=sysdate 
+		where ls.supp_id=#{suppId}
+	</update>
+	<update id="buyerSendBackLatentSupp" parameterType="com.faujor.entity.mdm.LatentSupp">
+		update mdm_latent_supp ls set 
+		ls.status=#{status},
+		ls.first_trial_id=#{firstTrialId},
+		ls.buyer_audit_time=sysdate 
+		where ls.supp_id=#{suppId}
+	</update>
+	
+</mapper>

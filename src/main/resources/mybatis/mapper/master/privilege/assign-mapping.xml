@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.privilege.AssignMapper">
+	<resultMap id="orgMap" type="com.faujor.entity.privileges.OrgDo">
+		<id property="menuId" column="sid" />
+		<result property="sname" column="sname" />
+		<result property="scode" column="scode" />
+		<result property="sfname" column="sfname" />
+		<result property="sfid" column="sfid" />
+		<result property="sfcode" column="sfcode" />
+		<result property="stype" column="stype" />
+		<result property="parentId" column="sparent_id" />
+		<result property="snodeKind" column="snode_kind" />
+		<result property="spersonId" column="sperson_id" />
+		<result property="screateTime" column="screate_time" />
+		<result property="screator" column="screator" />
+		<result property="screateName" column="screate_name" />
+		<result property="supdateTime" column="supdate_time" />
+		<result property="smodifier" column="smodifier" />
+		<result property="smodifyName" column="smodify_name" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.privileges.Role" id="roleMap">
+		<id property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<result property="roleSign" column="role_sign" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<select id="assignListByRoleId" resultMap="orgMap"
+		parameterType="com.faujor.entity.privileges.RoleDO">
+		select t1.* from sys_org t1 left join sys_user_role t2 on t1.sid =
+		t2.user_id where t2.role_id = #{roleId}
+		and t1.stype='psn'
+		<if test="roleName != null and roleName != ''">
+			and (t1.sname like #{roleName} or t1.scode like
+			#{roleName})
+		</if>
+	</select>
+
+	<select id="countAssignListByRoleId" resultType="Integer"
+		parameterType="com.faujor.entity.privileges.RoleDO">
+		select count(*) from sys_org t1 left join sys_user_role t2 on t1.sid =
+		t2.user_id where t2.role_id = #{roleId}
+		and t1.stype='psn'
+		<if test="roleName != null and roleName != ''">
+			and (t1.sname like #{roleName} or t1.scode like
+			#{roleName})
+		</if>
+	</select>
+
+	<insert id="updateByRoleId" parameterType="com.faujor.entity.privileges.AssignDO">
+	</insert>
+
+	<insert id="updateAssignList" parameterType="List">
+		insert all into sys_user_role (user_id, role_id) values
+		<foreach collection="list" item="item" index="index"
+			separator="into sys_user_role (user_id, role_id) values ">
+			(#{item.orgId}, #{item.roleId})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<delete id="removeByOrgIds" parameterType="Map">
+		delete from
+		sys_user_role t where t.role_id = #{roleId} and t.user_id
+		in
+		<foreach collection="orgIds" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="assignListByOrgId" resultMap="roleMap"
+		parameterType="Long">
+		select t1.* from sys_role t1 left join sys_user_role t2
+		on t1.role_id=t2.role_id
+		where t2.user_id = #{orgId}
+	</select>
+
+	<delete id="removeByRoleIds" parameterType="Map">
+		delete from
+		sys_user_role t where t.user_id = #{orgId} and t.role_id in
+		<foreach collection="roleIds" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

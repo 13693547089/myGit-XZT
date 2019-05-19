@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.ContMapper">
+	<resultMap id="contMap" type="com.faujor.entity.bam.Contract">
+			<id property="id" column="id"/>
+			<result property="contNo" column="cont_No"/>
+			<result property="contName" column="cont_Name"/>
+			<result property="createTime" column="create_Time"/>
+			<result property="createUser" column="create_user"/>
+			<result property="modifyUser" column="modify_user"/>
+			<result property="modifyTime" column="modify_time"/>
+			<result property="contType" column="cont_Type"/>
+			<result property="contTypeName" column="cont_Type_Name"/>
+			<result property="contVersion" column="cont_Version"/>
+			<result property="contRemark" column="cont_Remark"/>
+			<result property="firstPart" column="first_part"/>
+			<result property="firstPartName" column="first_part_name"/>
+			<result property="secondPart" column="second_Part"/>
+			<result property="secondPartName" column="second_Part_name"/>
+			<result property="contStatus" column="cont_Status"/>
+			<result property="contStatusName" column="cont_Status_Name"/>
+			<result property="startDate" column="start_Date"/>
+			<result property="endDate" column="end_Date"/>
+			<result property="creater" column="creater"/>
+			<result property="modifier" column="modifier"/>
+	</resultMap>
+	<select id="getContByPage" resultMap="contMap" parameterType="Map">
+		select * from (
+			select tb.*,rownum  rn from
+				(select bc.* ,su.name creater,su1.name modifier from bam_cont bc 
+				  left join  sys_user su 
+				  on bc.create_user =su.username
+				  left join  sys_user su1 
+				  on bc.modify_user =su1.username
+				  where 1=1 
+					<if test="contName!=null and contName!=''">
+						and (bc.cont_name like #{contName} or bc.cont_no like #{contName})
+					</if>
+					<if test="contType!=null and contType!=''">
+						and bc.cont_Type=#{contType}
+					</if>
+					<if test="contStatus!=null and contStatus!=''">
+						and bc.cont_status=#{contStatus}
+					</if>
+					<if test="startDate!=null">
+						and bc.create_time &gt;= #{startDate}
+					</if>
+					<if test="endDate!=null">
+						and bc.create_time &lt; #{endDate}
+					</if>
+					<if test="suppName!=null and suppName!=''">
+						and (bc.second_part like #{suppName} or bc.second_part_name like #{suppName})
+					</if>
+					<if test="vaildStart!=null">
+						and bc.end_date &gt;= #{vaildStart}
+					</if>
+					<if test="vaildEnd!=null">
+						and bc.end_date &lt;= #{vaildEnd}
+					</if>
+				order by bc.create_time desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	<select id="getContNum" resultType="Integer" parameterType="Map">
+		select count(1) from bam_cont bc
+		where 1=1 
+		<if test="contName!=null and contName!=''">
+			and (bc.cont_name like #{contName} or bc.cont_no like #{contName})
+		</if>
+		<if test="contType!=null and contType!=''">
+			and bc.cont_Type=#{contType}
+		</if>
+		<if test="contStatus!=null and contStatus!=''">
+			and bc.cont_status=#{contStatus}
+		</if>
+		<if test="startDate!=null">
+			and bc.create_time &gt;= #{startDate}
+		</if>
+		<if test="endDate!=null">
+			and bc.create_time &lt; #{endDate}
+		</if>
+		<if test="suppName!=null and suppName!=''">
+			and (bc.second_part like #{suppName} or bc.second_part_name like #{suppName})
+		</if>
+		<if test="vaildStart!=null">
+			and bc.end_date &gt;= #{vaildStart}
+		</if>
+		<if test="vaildEnd!=null">
+			and bc.end_date &lt;= #{vaildEnd}
+		</if>
+	</select>
+	<insert id="saveCont" parameterType="com.faujor.entity.bam.Contract">
+		insert into bam_cont
+		  (id,cont_no,cont_name,cont_Type,cont_Type_Name,
+		   cont_status,cont_status_name,
+		   create_user,create_time,modify_user,modify_time,
+		   first_Part,first_Part_Name,second_Part,second_Part_Name,
+		   cont_Version,cont_Remark,start_date,end_date)
+		values
+		  (#{id},#{contNo},#{contName},#{contType},#{contTypeName},
+		   #{contStatus},#{contStatusName},
+		   #{createUser},#{createTime},#{createUser},#{createTime},
+		   #{firstPart},#{firstPartName},#{secondPart},#{secondPartName},
+		   #{contVersion}, #{contRemark},#{startDate},#{endDate})
+	</insert>
+	<delete id="deleteContById" parameterType="String">
+		delete from bam_cont where id=#{contId}
+	</delete>
+	<update id="updateCont"  parameterType="com.faujor.entity.bam.Contract">
+		update bam_cont set
+		  cont_name=#{contName},cont_no=#{contNo},
+		  modify_user=#{modifyUser},modify_time=#{modifyTime},
+		  cont_Type=#{contType},cont_Type_name=#{contTypeName}, cont_Version=#{contVersion},
+		  first_Part=#{firstPart},first_Part_Name=#{firstPartName},second_Part=#{secondPart},second_Part_Name=#{secondPartName},
+		  cont_Remark=#{contRemark},start_Date=#{startDate},end_Date=#{endDate}
+		where id=#{id}
+	</update>
+	<select id="getCont" parameterType="Map" resultMap="contMap">
+		select *from bam_cont		
+		<where>
+			<if test="contNo!=null and contNo!=''">
+				 cont_no=#{contNo}
+			</if>
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+		</where>
+	</select>
+	<update id="changeContSatus" parameterType="com.faujor.entity.bam.Contract">
+		update bam_cont set
+		  cont_Status=#{contStatus},
+		  status_name=#{statusName}
+		where id=#{id}
+	</update>
+	
+	<select id="checkIsExist" resultType="Integer">
+		select count(1) from bam_cont where cont_no=#{contCode}
+		<if test="id!=null and id!=''">
+			and id!=#{id}
+		</if>
+	</select>
+</mapper>

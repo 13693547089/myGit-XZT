@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>销售预测管理</title>
+</head>
+
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/saleFcst/saleFcstList.js}"></script>
+
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {
+    margin-top: 0px;
+    margin-bottom: 0px;}
+.layui-form-label {
+    width: 105px;
+}
+.margin-left4{margin-left:4%}
+</style>
+
+<body class='fau-body-list'>
+
+		<form action="" id="searchForm" class="layui-form">
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">预测名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="search_fsctName" id="search_fsctName" lay-verify="required"
+								placeholder="请输入预测名称" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+			    <div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">创建日期</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" class="layui-input" id="search_crtDateStart" name="search_crtDateStart" placeholder="yyyy-MM-dd">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							<input type="text" class="layui-input" id="search_crtDateEnd" name="search_crtDateEnd" placeholder="yyyy-MM-dd">
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</form>
+
+	<div class="layui-row">
+		<div class="layui-col-md9  ">
+		
+			<span class="margin_right10" id="createSpan" >
+				<button class="layui-btn layui-btn-xs blueHollow" sec:authorize="hasRole('ROLE_SALEFCST_ADD')"  id="createBtn">创建</button>
+			</span>
+			<span class="margin_right10">
+				<button class="layui-btn layui-btn-xs blueHollow" style="margin-left: 10px;" sec:authorize="hasRole('ROLE_SALEFCST_DEL')"  id="deleteBtn">删除</button>
+			</span>
+			<button class="layui-btn layui-btn-xs blueHollow" style="margin-left: 10px;" sec:authorize="hasRole('ROLE_SALEFCST_EXP')" id="exportBtn">导出</button>
+			<button class="layui-btn layui-btn-xs blueHollow" style="margin-left: 10px;" sec:authorize="hasRole('ROLE_SALEFCST_IMP')" id="importBtn">导入</button>
+			<button class="layui-btn layui-btn-xs blueHollow" style="margin-left: 10px;" id="impTempDownBtn">导入模板下载</button>
+		</div>
+		<div class="layui-col-md3  textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+
+
+	</div>
+	<div class="layui-row">
+		<div class="layui-fluid tableCont" style='padding:0px;'>
+				<table class="layui-table" id="list-table" class="cont-table" lay-filter="docTool"></table>
+		</div>
+	</div>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="show">查看</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/html" id="barDemo1">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="show">查看</a>
+	</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.document.TempLogMapper">
+	<resultMap id="tempLogMap" type="com.faujor.entity.document.TempLog">
+			<id property="id" column="id"/>
+			<result property="operation" column="operation"/>
+			<result property="operator" column="operator"/>
+			<result property="operateTime" column="operate_Time"/>
+			<result property="tempNo" column="temp_No"/>
+			<result property="operatorName" column="operatorName"/>
+			
+	</resultMap>
+	<insert id="saveTempLog" parameterType="com.faujor.entity.document.TempLog">
+		insert into doc_temp_log
+		  (id,operation,operator,operate_Time, temp_no)
+		values
+		  (#{id},#{operation},#{operator},#{operateTime},#{tempNo})
+	</insert>
+	<select id="getTempLogByTempNo" parameterType="String" resultMap="tempLogMap">
+		select t1.*,t2.name operatorName from doc_temp_log t1
+		 left join sys_user t2
+		 on t1.operator=t2.username
+		 where t1.temp_No=#{tempNo} 
+		 order by operate_Time asc
+	</select>
+	<delete id="delLogByTempNo" parameterType="String">
+		delete from doc_temp_log where temp_No=#{tempNo}
+	</delete>
+</mapper>

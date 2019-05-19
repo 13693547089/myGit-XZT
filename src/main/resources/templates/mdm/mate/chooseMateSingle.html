@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>物料单选</title>
+<link rel="stylesheet" href="/larryMS/layui-2.4.3/css/layui.css" />
+<link rel="stylesheet" href="/larryMS/layui/css/style.css" media="all">
+<link rel="stylesheet" type="text/css" href="/css/cssCommon/Common.css">
+</head>
+<body>
+
+	<form action="" class="layui-form" style="padding-top: 5px;">
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">物料名称：</label>
+				<div class="layui-input-inline">
+					<input type="text" name="mateName" id="mateName" class="layui-input"> 
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">物料编码：</label>
+				<div class="layui-input-inline">
+					<input type="text" name="mateCode" id="mateCode" class="layui-input"> 
+				</div>
+			</div>
+		</div>
+		<div class="tableCont">
+			<table id="toChooseTable" lay-filter="mateFilter"></table>
+		</div>
+	</form>
+	<script type="text/javascript" th:src="@{/larryMS/layui-2.4.3/layui.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/mate/chooseMateSingle.js}"></script>
+</body>
+</html>

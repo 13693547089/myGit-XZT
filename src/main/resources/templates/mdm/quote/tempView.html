@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiCommonHeader">
+</head>
+<body class='fau-body'>
+	<div class='divMargin divMargin1'>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn"
+			onclick="back()">返回</button>
+	</div>
+	<input type="text" id="tempId" name="id" th:value="${temp.id}"
+		class="layui-input layui-hide">
+	<input type="text" id="dVersion" name="dVersion"
+		th:value="${temp.dVersion}" class="layui-input layui-hide">
+	<input type="text" id="status" name="status" th:value="${temp.status}"
+		class="layui-input layui-hide">
+	<input id="detailsList" name="detailsList" class="layui-hide" />
+	<div class="layui-form-item MarginTop">
+		<div class="layui-inline">
+			<label class="layui-form-label">模板编码</label>
+			<div class="layui-input-inline">
+				<input type="text" id="tempCode" name="tempCode"
+					th:value="${temp.tempCode}" class="layui-input" readonly>
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">模板名称</label>
+			<div class="layui-input-inline">
+				<input type="text" name="tempName" id="tempName"
+					th:value="${temp.tempName}" class="layui-input" readonly>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">备注</label>
+		<div class="layui-input-block marginLeft">
+			<textarea name="remark" id="remark" th:text="${temp.remark}"
+				class="layui-textarea" readonly></textarea>
+		</div>
+	</div>
+	<div style="padding-top: 10px;">
+		<table id="tempDetailsTable"></table>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<div th:include="include::layuiOthersJS"></div>
+	<script type="text/javascript">
+		var treeData;
+		$(function() {
+			getTreeData();
+			load();
+		});
+		function getTreeData() {
+			var tempId = $("#tempId").val();
+			$.ajax({
+				url : '/quote/test',
+				type : 'GET',
+				async : false,
+				data : {
+					tempId : tempId
+				},
+				success : function(data) {
+					treeData = data;
+				}
+			});
+		}
+
+		function load() {
+			$('#tempDetailsTable').bootstrapTreeTable({
+				id : 'menuId',
+				parentColumn : 'parentId',
+				type : "GET", // 请求数据的ajax类型
+				// url : '/quote/tempDetails?tempId=' + tempId, //
+				// 请求数据的ajax的url
+				// ajaxParams : {}, // 请求数据的ajax的data属性
+				data : treeData,
+				expandColumn : '1',// 在哪一列上面显示展开按钮
+				striped : true, // 是否各行渐变色
+				bordered : true, // 是否显示边框
+				expandAll : true, // 是否全部展开
+				// toolbar : '#exampleToolbar',
+				columns : [ {
+					title : '段号',
+					field : 'segmCode'
+				}, {
+					title : '段名',
+					field : 'segmName'
+				}, {
+					title : '组件编号',
+					field : 'asseCode'
+				}, {
+					title : '组件名称',
+					field : 'asseName'
+				}, {
+					title : '物料编码',
+					field : 'mateCode'
+				}, {
+					title : '用量',
+					field : 'detailsNum'
+				}, {
+					title : '单位',
+					field : 'unit'
+				}, {
+					title : '规格',
+					field : 'standard'
+				} ]
+			});
+		}
+
+		// 返回
+		function back() {
+			tuoBack('.tempView','#serachInfo');
+		}
+	</script>
+</body>
+</html>

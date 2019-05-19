@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader"></head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+td:nth-child(1){border-right:none !important;}
+th:nth-child(1){border-right:none !important;}
+.layui-table-cell{padding:0px !important;}
+html,body{overflow:auto !important;}
+.appoStatusSpan{margin-right: -1%; margin-left: 3%;}
+.uncheck{margin-left:20px}
+.checked{margin-left:20px}
+.uncheck2{margin-left:20px}
+.checked2{margin-left:20px}
+.uncheck3{margin-left:20px}
+.checked3{margin-left:20px}
+.layui-tab-title .layui-this{color: blue;}
+.status{cursor: pointer;}
+div .layui-form-item{
+margin-bottom: 0px !important;
+}
+div .layui-row{
+margin-bottom: -9px !important;
+}
+</style>
+<body >
+<form class="layui-form" action="" method="post">
+	<div class="demoTable">
+		<!--日期状态选择框 -->
+		<div class="layui-row" style="margin-top: 10px;">
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">预约单号</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="appoCode" name="appoCode" placeholder="预约单号"    class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">直发通知单号</label>
+				    <div class="layui-input-block">
+				    	<input type="text" id="messCode" name="messCode" placeholder="直发通知单号"    class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">送货单号</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="deliCode" name="deliCode" placeholder="送货单号"    class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+		</div>
+		<div class="layui-row MarginTop">		   
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">收货单号</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="receCode" name="receCode" placeholder="收货单号"    class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+			  
+		  </div>
+			<div class="textRight" style="margin-right:5px;">
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button" data-type="reload" id="serachSupp">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" type="reset" id="reset">重置</button>
+			</div>
+		</div> 	
+	</div>
+	</form>
+	<div class="layui-tab" lay-filter="demo">
+		<ul class="layui-tab-title">
+			<li class="layui-this" lay-id="appoint">预约单</li>
+			<li lay-id="straMess">直发单</li>
+			<li lay-id="delivery">送货单</li>
+			<li lay-id="receive">收货单</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<!--预约单信息  -->
+				<div class='BttonDiv margin-top'>
+					<button class="layui-btn layui-btn-xs blueHollow" id="editAppoStatus">编辑状态</button>
+				</div>
+				<div class="panel-default ">
+					<div class=" btn-padding">
+						<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+							class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;送货信息
+						</a>
+					</div>
+				</div>
+				<br /> <input type="text" name="appoId" id="appoId"
+					style="display: none;" /> 
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">预约单号</label>
+							<div class="layui-input-block">
+								<input type="text" name="appoCode2" id="appoCode2" readonly="readonly"
+									class="layui-input" >
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">预约状态</label>
+							<div class="layui-input-block">
+								<input type="text" name="appoStatus" id="appoStatus"
+									readonly="readonly" class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">创建日期</label>
+							<div class="layui-input-block">
+								<input type="text" name="createDate" id="createDate"
+									readonly="readonly" class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">申请人</label>
+							<div class="layui-input-block">
+								<input type="text" name="suppName" id="suppName"
+									readonly="readonly" class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;"><i
+								class="red xinghao">*</i>预约日期</label>
+							<div class="layui-input-block">
+								<input type="text" name="appoDate" id="appoDate"
+									class="layui-input disa must" readonly="readonly"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4" th:if="${type!='1'}">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;">引用预约单</label>
+							<div class="layui-input-block">
+								<input type="text" name="citeAppo" id="citeAppo"
+									readonly="readonly" class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;"><i
+								class="red xinghao">*</i>期望送货时间</label>
+							<div class="layui-input-block">
+								<input type="text" name="expectDate" id="expectDate"
+									readonly="readonly" class="layui-input must"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;">确认送货时间</label>
+							<div class="layui-input-block">
+								<input type="text" name="affirmDate" id="affirmDate"
+									readonly="readonly" class="layui-input must"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;">供应商子范围</label>
+							<div class="layui-input-block">
+								<input type="text" name="suppRange" id="suppRange"
+									readonly="readonly" class="layui-input must"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;"><i
+								class="red xinghao">*</i>收货单位</label>
+							<div class="layui-input-block">
+								<input type="text" name="receUnit" id="receUnit"
+									readonly="readonly" class="layui-input must"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md8">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">收货地址</label>
+							<div class="layui-input-block">
+								<input type="text" name="receAddr" id="receAddr"
+									readonly="readonly" class="layui-input must"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">联系人</label>
+							<div class="layui-input-block">
+								<input type="text" name="contact" id="contact"
+									readonly="readonly" class="layui-input must"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">联系电话</label>
+							<div class="layui-input-block">
+								<input type="text" name="phone" id="phone" readonly="readonly"
+									class="layui-input must" >
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;">车辆数量/辆</label>
+							<div class="layui-input-block">
+								<input type="text" name="truckNum" id="truckNum"
+									readonly="readonly" 
+									class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;">物资数量/箱</label>
+							<div class="layui-input-block">
+								<input type="text" name="mateNumber" id="mateNumber"
+									readonly="readonly" 
+									class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">物资方量</label>
+							<div class="layui-input-block">
+								<input type="text" name="mateAmount" id="mateAmount"
+									readonly="readonly" 
+									class="layui-input">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class=" panel-default ">
+					<div class=" btn-padding">
+						<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+							class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;车辆信息
+						</a> 
+						<div class="layui-fluid tableCont" style='padding: 0px;'>
+							<table id="appoCarTable" lay-filter="appoCarTableEvent"
+								style='width: 99%; margin-left: 1%;'></table>
+						</div>
+					</div>
+				</div>
+				<div class=" panel-default ">
+					<div class=" btn-padding">
+						<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+							class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物资信息
+						</a>
+						<div class="layui-fluid tableCont" style='padding: 0px;'>
+							<table id="appoMateTable" lay-filter="appoMateTableEvent"
+								style='width: 99%; margin-left: 1%;'></table>
+						</div>
+					</div>
+				</div>
+				<!--预约单信息  -->
+			</div>
+			<div class="layui-tab-item">
+				<!--直发单信息  -->
+				<div class='BttonDiv margin-top'>
+					<button class="layui-btn layui-btn-xs blueHollow" id="editStraMessStatus">编辑状态</button>
+				</div>
+				<div class="panel-default ">
+					<div class=" btn-padding">
+						<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+							class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;送货信息
+						</a>
+					</div>
+				</div>
+				<input type="text" name="messId"
+					id="messId" style="display: none;" />
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">提货单号</label>
+							<div class="layui-input-block">
+								<input type="text" name="messCode2" id="messCode2" readonly="readonly"
+									class="layui-input" >
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">直发单状态</label>
+							<div class="layui-input-block">
+								<input type="text" name="messStatus" id="messStatus" readonly="readonly"
+									class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;"><i
+								class="red xinghao">*</i>供应商</label>
+							<div class="layui-input-block">
+								<input type="text" name="suppName2" id="suppName2" readonly="readonly"
+									class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label"
+								style="width: 100px; white-space: pre;">OEM供应商</label>
+							<div class="layui-input-block">
+								<input type="text" name="zzoem" id="zzoem" readonly="readonly"
+									class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;"><i
+								class="red xinghao">*</i>提货日期</label>
+							<div class="layui-input-block">
+								<input type="text" name="deliveryDate" id="deliveryDate"
+									class="layui-input disa must" readonly="readonly"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;"><i
+								class="red xinghao">*</i>到货日期</label>
+							<div class="layui-input-block">
+								<input type="text" name="arriDate" id="arriDate"
+									class="layui-input disa must" readonly="readonly"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;"><i
+								class="red xinghao">*</i>收货单位</label>
+							<div class="layui-input-block">
+								<input type="text" name="receUnit2" id="receUnit2"
+									class="layui-input disa must" readonly="readonly"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">收货地址</label>
+							<div class="layui-input-block">
+								<input type="text" name="receAddr2" id="receAddr2"
+									readonly="readonly" class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">联系人</label>
+							<div class="layui-input-block">
+								<input type="text" name="contact2" id="contact2"
+									readonly="readonly" class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">联系电话</label>
+							<div class="layui-input-block">
+								<input type="text" name="phone2" id="phone2" readonly="readonly"
+									class="layui-input" >
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">总数量/箱</label>
+							<div class="layui-input-block">
+								<input type="text" name="mateNumber2" id="mateNumber2"
+									readonly="readonly" 
+									class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">总方量</label>
+							<div class="layui-input-block">
+								<input type="text" name="mateAmount2" id="mateAmount2"
+									readonly="readonly" 
+									class="layui-input">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row">
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">创建日期</label>
+							<div class="layui-input-block">
+								<input type="text" name="createDate2" id="createDate2" readonly="readonly"
+									class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 100px;">供应商子范围</label>
+							<div class="layui-input-block">
+								<input type="text" name="suppRange2" id="suppRange2" readonly="readonly"
+									class="layui-input"
+									>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class=" panel-default layui-row">					
+					<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物资信息
+					</a> 
+				</div>
+				<div class='layui-row'>
+					<table id="MessmateTable" lay-filter="MessmateTableEvent"></table>		
+				</div>
+				<!--直发单信息  -->
+			</div>
+			<div class="layui-tab-item">
+				<!--送货单列表  -->
+				<div class="layui-fluid tableCont" style='padding:0px;'>
+					<table class="layui-table " id ="deliveryTable" lay-filter="deliveryTableDemo" style='display:none' >
+					</table>
+				</div>
+				<!--送货单信息  -->
+			</div>
+			<div class="layui-tab-item" >
+				<!--收货单列表  -->
+				<div class="layui-fluid tableCont" style='padding:0px;'>
+					<table class="layui-table " id ="receiveTable" lay-filter="receiveTableDemo" style='display:none' >
+					</table>
+				</div>
+				<!--收货单信息  -->
+			</div>
+		</div>
+	</div>
+<script type="text/html" id="delibarDemo">
+<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="check">查看</a>
+<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑状态</a>
+</script>
+<script type="text/html" id="recebarDemo">
+<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="check">查看</a>
+<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑状态</a>
+</script>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/rm/appoDeli/delieveOccupy.js}"></script>	
+				
+</body>
+</html>
+		 

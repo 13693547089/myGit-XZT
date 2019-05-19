@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<!-- <meta charset="utf-8">
+<title>layui</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style>
+ #ExhiImg{   
+ display:none;
+  position: absolute;
+    top: 31%;
+    width: 60%;
+    height: auto;
+    border: 1px solid #ccc;
+    background: white;
+    margin-left: 20%;
+    padding: 5px;
+    }
+</style>
+<body class='fau-body'>
+	<div style="margin: 5px 15px;">
+		<button class="layui-btn layui-btn-xs blueHollow " th:if="${ao.auditStatus=='已保存' && taskPDO.pagePattern == 'write'}"
+			id="submitBtn" >提交</button>
+		<button class="layui-btn layui-btn-xs blueHollow " th:if="${ao.auditStatus=='已保存' && taskPDO.pagePattern == 'write'}"
+			id="saveBtn">保存</button>
+		<button class="layui-btn layui-btn-xs  blueHollow" th:if="${ao.auditStatus=='已提交' && taskPDO.pagePattern == 'write'}" id="confirmBtn">确认</button>
+		<button class="layui-btn layui-btn-xs  blueHollow" th:if="${ao.auditStatus=='已提交' && taskPDO.pagePattern == 'write'}" id="rejectBtn">退回</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+	</div>
+	<input type="text" id="status" th:value="${status}" class="layui-hide" />
+	<input id="approve" th:value="${approve}" class="layui-hide" />
+	<form class="layui-form" action="" id="signForm">
+		<input id="id" name="id" th:value="${ao.id}" class="layui-hide" /> <input
+			id="mateList" name="mateList" class="layui-hide" /> <input
+			id="mouldList" name="mouldList" class="layui-hide" />
+			<input type="hidden"  id="taskName" th:value="${taskPDO.taskName}" name="taskName" class="hide" style=''></input>
+		    <input type="hidden"  id="processCode" th:value="${taskPDO.processCode}" name="processCode" class="hide" style=''></input> 
+		    <input type="hidden"  id="pagePattern" th:value="${taskPDO.pagePattern}" name="pagePattern" class="hide" style=''></input> 
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">稽核单号</label>
+					<div class="layui-input-inline">
+						<input type="text" id="auditCode" name="auditCode"
+							th:value="${ao.auditCode}" class="layui-input" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">状态</label>
+					<div class="layui-input-inline">
+						<input type="text" name="auditStatus" id="auditStatus" readonly
+							th:value="${ao.auditStatus}" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">创建日期</label>
+					<div class="layui-input-inline">
+						<input type="text" name="createTime" id="createTime"
+							th:value="${ao.createTime== null} ? '':${#dates.format(ao.createTime, 'yyyy-MM-dd')} "
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md8">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">供应商</label>
+					<div class="layui-input-inline" style="width: 73%;">
+						<input type="text" name="suppId" id="suppId"
+							th:value="${ao.suppId}" class="layui-hide"> <input
+							type="text" name="suppName" id="suppName"
+							th:value="${ao.suppName}" class="layui-input" readonly="readonly">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div>
+		<button class="layui-btn layui-btn-xs blueHollow disableBtn" th:if="${ao.auditStatus=='已保存'}"
+			id="addMateBtn">添加</button>
+		<button class="layui-btn layui-btn-xs blueHollow disableBtn" th:if="${ao.auditStatus=='已保存'}"
+			id="delMateBtn">删除</button>
+		<div class="layui-fluid tableCont" style='padding: 0px;'>
+			<table id="mateTable" lay-filter="mateTable"></table>
+		</div>
+	</div>
+	<div>
+		<button class="layui-btn layui-btn-xs blueHollow disableBtn" th:if="${ao.auditStatus=='已保存'}"
+			id="addMouldBtn">添加</button>
+		<button id="uploadBtn" class="layui-hide"></button>
+		<div class="layui-fluid tableCont" style='padding: 0px;'>
+			<table id="mouldTable" lay-filter="mouldTable"></table>
+		</div>
+	</div>
+	<div>
+		<table id="approveTable" lay-filter="approveFilter"></table>
+	</div>
+	<div id='ExhiImg'>
+		<div><button type='button' class='Close layui-btn layui-btn-xs blueHollow'style='margin-bottom:5px;'>关闭</button></div>
+	</div>
+	<script type="text/html" id="operateBar">
+ 		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="upload">上传</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/html" id="belongRight">
+  		<!-- 这里的 checked 的状态只是演示 -->
+  		<input type="checkbox" class="mstatus" name="belongRight" value="{{d.id}}" lay-skin="switch" lay-text="脱普|供应商" lay-filter="belongRightDemo" {{ d.belongRight == 'T' ? 'checked' : '' }}>
+	</script>
+	<script type="text/html" id="mouldStatus">
+  		<!-- 这里的 checked 的状态只是演示 -->
+		<input type="radio" class="mstatus" lay-filter="testDemo" name="{{d.id}}" value="1" title="废" {{ d.mouldStatus == '1' ? 'checked' : '' }}>
+		<input type="radio" class="mstatus" lay-filter="testDemo" name="{{d.id}}" value="2" title="用" {{ d.mouldStatus == '2' ? 'checked' : '' }}>
+		<input type="radio" class="mstatus" lay-filter="testDemo" name="{{d.id}}" value="3" title="闲" {{ d.mouldStatus == '3' ? 'checked' : '' }}>
+	</script>
+	<script type="text/html" id="Img">
+		 <img src='/img/top.png'></img>
+	</script>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/fam/audit/taskAudit.js}"></script>
+</body>
+</html>

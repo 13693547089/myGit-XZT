@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>产能配置</title>
+</head>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+.main-body {
+	margin-top: 20px;
+	margin-left: 20px
+}
+
+.doc-table {
+	margin-right: 20px;
+}
+
+.tree-search {
+	width: 70%;
+}
+
+.table-search {
+	width: 30%;
+}
+
+.layui-colla-title {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.layui-form-label {
+	width: 105px;
+}
+
+.margin-left4 {
+	margin-left: 4%
+}
+</style>
+<body class='fau-body-list'>
+	<form action="" id="searchForm" class="layui-form">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料信息</label>
+					<div class="layui-input-block">
+						<input type="text" name="search_matInfo" id="search_matInfo"
+							lay-verify="required" placeholder="物料编码/名称" autocomplete="off"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料类别</label>
+					<div class="layui-input-block">
+						<select name="search_matType" id="search_matType"
+							lay-verify="required">
+							<option value="">请选择</option>
+							<option th:each="dic:${mateTypeList}" th:value="${dic.dicName}"
+								th:text="${dic.dicName}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="layui-row">
+		<div class="layui-col-md9">
+			<button class="layui-btn layui-btn-xs blueHollow" id="batchBtn">批量修改</button>
+		</div>
+		<div class="layui-col-md3 textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-fluid tableCont" style='padding: 0px;'>
+			<table class="layui-table" id="list-table" class="cont-table"
+				lay-filter="docTool"></table>
+		</div>
+	</div>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="show">查看</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/mdm/config/capacityConfig.js}"></script>
+</body>
+</html>

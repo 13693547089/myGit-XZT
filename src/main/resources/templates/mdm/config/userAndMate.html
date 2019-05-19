@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>采购货源配置</title>
+</head>
+<style type="text/css">
+.layui-col-md9 {
+	margin-left: 0px;
+}
+
+.layui-col-space10>* {
+	padding-bottom: 0px;
+}
+
+.layui-btn-group {
+	margin-top: 6px;
+}
+
+html,body {
+	overflow: auto !important;
+}
+ .pitch1{background:#b9e0ef;}
+</style>
+<body class='fau-body'>
+	<div class="demoTable" style="margin-top: 10px;">
+		<form class="layui-form" action="" method="post">
+			<div class="layui-row layui-col-space20">
+				<div class="layui-col-md3">
+					<div class="layui-row">
+						<div class="layui-col-md12">
+							<input type="text" id="userInfo" name="userInfo"
+								placeholder="采购员姓名/员工编号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-col-md12">
+							<div class="layui-fluid tableCont xuanzhong1" style='padding: 0px;'>
+								<table class="layui-table" id="userTable" lay-filter="userTable"
+									style='display: none;'></table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md9">
+					<div class="layui-row layui-col-space10">
+						<div class="layui-col-md4">
+							<input type="text" id="mateInfo" name="mateInfo"
+								placeholder="物料编码/名称" class="layui-input">
+						</div>
+						<div class="layui-col-md8" style="margin-top: 8px;">
+							<div class="layui-btn-group1">
+								<button class="layui-btn layui-btn-xs yellowSolid"
+									id="searchBtn" data-type="reload" type="button">搜索</button>
+								<button class="layui-btn layui-btn-xs yellowHollow"
+									id="resetBtn" type="reset">重置</button>
+								<button class="layui-btn layui-btn-xs blueHollow" id="expBtn"
+									type="button"
+									style='margin-left: 10px !important; float: right;'>导出</button>
+								<button class="layui-btn layui-btn-xs blueHollow" id="delBtn"
+									type="button"
+									style='margin-left: 10px !important; float: right;'
+									sec:authorize="hasRole('ROLE_BUYERMATE_REMOVE')">删除</button>
+								<button class="layui-btn layui-btn-xs blueHollow" id="addBtn"
+									type="button" style='float: right;'
+									sec:authorize="hasRole('ROLE_BUYERMATE_ADD')">添加</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="layui-row">
+						<div class="layui-col-md12">
+							<div class="layui-fluid tableCont" style='padding: 0px;'>
+								<table id="mateTable" lay-filter="mateTable"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+<div th:include="include::layuiCommonJS"></div>
+<script th:src="@{/larryMS/js/appjs/mdm/config/userAndMate.js}"></script>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>新建预约申请</title>
+</head>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+.layui-table,.layui-table-view {
+	width: 100% !important;
+	margin-left: 1%;
+}
+
+td:nth-child(1) {
+	border-right: 1px solid #e6e6e6 !important;
+}
+
+th:nth-child(1) {
+	border-right: 1px solid #e6e6e6 !important;
+}
+
+html,body {
+	overflow: auto !important;
+}
+
+.margin-top {
+	margin-top: 10px;
+}
+</style>
+<body>
+
+	<div class='BttonDiv margin-top'>
+		<button class="layui-btn layui-btn-xs blueHollow"
+			th:if="${type !='3'}" id="submitAppoint">提交</button>
+		<button class="layui-btn layui-btn-xs blueHollow"
+			th:if="${type !='3' && appo.appoStatus != '已拒绝'}" id="saveAppoint"
+			onclick="saveAppoint()">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>
+
+	<div class="panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;送货信息
+			</a>
+		</div>
+	</div>
+	<br />
+	<form class="layui-form" action="" method="post" id="appointForm"
+		enctype="multipart/form-data">
+		<input type="text" name="appoId" id="appoId" style="display: none;"
+			th:value="${appo.appoId}" /> <input type="text" name="appoMateData"
+			id="appoMateData" style="display: none;" /> <input type="text"
+			name="appoCarData" id="appoCarData" style="display: none;" /> <input
+			type="text" name="post" id="post" style="display: none;"
+			th:value="${appo.post}" /> <input type="text" name="type" id="type"
+			style="display: none;" th:value="${type}" /> <input type="text"
+			name="suppId" id="suppId" style="display: none;"
+			th:value="${appo.suppId}" />
+			<input type="text" name="suppRange" id="suppRange" style="display: none;" th:value="${appo.suppRange}" />
+			<input type="text" name="suppRangeDesc" id="suppRangeDesc" style="display: none;" th:value="${appo.suppRangeDesc}" />
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">预约单号</label>
+					<div class="layui-input-block">
+						<input type="text" name="appoCode" readonly="readonly"
+							class="layui-input" th:value="${appo.appoCode}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">预约状态</label>
+					<div class="layui-input-block">
+						<input type="text" name="appoStatus" id="appoStatus"
+							readonly="readonly" class="layui-input"
+							th:value="${appo.appoStatus}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">创建日期</label>
+					<div class="layui-input-block">
+						<input type="date" name="createDate" id="createDate"
+							readonly="readonly" class="layui-input"
+							th:value="${appo.createDate == null ? '' : #dates.format(appo.createDate,'yyyy-MM-dd')}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">申请人</label>
+					<div class="layui-input-block">
+						<input type="text" name="suppName" id="suppName"
+							readonly="readonly" class="layui-input"
+							th:value="${appo.suppName}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i
+						class="red xinghao">*</i>预约日期</label>
+					<div class="layui-input-block">
+						<input type="text" name="appoDate" id="appoDate"
+							class="layui-input disa must"
+							th:value="${appo.appoDate == null ? '' : #dates.format(appo.appoDate,'yyyy-MM-dd')}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4" th:if="${type!='1'}">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;">引用预约单</label>
+					<div class="layui-input-block">
+						<input type="text" name="citeAppo" id="citeAppo"
+							readonly="readonly" class="layui-input"
+							th:value="${appo.citeAppo}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;"><i
+						class="red xinghao">*</i>期望送货时间</label>
+					<div class="layui-input-block">
+						<select name="expectDate" id="expectDate" class="disa must">
+							<option value=""></option>
+							<option th:each="expectlist:${expectlist}"
+								th:value="${expectlist.dicName}" th:text="${expectlist.dicName}"
+								th:selected="${expectlist.dicName==appo.expectDate}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;">确认送货时间</label>
+					<div class="layui-input-block">
+						<select name="affirmDate" id="affirmDate" class="disa" disabled>
+							<option value=""></option>
+							<option th:each="expectlist:${expectlist}"
+								th:value="${expectlist.dicName}" th:text="${expectlist.dicName}"
+								th:selected="${expectlist.dicName==appo.affirmDate}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">供应商子范围</label>
+					<div class="layui-input-block">
+						<select name="suppRange2" id="suppRange2" class="disa" lay-filter="suppRange2">
+							<option value=""></option>
+							<option th:each="proList:${proList}"
+								th:value="${proList.suppRange +' , '+ proList.suppRangeDesc}" th:text="${proList.suppRange +' - '+ proList.suppRangeDesc}"
+								th:selected="${proList.suppRange==appo.suppRange}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i
+						class="red xinghao">*</i>收货单位</label>
+					<div class="layui-input-block">
+						<select name="receUnit" id="receUnit" lay-search=""
+							lay-filter="receUnit" class="disa must">
+							<option value=""></option>
+							<option th:each="receUnitList:${receUnitList}"
+								th:value="${receUnitList}" th:text="${receUnitList}"
+								th:selected="${receUnitList==appo.receUnit}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md8">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">收货地址</label>
+					<div class="layui-input-block">
+						<input type="text" name="receAddr" id="receAddr"
+							readonly="readonly" class="layui-input must"
+							th:value="${appo.receAddr}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">联系人</label>
+					<div class="layui-input-block">
+						<input type="text" name="contact" id="contact" readonly="readonly"
+							class="layui-input must" th:value="${appo.contact}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">联系电话</label>
+					<div class="layui-input-block">
+						<input type="text" name="phone" id="phone" readonly="readonly"
+							class="layui-input must" th:value="${appo.phone}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;">车辆数量/辆</label>
+					<div class="layui-input-block">
+						<input type="text" name="truckNum" id="truckNum"
+							readonly="readonly" th:value="${appo.truckNum}"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;">物资数量/箱</label>
+					<div class="layui-input-block">
+						<input type="text" name="mateNumber" id="mateNumber"
+							readonly="readonly" th:value="${appo.mateNumber}"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">物资方量</label>
+					<div class="layui-input-block">
+						<input type="text" name="mateAmount" id="mateAmount"
+							readonly="readonly" th:value="${appo.mateAmount}"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;车辆信息
+				</a> <span th:if="${type !='3'}">
+					<div>
+						<!-- 添加按钮 -->
+						<a class="btn editRow " id="addCar"
+							style='margin-left: 0.3%; padding-right: 0px;'>
+							<button class="layui-btn layui-btn-xs blueHollow" type="button">添加</button>
+						</a>
+						<!-- 删除按钮 -->
+						<a class="btn editRow" id="removeCar" style='padding-left: 6px;'>
+							<button class="layui-btn layui-btn-xs blueHollow" type="button">删除</button>
+						</a>
+					</div>
+				</span>
+				<div id="collapseThree" class="panel-collapse collapse in">
+					<div class="panel-body boottable">
+						<table class="table table-striped table-bordered table-hover"
+							id="appoCarTable"></table>
+					</div>
+				</div>
+				<!-- <table id="appoCarTable" lay-filter="appoCarTableEvent" style='width:99%;margin-left:1%;'></table> -->
+			</div>
+		</div>
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物资信息
+				</a> <span th:if="${type !='3'}">
+					<div>
+						<!-- 添加按钮 -->
+						<a class="btn editRow " id="addMate"
+							style='margin-left: 0.3%; padding-right: 0px;'>
+							<button class="layui-btn layui-btn-xs blueHollow" type="button">添加</button>
+						</a>
+						<!-- 删除按钮 -->
+						<a class="btn editRow" id="removeMate" style='padding-left: 6px;'>
+							<button class="layui-btn layui-btn-xs blueHollow" type="button">删除</button>
+						</a>
+					</div>
+				</span>
+				<div class="layui-fluid tableCont" style='padding: 0px;'>
+					<table id="appoMateTable" lay-filter="appoMateTableEvent"
+						style='width: 99%; margin-left: 1%;'></table>
+				</div>
+			</div>
+		</div>
+		<div id="refuseReasonDiv" th:if="${appo.appoStatus == '已拒绝'}">
+			<div class="panel-default">
+				<div class=" btn-padding">
+					<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+						class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;拒绝原因
+					</a>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<textarea name="refuseReason" id="refuseReason"
+						th:text="${appo.refuseReason}" readonly="readonly"
+						placeholder="请输入内容" style="color: red;"
+						class="layui-textarea textareaWid"></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+</script>
+	<div th:include="include::websocketJS"></div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript" th:src="@{/editTable/plus/import.inc.js}"></script>
+	<script type="text/javascript" src="/larryMS/js/appjs/task/taskCommon.js"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/appoint/appointAdd.js}"></script>
+
+</body>
+</html>

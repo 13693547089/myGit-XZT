@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>&nbsp; </title>
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/larryMS/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}"> 
+</head>
+<style>
+body{color:black !important;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;}
+.comName{text-align:center;}
+.bills{text-align:center;}
+input{padding-left:0px !important;}
+.layui-input-block{margin-left:82px !important;}
+.layui-table-cell{padding:0px !important;font-size:10px;}
+.layui-table-box, .layui-table-view{width:800px;}
+.inputHeight{height:19px;font-size:10px !important;}
+.padMarg{padding:0px;margin:0px;font-size:10px !important;}
+.layui-table-view .layui-table td, .layui-table-view .layui-table th{padding:0px 0px !important;}
+.layui-table-cell{word-wrap: break-word;height: auto;line-height: 23px; white-space: normal;}
+.blueHollow {
+  background: #fff;
+  border: 1px solid #458ffc;
+  color: #458ffc; }
+
+.blueHollow:hover {
+  background: #458ffc; }
+  .layui-table-cell{font-family: inherit;font-size: inherit;font-style: inherit;color:black !important;}
+</style>
+<body>
+		
+	 <div class='BttonDiv'>
+	<button class="layui-btn layui-btn-xs blueHollow" id="affirmBut">确定</button>
+	<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>
+		
+	<br/>
+
+
+	 <form class="layui-form" action="" method="post" id="deliveryForm" enctype="multipart/form-data">
+	  <input type="text" name="deliMateData" id="deliMateData" style="display: none;"/>
+	  <input type="text" name="deliId" id="deliId" style="display: none;" th:value="${deli.deliId}"/>
+	  <input type="text" name="suppId" id="suppId" style="display: none;"/>
+	  <input type="text" name="truckNum" id="truckNum" style="display: none;" />
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item" style='height:32px;'>
+			    <label class="layui-form-label" style="width: 75px;padding: 0px;padding-top: 8px;">送货单号:</label>
+			    <div class="layui-input-block" style='height:100%;'>
+			      <input type="text" name="deliCode" style="border: 0px;" readonly="readonly"   class="layui-input" th:value="${deli.deliCode}" style="height:100%;border:none;">
+			    </div>
+			  </div>
+		  </div> 
+	  	  
+	  	   <!-- <div class="layui-col-md2 layui-col-md-offset6">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">页次:</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="status" style="border: 0px;"  readonly="readonly"   class="layui-input" value="1/2" >
+			    </div>
+			  </div>
+		  </div>  -->
+	  </div>
+	  <div class="layui-row" style='height:52px;width:800px;'>
+		  	  <div style='width:87%;float:left;'>
+		  	  		<div class="layui-row">
+		  	  			<div class="layui-col-md12 comName">
+						  <span th:text="${deli.suppName}" ></span>
+						 </div> 
+					</div>
+					<div class="layui-row" style="margin-top: 5px;">
+		  	  			<div class="layui-col-md12 bills" >
+						    <h2>送货单</h2>
+						</div> 
+					</div>
+			  </div>
+		  	  <div class="layui-col-md2 " style="height:80px;width:13%;float:left;">
+				  <!-- <img src='/img/QRimages/ed16f4f15b0345b1a65fc3389d963f3b二维码.jpg' style="height:100%;width:86px;" id='Img'> -->
+				  <img th:src='${qrurl == null ? "/img/wenhao.jpg" : qrurl}' style="height:100%;width:86px;" id='Img'>
+			  </div>
+		  </div>
+
+
+	  <div style='width:800px;'>
+	  	  <div style='width:30%;float:left;'>
+			  <div class="layui-form-item inputHeight" >
+			    <label class="layui-form-label padMarg" style="width: 75px;padding-right:0px;">收货单位:</label>
+			    <div class="layui-input-block inputHeight" style='width:130px;'>
+			      <input type="text" name="receUnit" style="border: 0px;" id="receUnit"   readonly="readonly"   class="layui-input disa inputHeight" th:value="${deli.receUnit}">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div style='width:43%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 47px;padding-right:0px;">电话:</label>
+			    <div class="layui-input-block inputHeight" style='width:153px;margin-left:53px !important;'>
+			      <input type="text" name="phone" style="border: 0px;" id="phone" readonly="readonly"  class="layui-input disa inputHeight" th:value="${deli.phone}">
+			    </div>
+			  </div>
+		  </div>
+		  <div style='width:21%;float:right;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 75px;padding-right:0px;">送货日期:</label>
+			    <div class="layui-input-block inputHeight" style='width:130px;'>
+			      <input type="date" name="deliDate" style="border: 0px;width:150px;" id="deliDate" readonly="readonly"     class="layui-input inputHeight" th:value="${deli.deliDate == null ? '' : #dates.format(deli.deliDate,'yyyy-MM-dd')}">
+			    </div>
+			  </div>
+		  </div>  
+		  <div style='clear:both;'></div>
+	  </div>
+	
+	  <!-- 联系方式 -->
+	 <div style='width:800px;'>
+	  	  <div style='width:30%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 63px;padding-right:0px;">联系人:</label>
+			    <div class="layui-input-block inputHeight" style='width:140px;'>
+			      <input type="text" name="contact" style="border: 0px;" id="contact"  readonly="readonly "   class="layui-input disa inputHeight" th:value="${deli.contact}">
+			    </div>
+			  </div>
+		  </div>  
+	  	  
+		   <div style='width:43%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 47px;padding-right:0px;">地址:</label>
+			    <div class="layui-input-block inputHeight" style='width:250px;margin-left:53px !important;'>
+			      <input type="text" name="receAddr" style="border: 0px;padding-left:0px;font-size:10px;" id="receAddr"  readonly="readonly"   class="layui-input disa inputHeight" th:value="${deli.receAddr}">
+			    </div>
+			  </div>
+		  </div> 
+		   <div style='width:21.7%;float:right;'>
+			   <div class="layui-form-item inputHeight">
+    		      <label class="layui-form-label padMarg" style="width: width:75px;padding-right:0px;">送货时间:</label>
+    			    <div class="layui-input-block inputHeight" style='width:125px;'>
+				     <input type="text" name="affirmDate" style="border: 0px;" id="affirmDate" readonly="readonly"   class="layui-input inputHeight" th:value="${deli.affirmDate}">
+    			  </div>
+ 			   </div>
+		  </div>  
+		  <div style='clear:both;'></div> 
+	  </div>
+	<div class=" panel-default " ><!-- page-break-before:always -->
+		<div class=" btn-padding">
+			<table id="deliMateTable" lay-filter="deliMateTableEvent" style='width:800px;margin-left:1%;'></table>
+		</div>
+	</div>
+
+	  <div style='width:800px'>
+	  	  <div  style='width:20%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 64px;text-align:left;padding-right: 0px;">数量/箱:</label>
+			    <div class="layui-input-block inputHeight" style='margin-left: 68px !important;'>
+			      <input type="text" name="deliNumber" style="border: 0px;"style="border: 0px;" id="deliNumber" readonly="readonly"  class="layui-input inputHeight" th:value="${deli.deliNumber}">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div  style='width:20%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 78px;white-space:pre;">总体积/立方:</label>
+			    <div class="layui-input-block inputHeight">
+			      <input type="text" name="deliAmount" style="border: 0px;" id="deliAmount" readonly="readonly"  class="layui-input inputHeight" th:value="${deli.deliAmount}">
+			    </div>
+			  </div>
+		  </div> 
+		   <div style='width:17%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 53px;">制单人:</label>
+			    <div class="layui-input-block inputHeight" style='margin-left: 61px !important;'>
+			      <input type="text" name="contact" style="border: 0px;" id="contact"  readonly="readonly"   class="layui-input disa inputHeight" >
+			    </div>
+			  </div>
+		  </div>  
+		  <div  style='width:21%;float:left;'>
+			  <div class="layui-form-item inputHeight">
+			    <label class="layui-form-label padMarg" style="width: 65px;">货物签收:</label>
+			    <div class="layui-input-block inputHeight" style='margin-left: 68px !important;'>
+			      <input type="text" name="phone" style="border: 0px;" id="phone" readonly="readonly"  class="layui-input disa inputHeight" >
+			    </div>
+			  </div>
+		  </div>
+		  <div style='width:22%;float:left;'>
+			   <div class="layui-form-item inputHeight">
+    		      <label class="layui-form-label padMarg" style="width: 65px;">获取承运:</label>
+    			    <div class="layui-input-block inputHeight">
+				     <input type="text" name="affirmDate" style="border: 0px;" id="affirmDate" readonly="readonly"   class="layui-input inputHeight" >
+    			  </div>
+ 			   </div>
+		  </div>
+		  <div style='clear:both;'></div>  
+	  </div>
+	</form>
+
+
+<div th:include="include::layuiJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/delivery/deliveryPrint.js}"></script>
+<script language="javascript" type="text/javascript">
+        function UserPrint()
+        { 
+          bdhtml=window.document.body.innerHtml;  
+         
+          var headstr = "<html><head></head><body>";
+          var footstr = "</body>";  
+          var bodystr = document.all.item("printDiv").innerHTML;                      
+          var oldstr = document.body.innerHTML;  
+               
+          document.body.innerHTML = headstr + bodystr + footstr;   
+          pagesetup_null();      
+          window.print();           
+          pagesetup_default();
+          document.body.innerHTML = oldstr;
+          return false;    
+        }               
+
+        var hkey_root,hkey_path,hkey_key 
+        hkey_root="HKEY_CURRENT_USER" 
+        hkey_path="\\Software\\Microsoft\\Internet Explorer\\PageSetup\\" 
+        //设置网页打印的页眉页脚为空 
+        function pagesetup_null(){ 
+            try{ 
+                var RegWsh = new ActiveXObject("WScript.Shell") 
+                hkey_key="header" 
+                RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"") 
+                hkey_key="footer" 
+                RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"") 
+            }catch(e){} 
+        } 
+        //设置网页打印的页眉页脚为默认值 
+        function pagesetup_default(){ 
+            try{ 
+                var RegWsh = new ActiveXObject("WScript.Shell") 
+                hkey_key="header" 
+                RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"&w&b页码，&p/&P") 
+                hkey_key="footer" 
+                RegWsh.RegWrite(hkey_root+hkey_path+hkey_key,"&u&b&d") 
+            }catch(e){} 
+        } 
+    </script>	
+	
+</body>
+</html>
+		 

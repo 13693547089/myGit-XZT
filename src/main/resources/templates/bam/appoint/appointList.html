@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader"></head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+td:nth-child(1){border-right:none !important;}
+th:nth-child(1){border-right:none !important;}
+.layui-table-cell{padding:0px !important;}
+html,body{overflow:auto !important;}
+.appoStatusSpan{margin-right: -1%; margin-left: 3%;}
+.uncheck{margin-left:20px}
+.checked{margin-left:20px}
+.status{cursor: pointer;}
+</style>
+<body >
+<form class="layui-form" action="" method="post">
+	<div class="demoTable">
+		<!--日期状态选择框 -->
+		<div class="layui-row MarginTop">		   
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">预约单号</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="appoCode" name="appoCode"     class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+			  <div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">预约日期</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" id="startDate" name="startDate" placeholder="yyyy-MM-dd"   class="layui-input">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							 <input type="text" id="endDate" name="endDate"   placeholder="yyyy-MM-dd"   class="layui-input">
+						</div>
+					</div>
+				</div>
+			  <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">创建时间</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="createDate" name="createDate" placeholder="yyyy-MM-dd"    class="layui-input">
+				    </div>
+				  </div>
+			 </div>
+		  	  <!-- <div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">预约状态</label>
+				    <div class="layui-input-block">
+				    	  <select name="appoStatus" lay-verify="" onchange="myFunction()" id="appoStatus">
+					        <option id="aaa" value=""></option>
+					        <option th:each="statusList:${appoStatusList}" th:value="${statusList.dicName}" th:text="${statusList.dicName}"></option>
+					      </select>
+				    </div>
+				  </div>
+			  </div>  --> 
+		  </div>
+		<div class="layui-row">
+			<div class="layui-col-md4" >
+				   <div class="layui-form-item">
+				    <label class="layui-form-label" style="width: 100px;">供应商</label>
+				    <div class="layui-input-block">
+				    	  <input type="text" id="suppName" name="suppName" placeholder="供应商名称"    class="layui-input">
+				    </div>
+				  </div>
+			  </div>
+		</div>
+		<div class="layui-row">
+		    <div class="layui-col-md8" style="margin-bottom: 10px;margin-top: 5px;">
+				<span class="appoStatusSpan" style="margin-left:20px;">预约单状态</span>	
+				<span class="uncheck status" onclick="changeClass(this)"th:each="appoStatus:${appoStatusList}" th:name="${appoStatus.dicName}" th:text="${appoStatus.dicName}" style="color:gray;" ></span>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md9" >
+				<button class="layui-btn layui-btn-xs blueHollow" type="button" id="addAppo" sec:authorize="hasRole('ROLE_APPOINT_ADD')">新建预约</button>
+				<button class="layui-btn layui-btn-xs blueHollow"  type="button" id="removeAppo" sec:authorize="hasRole('ROLE_APPOINT_REMOVE')">删除</button>
+				<button class="layui-btn layui-btn-xs blueHollow" type="button" id="exportAppo">导出</button>
+				<button class="layui-btn layui-btn-xs blueHollow"  type="button" id="citeAppoBut" sec:authorize="hasRole('ROLE_APPOINT_CITEAPPO')">引用预约单</button>
+			</div>
+			<div class="textRight" style="margin-right:5px;">
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button" data-type="reload" id="serachSupp">搜索</button>
+				<button class="layui-btn layui-btn-xs yellowHollow" type="reset" id="reset">重置</button>
+			</div>
+		</div> 	
+	</div>
+	</form>	
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-table " id ="appointTableId" lay-filter="demo" style='display:none' >
+		</table>
+	</div>
+<script type="text/html" id="barDemo">
+<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="check">查看</a>
+  <a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+</script>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/appoint/appointList.js}"></script>	
+				
+</body>
+</html>
+		 

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+</head>
+<style type="text/css">
+.cube_div {
+	display: block;
+	width: 160px;
+	height: 80px;
+	padding: 12px;
+}
+
+.cube_item_div {
+	text-align: center;
+	color: blue;
+}
+
+.cube_item_div span {
+	padding: 5px;
+}
+
+.cube_item_div_span {
+	font-weight: bold;
+	font-size: large;
+}
+</style>
+
+<body>
+	<form action="" class="layui-form" style="margin-top: 10px;">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">月份</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" id="month_date" placeholder="yyyy-MM" name="month_date"> 
+						<input id="dateStr" th:value="${dateStr}" class="layui-hide">
+						<input id="currentDate" th:value="${currentDate}" class="layui-hide">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4" style="padding-left: 10px; padding-top: 4px;">
+				<button class="layui-btn layui-btn-xs yellowSolid" type="button" id="btn_back">返回</button>
+			</div>
+		</div>
+	</form>
+
+
+	<table id="detailsTable"></table>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript">
+		layui.use([ "form", "table", "laydate" ], function() {
+			var $ = layui.$, table = layui.table, laydate = layui.laydate;
+			var dateStr = $("#dateStr").val();
+			var currentDate = $("#currentDate").val();
+			getData(dateStr);
+			
+			$("#btn_back").on("click", function() {
+				tuoBack('', '');
+			});
+			function getData(dateStr) {
+				$.ajax({
+					url : "/report/bill_report_details_data",
+					method : "get",
+					data : {
+						dateStr : dateStr
+					},
+					async : false,
+					error : function() {
+						layer.msg("Connection error!");
+					},
+					success : function(res) {
+						loadTable(res.rows, res.month);
+					}
+				});
+
+			}
+			laydate.render({
+				elem : '#month_date',
+				type : 'month',
+				range : false,
+				max : currentDate,
+				value : dateStr,
+				isInitValue : true,
+				done : function(value, date) {
+					getData(value);
+				}
+			});
+			function loadTable(data, month) {
+				var thirdMonth;
+				var secondMonth = (month - 1);
+				if (secondMonth == 0) {
+					secondMonth = 12 + "月";
+					thirdMonth = 11 + "月";
+				} else {
+					secondMonth = secondMonth + "月";
+					thirdMonth = (month - 2) == 0 ? 12 + "月" : (month - 2)
+							+ "月";
+				}
+				var firstMonth = month + "月";
+				table.render({
+					elem : '#detailsTable',
+					data : data,
+					page : false,
+					limit : 50,
+					cols : [ [ {
+						field : 'modelName',
+						title : '功能名称',
+						width : 90,
+						rowspan : 2
+					}, {
+						field : 'modelStatus',
+						title : '单据状态',
+						width : 90,
+						rowspan : 2
+					}, {
+						field : 'username',
+						title : '单据数量',
+						width : 100,
+						align : 'center',
+						colspan : 3
+					}, {
+						field : 'email',
+						title : '明细数量',
+						align : 'center',
+						width : 180,
+						colspan : 3
+					} ], [ {
+						field : 'firstMonth',
+						title : firstMonth,
+						width : 80
+					}, {
+						field : 'secondMonth',
+						title : secondMonth,
+						width : 80
+					}, {
+						field : 'thirdMonth',
+						title : thirdMonth,
+						width : 80
+					}, {
+						field : 'd_firstMonth',
+						title : firstMonth,
+						width : 80
+					}, {
+						field : 'd_secondMonth',
+						title : secondMonth,
+						width : 80
+					}, {
+						field : 'd_thirdMonth',
+						title : thirdMonth,
+						width : 80
+					} ] ],
+					done : function(res, index, count) {
+						debugger;
+						alarmTableRowSpan("modelName", index);
+					}
+				});
+			}
+
+			function alarmTableRowSpan(fieldName, index) {
+				var fixedNode = document
+						.getElementsByClassName("layui-table-body")[index - 1];
+				if (!fixedNode) {
+					return false;
+				}
+				var child = fixedNode.getElementsByTagName("td");
+				var childFilterArr = [];
+				// 获取data-field属性为fieldName的td
+				for (var i = 0; i < child.length; i++) {
+					if (child[i].getAttribute("data-field") == fieldName) {
+						childFilterArr.push(child[i]);
+					}
+				}
+				// 获取td的个数和种类
+				var childFilterTextObj = {};
+				for (var i = 0; i < childFilterArr.length; i++) {
+					var childText = childFilterArr[i].textContent;
+					if (childFilterTextObj[childText] == undefined) {
+						childFilterTextObj[childText] = 1;
+					} else {
+						var num = childFilterTextObj[childText];
+						childFilterTextObj[childText] = num * 1 + 1;
+					}
+				}
+				// 给获取到的td设置合并单元格属性
+				for ( var key in childFilterTextObj) {
+					var tdNum = childFilterTextObj[key];
+					var canRowSpan = true;
+					for (var i = 0; i < childFilterArr.length; i++) {
+						if (childFilterArr[i].textContent == key) {
+							if (canRowSpan) {
+								childFilterArr[i]
+										.setAttribute("rowspan", tdNum);
+								canRowSpan = false;
+							} else {
+								childFilterArr[i].style.display = "none";
+							}
+						}
+					}
+				}
+			}
+		});
+	</script>
+</body>
+</html>

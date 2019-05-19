@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8"></meta>
+<head th:include="include :: header">
+</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div id="exampleToolbar" role="group" class="t-bar">
+						<button type="button" class="btn btn-primary btn-sm"
+							title="在根节点下添加机构" onclick="add('0')">添加</button>
+					</div>
+					<table id="orgTreeTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script src="/larryMS/js/appjs/privileges/org/org.js"></script>
+</body>
+
+<style type="text/css">
+.fixed-table-container tbody tr td:nth-child(4) {
+	text-align: center;
+}
+</style>
+
+</html>

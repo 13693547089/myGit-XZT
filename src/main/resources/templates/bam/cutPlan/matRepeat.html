@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>物料筛选条件</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="layui-row" >
+		<br/>
+		<div class="layui-col-md7" style='margin-left:20px;float:left;'>
+			<input type="text" id="matInfo" name="matInfo" placeholder="物料编码/名称" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-row" >
+		<br/>
+		<div class="layui-col-md7" style='margin-left:20px;float:left;'>
+			<input type="text" id="bigItemExpl" name="bigItemExpl" placeholder="大品项编码/名称" class="layui-input">
+		</div>
+	</div>
+	<!-- <div class="layui-row" >
+		<div class="layui-col-xs3" style='margin-left:10px;float:left;'>
+			<button class="layui-btn layui-btn-xs yellowSolid" id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+	</div> -->
+</div>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/cutPlan/matRepeat.js}"></script>	
+</body>
+</html>
+		 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include::header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<input id="menuIds" name="menuIds" type="hidden">
+							<input id="tempNo" name="tempNo" th:value="${tempNo}" type="hidden">
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">菜单权限：</label>
+								<div class="col-sm-8">
+									<div id="menuTree"></div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="button" id="menuSubmitBtn" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script src="/larryMS/js/appjs/document/editMenu.js"></script>
+</body>
+</html>

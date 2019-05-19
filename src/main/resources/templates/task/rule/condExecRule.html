@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiHeader"></head>
+<style>
+.layui-form-label {
+	width: 120px
+}
+
+.layui-form-item .layui-input-inline {
+	width: 360px;
+}
+
+.checkDiv {
+	padding-top: 75px;
+	float: right;
+}
+</style>
+<body>
+	<form class="layui-form" action="" id="signForm"
+		style="margin-top: 5px;">
+		<input class="layui-hide" name="mainId" th:value="${rule.mainId}">
+		<input class="layui-hide" name="node" th:value="${rule.node}">
+		<input class="layui-hide" name="id" th:value="${rule.id}"> <input
+			class="layui-hide" name="ruleType"
+			th:value="${rule.ruleType == '' ? 'execRule':rule.ruleType}">
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">比较值：</label>
+				<div class="layui-input-inline">
+					<textarea id="condition" name="condition" placeholder="请输入"
+						class="layui-textarea" th:text="${rule.condition}"></textarea>
+				</div>
+				<div class="checkDiv">
+					<button class="layui-btn layui-btn-xs" id="preCondBtn"
+						type="button">校验</button>
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">比较结果：</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" id="compR" readonly="readonly" />
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">条件为真输出：</label>
+				<div class="layui-input-inline">
+					<input type="text" name="tBackNode" lay-verify="email"
+						autocomplete="off" class="layui-input"
+						th:value="${rule.tBackNode}">
+				</div>
+			</div>
+
+			<div class="layui-inline">
+				<label class="layui-form-label">条件为假输出：</label>
+				<div class="layui-input-inline">
+					<input type="text" name="fBackNode" lay-verify="email"
+						autocomplete="off" class="layui-input"
+						th:value="${rule.fBackNode}">
+				</div>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/task/rule/condExecRule.js}"></script>
+</body>
+</html>

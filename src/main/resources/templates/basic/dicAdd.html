@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>字典管理新建</title>
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all">
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+.layui-table, .layui-table-view{width:100% !important;margin-left:1%;}
+td:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+th:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+html,body{overflow:auto !important;}
+.margin-top{margin-top:10px;}
+</style>
+</head>
+</head>
+<body>
+
+	<div class='BttonDiv margin-top'>
+		<button class="layui-btn layui-btn-xs blueHollow" id="saveDic" type="button" >保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>	
+	</div>
+	
+	<div class="panel-default ">
+			<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse"  href="#collapseOne">
+				<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;分类信息
+			</a>		
+			</div>
+	</div>	
+	
+	
+		
+		
+	<form class="layui-form" action="" method="post" id="dicForm" enctype="multipart/form-data">
+	  
+	 <!--  <span th:if="${type !='1'}">
+	  	<input type="text" name="dicId" id="dicId" style="display: none;" th:value="${appo.dicId}"/>
+	  </span> -->
+	  <input id="id" name="id" class="layui-hide"  th:value="${category.id}"/> 
+	  <input id="jsonStr" name="jsonStr" class="layui-hide" />
+	  <input type="text" name="type" id="type" style="display: none;" th:value="${type}"/>
+	  
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;"  >分类名称</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="cateName" class="layui-input"  th:value="${category.cateName}"  >
+			    </div>
+			  </div>
+		  </div> 
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;"  >分类编码</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="cateCode" class="layui-input"  th:value="${category.cateCode}">
+			    </div>
+			  </div>
+		  </div> 
+	  </div> 
+
+	<div class=" panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;字典详情
+			</a>
+			<span th:if="${type !='3'}">
+				<div >
+					<!-- 添加按钮 -->
+					<a class="btn editRow " id="addDetail" style='margin-left:0.3%;padding-right:0px;'>
+						<button class="layui-btn layui-btn-xs blueHollow" type="button" >添加</button>
+					</a>
+					<!-- 删除按钮 -->
+					<!-- <a class="btn editRow" id="removeDetail" style='padding-left:6px;'> 
+					   <button class="layui-btn layui-btn-xs blueHollow" type="button">删除</button>
+					</a> -->
+				</div>
+			</span>
+			<div class="layui-fluid tableCont" style='padding:0px;'>
+				<table id="detailTable" lay-filter="detailTableEvent" style='width:99%;margin-left:1%;'></table>
+			</div>
+		</div>
+	</div>
+	</form>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+	<script type="text/javascript" th:src="@{/js/appjs/basic/dicAdd.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>	
+</body>
+</html>

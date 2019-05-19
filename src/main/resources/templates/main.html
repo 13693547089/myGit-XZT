@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html style='height: 100%;'>
+<head th:include="include :: layuiHeader">
+<title>系统首页</title>
+</head>
+<style>
+.layui-table,.layui-table-view {
+	margin: 0px;
+}
+
+table thead tr th:first-child {
+	background: #46a3ff;
+	color: #fff;
+	border-width: 0px;
+}
+
+table thead tr th:nth-child(2) {
+	background: #3881cd;
+	color: #fff;
+	border-width: 0px;
+}
+
+table thead tr th:nth-child(3) {
+	background: #46a3ff;
+	color: #fff;
+	border-width: 0px;
+}
+
+div .layui-table-view {
+	border-width: 0px;
+}
+
+.daiban {
+	padding-right: 12px;
+	width: 30px;
+}
+
+table tbody tr:nth-child(odd) {
+	background: #fff;
+}
+
+table tbody tr:nth-child(even) {
+	background: #fcfcfc;
+}
+
+div .layui-table td {
+	border-color: #f6f6f6;
+}
+</style>
+<body class="layui-layout-body"
+	style='width: 100%; height: 100%; background: #eef5ff; background-size: cover;'>
+	<div
+		style='width: 50%; height: 600px; float: left; padding: 20px; box-sizing: border-box;'>
+		<div
+			style='width: 100%; height: 100%; border-radius: 8px; box-sizing: border-box; overflow: overlay;'>
+			<div
+				style="width: 100%; height: 50px; display: flex; align-items: center;">
+				<div
+					style='width: 100%; height: 50px; display: flex; align-items: center;'>
+					<img src="img/daibanhui.png" class='daiban' /><span
+						style="font-size: 15px; color: #000;">待办任务</span>
+				</div>
+				<span style='color: #666; font-size: 16px; width: 40px;'
+					class="daimore">更多</span>
+			</div>
+
+			<div class="tableCont"
+				style="width: 100%; height: 427px; overflow: overlay; background: #fff; border-top-left-radius: 7px; border-top-right-radius: 7px;">
+				<table id="undoTable" lay-filter="undoFilter"></table>
+			</div>
+			<div
+				style="width: 100%; height: 38px; line-height: 38px; color: #fff; padding-right: 30px; text-align: right; box-sizing: border-box;"></div>
+		</div>
+	</div>
+	<div
+		style='width: 50%; height: 600px; float: left; padding: 20px; box-sizing: border-box;'>
+		<div
+			style='width: 100%; height: 100%; border-radius: 8px; box-sizing: border-box; overflow: overlay;'>
+			<div
+				style="width: 100%; height: 50px; display: flex; align-items: center;">
+				<div
+					style='width: 100%; height: 50px; display: flex; align-items: center;'>
+					<img src="img/daibanhui.png" class='daiban' /><span
+						style="font-size: 15px; color: #000;">已办任务</span>
+				</div>
+				<span style="color: #666; font-size: 16px; width: 40px;"
+					class="yimore">更多</span>
+			</div>
+			<div class="tableCont"
+				style="width: 100%; height: 427px; overflow: overlay; background: #fff; border-top-left-radius: 7px; border-top-right-radius: 7px;">
+				<table id="doneTable" lay-filter="doneFilter"></table>
+			</div>
+			<div
+				style="width: 100%; height: 38px; line-height: 38px; color: #fff; padding-right: 30px; text-align: right; box-sizing: border-box;"></div>
+		</div>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<div th:include="include::websocketJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/home/main.js}"></script>
+</body>
+</html>

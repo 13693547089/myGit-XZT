@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.CutProductMapper">
+	
+	<resultMap type="com.faujor.entity.mdm.Material" id="mate">
+		<result property="mateId" column="mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="skuTiptop" column="sku_tiptop" />
+		<result property="skuEnglish" column="sku_english" />
+		<result property="chinName" column="chin_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="mateGroupCode" column="mate_group_code" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="barCode" column="bar_code" />
+		<result property="barCodeEngl" column="bar_code_engl" />
+		<result property="barCodeChin" column="bar_code_chin" />
+		<result property="repeUnit" column="repe_unit" />
+		<result property="boxNumber" column="box_number" />
+		<result property="finProMate" column="fin_pro_mate" />
+		<result property="finProSku" column="fin_pro_sku" />
+		<result property="abcIden" column="abc_iden" />
+		<result property="busiCode" column="busi_code" />
+		<result property="busiExpl" column="busi_expl" />
+		<result property="cateCode" column="cate_code" />
+		<result property="cateExpl" column="cate_expl" />
+		<result property="bigCate" column="big_cate" />
+		<result property="bigCateName" column="big_cate_name" />
+		<result property="seriesCode" column="series_code" />
+		<result property="seriesExpl" column="series_expl" />
+		<result property="bigItemCode" column="big_item_code" />
+		<result property="bigItemExpl" column="big_item_expl" />
+		<result property="smallItemCode" column="small_item_code" />
+		<result property="smallItemExpl" column="small_item_expl" />
+		<result property="mainProfCode" column="main_prof_code" />
+		<result property="mainProfExpl" column="main_prof_expl" />
+		<result property="nextProfCode" column="next_prof_code" />
+		<result property="nextProfExpl" column="next_prof_expl" />
+		<result property="boxCode" column="box_code" />
+		<result property="isGift" column="is_gift" />
+		<result property="brandCode" column="brand_code" />
+		<result property="brandExpl" column="brand_expl" />
+		<result property="childBrandCode" column="child_brand_code" />
+		<result property="childBrandExpl" column="child_brand_expl" />
+		<result property="produCode" column="produ_code" />
+		<result property="produExpl" column="produ_expl" />
+		<result property="chanCode" column="chan_code" />
+		<result property="chanExpl" column="chan_expl" />
+		<result property="useChin" column="use_chin" />
+		<result property="useEngl" column="use_engl" />
+		<result property="mateStatus" column="mate_status" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="boxUnit" column="box_unit" />
+		<result property="branchUnit" column="branch_unit" />
+		<result property="produUnit" column="produ_unit" />
+		<result property="packNumber" column="pack_number" />
+		<result property="dimension" column="dimension" />
+		<result property="produAbc" column="produ_abc" />
+		<result property="barCodeAbc" column="bar_code_abc" />
+		<result property="supply" column="supply" />
+		<result property="reveCateCode" column="reve_cate_code" />
+		<result property="reveCateName" column="reve_cate_name" />
+		<result property="expiDate" column="expi_date" />
+		<result property="guarUnit" column="guar_unit" />
+		<result property="nationKey" column="nation_key" />
+		<result property="nationName" column="nation_name" />
+		<result property="provCode" column="prov_code" />
+		<result property="provName" column="prov_name" />
+		<result property="cityCode" column="city_code" />
+		<result property="cityName" column="city_name" />
+		<result property="status" column="status" />
+		<result property="isDelete" column="is_delete" />
+		<result property="repeatedly" column="repeatedly" />
+		<result property="updateDate" column="update_date" />
+		<result property="finMateId" column="fin_mate_id" />
+		<result property="mateName" column="mate_name" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="isQuote" column="is_quote" />
+	</resultMap>
+	
+	<resultMap type="com.faujor.entity.mdm.MateDO" id="mateDoMap">
+		<id property="mateId" column="mate_id" />
+		<result property="finMateId" column="fin_mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="boxNumber" column="box_number" />
+		<result property="skuEnglish" column="sku_english" />
+		<result property="chinName" column="chin_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="seriesCode" column="series_code" />
+		<result property="seriesExpl" column="series_expl" />
+		<result property="isMaintenance" column="is_maintenance" />
+	</resultMap>
+	
+	<resultMap type="com.faujor.entity.mdm.ProdMateDO" id="prodMateDoMap">
+		<id property="mateId" column="mate_id" />
+		<result property="finMateId" column="fin_mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="boxNumber" column="box_number" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="version" column="version" />
+		<result property="prodId" column="prod_id" />
+		<result property="cutAim" column="cut_aim" />
+		<result property="mainStru" column="main_stru" />
+		<result property="isSpecial" column="is_special" />
+		<result property="isHaveSeim" column="is_have_seim" />
+		<result property="seriesCode" column="series_Code" />
+		<result property="seriesExpl" column="series_Expl" />
+		<result property="suppName" column="supp_name" />
+		<result property="suppCode" column="supp_id" />
+		<result property="sapCode" column="sap_id" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.bam.CutProduct" id="cutProd">
+		<result property="prodId" column="prod_id"/>
+		<result property="mateId" column="mate_id"/>
+		<result property="createId" column="create_id"/>
+		<result property="creator" column="creator"/>
+		<result property="createDate" column="create_date"/>
+		<result property="version" column="version"/>
+		<result property="cutAim" column="cut_aim"/>
+		<result property="mainStru" column="main_stru"/>
+		<result property="isSpecial" column="is_special"/>
+		<result property="isHaveSeim" column="is_have_seim"/>
+	</resultMap>
+	
+	<resultMap type="com.faujor.entity.bam.CutProductDO" id="cutProductDO">
+		<result property="prodId" column="prod_id"/>
+		<result property="mateId" column="mate_id"/>
+		<result property="createId" column="create_id"/>
+		<result property="creator" column="creator"/>
+		<result property="createDate" column="create_date"/>
+		<result property="version" column="version"/>
+		<result property="cutAim" column="cut_aim"/>
+		<result property="mainStru" column="main_stru"/>
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="isSpecial" column="is_special" />
+		<result property="isHaveSeim" column="is_have_seim" />
+	</resultMap>
+	<select id="queryCutProductByPage" parameterType="Map" resultMap="prodMateDoMap">
+		select p2.* from(
+		select p1.* ,rownum rn from(
+		select * from bam_cut_prod p  left join 
+		mdm_mate m on p.mate_id = m.mate_id  
+		where 1=1
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		<if test="mate.cutAim != null and mate.cutAim != '' ">
+			and p.cut_aim like '%${mate.cutAim}%'
+		</if>
+		<if test="mate.mainStru != null and mate.mainStru != '' ">
+			and p.main_stru like #{mate.mainStru}
+		</if>
+		<if test="mate.isSpecial != null and mate.isSpecial != '' ">
+			and p.is_special like #{mate.isSpecial}
+		</if>
+		order by m.mate_code,p.create_date )p1)p2
+		<![CDATA[where p2.rn>=#{start} and p2.rn<=#{end}]]>
+	</select>
+	
+	<select id="queryCutProductByPageCount" parameterType="Map" resultType="int">
+		select count(*) from bam_cut_prod p left join 
+		mdm_mate m on p.mate_id = m.mate_id  
+		where 1=1
+		<if test="mate.mateInfo != null and mate.mateInfo != '' ">
+			and(
+			m.mate_code like '%${mate.mateInfo}%'
+			or m.mate_name like
+			'%${mate.mateInfo}%'
+			)
+		</if>
+		<if test="mate.mateGroupInfo != null  and mate.mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mate.mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mate.mateGroupInfo}%'
+			)
+		</if>
+		<if test="mate.mateTypeInfo != null and mate.mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mate.mateTypeInfo}%'
+			or m.mate_type_expl
+			like
+			'%${mate.mateTypeInfo}%'
+			)
+		</if>
+		<if test="mate.cutAim != null and mate.cutAim != '' ">
+			and p.cut_aim like '%${mate.cutAim}%'
+		</if>
+		<if test="mate.mainStru != null and mate.mainStru != '' ">
+			and p.main_stru like #{mate.mainStru}
+		</if>
+		<if test="mate.isSpecial != null and mate.isSpecial != '' ">
+			and p.is_special like #{mate.isSpecial}
+		</if>
+	</select>
+	
+	
+	<delete id="deleteCutProductByprodId" >
+		delete from bam_cut_prod cp where cp.prod_id in 
+		<foreach collection="array" open="(" close=")" separator="," item="v">#{v}</foreach> 
+	</delete>
+	
+	<select id="queryAllCutProduct" resultMap="prodMateDoMap">
+		select m.*,p.* from bam_cut_prod p left join 
+		mdm_mate m on p.mate_id = m.mate_id  
+		order by  m.mate_code,p.version
+	</select>
+	
+	<!-- <select id="queryMatesOfCutProduct" resultMap="prodMateDoMap">
+		select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+	    p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+	    m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+	    m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,
+	    m2.mate_group_expl from bam_cut_prod p left join 
+		mdm_mate m on p.mate_id = m.mate_id  left join 
+		mdm_mate m2 on m.mate_code = m2.fin_mate_id 
+    	where p.is_have_seim ='YES' and p.is_special='NO'
+		order by  m2.mate_code,p.version
+	</select> -->
+	<select id="queryMatesOfCutProduct" resultMap="prodMateDoMap">
+		select * from (
+	    select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+	    p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+	    m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+	    m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl
+	     from bam_cut_prod p left join 
+		mdm_mate m on p.mate_id = m.mate_id  left join 
+		mdm_mate m2 on m.mate_code = m2.fin_mate_id 
+	    where p.is_have_seim ='YES' and p.is_special='NO'
+	    union all
+	    select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+	    p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+	    m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+	    m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl
+	     from bam_cut_prod p left join mdm_mate m2 on p.mate_id = m2.mate_id
+	    where p.is_special ='NO' and p.is_have_seim='NO')s
+	    order by s.is_have_seim desc
+	</select>
+
+	<select id="queryMatesOfCutProductWithSupp" resultMap="prodMateDoMap">
+		select * from (
+        select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+        p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+        m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+        m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl,
+		mm.supp_id,pp.supp_name,pp.sap_id
+         from bam_cut_prod p left join
+        mdm_mate m on p.mate_id = m.mate_id  left join
+        mdm_mate m2 on m.mate_code = m2.fin_mate_id
+		left join MDM_BUYER_SUPP_MATE mm on mm.mate_id=m2.mate_id
+		left join MDM_QUAL_SUPP pp on pp.supp_id=mm.supp_id
+        where p.is_have_seim ='YES' and p.is_special='NO'
+        union all
+        select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+        p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+        m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+        m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl,
+		mm.supp_id,pp.supp_name,pp.sap_id
+         from bam_cut_prod p left join mdm_mate m2 on p.mate_id = m2.mate_id
+		 left join MDM_BUYER_SUPP_MATE mm on mm.mate_id=m2.mate_id
+		 left join MDM_QUAL_SUPP pp on pp.supp_id=mm.supp_id
+        where p.is_special ='NO' and p.is_have_seim='NO')s
+		where s.supp_id not in( #{suppId})
+        order by s.supp_id desc,s.mate_id desc,s.version desc
+	</select>
+	
+	<insert id="addCutProduct" parameterType="com.faujor.entity.bam.CutProduct">
+		insert into bam_cut_prod values(lower(sys_guid()),#{mateId},#{createId},
+		#{creator},sysdate,#{version},#{cutAim},#{mainStru},#{isSpecial},#{isHaveSeim})
+	</insert>
+	
+	<resultMap type="com.faujor.entity.bam.CutStructure" id="cutStru">
+		<result property="struId" column="stru_id"/>
+		<result property="inveType" column="inve_type"/>
+		<result property="classCode" column="class_code"/>
+		<result property="className" column="class_name"/>
+		<result property="contentCode" column="content_code"/>
+		<result property="contentName" column="content_name"/>
+		<result property="unit" column="unit"/>
+		<result property="remark" column="remark"/>
+		<result property="converRule" column="conver_rule"/>
+	</resultMap>
+	<select id="queryAllCutStru" resultMap="cutStru">
+		select * from bam_cut_stru s order by s.content_code
+	</select>
+	<select id="queryBaoCaiCutStru" resultMap="cutStru">
+		select * from bam_cut_stru s where s.content_name='包材厂' order by s.content_code
+	</select>
+	
+	<insert id="addCutStru" parameterType="com.faujor.entity.bam.CutStructure">
+		insert into bam_cut_stru  values(lower(sys_guid()),#{inveType},
+		#{classCode},#{className},#{contentCode},#{contentName},#{unit},#{remark},#{converRule})
+	</insert>
+	
+	<delete id="deleteAllCutStru">
+		delete from bam_cut_stru
+	</delete>
+	
+	<select id="queryClassCodes" resultType="String">
+		select distinct cs.class_code   from bam_cut_stru cs
+	</select>
+	
+	<select id="queryMaxcontentCodeOfClassCode" parameterType="String" resultType="String">
+		select * from (
+		select cs.content_code from  bam_cut_stru cs 
+		where cs.class_code=#{classCode} order by cs.content_code desc) 
+		where rownum=1
+	</select>
+	
+	<select id="queryClassCodeByContentCode" parameterType="String" resultType="String">
+		select s.class_code from bam_cut_stru s where s.content_code=#{contentCode}
+	</select>
+	
+	<select id="queryOneProdMateDOByProdId" parameterType="String" resultMap="prodMateDoMap">
+	    select m.*,p.* from bam_cut_prod p left join 
+		mdm_mate m on p.mate_id = m.mate_id 
+		where p.prod_id =#{prodId}
+	</select>
+	
+	<update id="updateCutProductVer">
+		update bam_cut_prod p set p.version=#{version},p.cut_aim=#{cutAim},p.main_stru=#{mainStru} where p.prod_id=#{prodId}
+	</update>
+	
+	<select id="queryProdMateByVersion" parameterType="String" resultMap="cutProd">
+		select * from bam_cut_prod p where p.mate_id=#{0} and nvl(p.version,'QQQ')=#{1}
+	</select>
+	
+	<select id="queryCutStruForCutProd" resultMap="cutStru">
+		select distinct s.class_code,s.class_name from bam_cut_stru s order by s.class_code
+	</select>
+	
+	<select id="queryCutProduct" parameterType="com.faujor.entity.mdm.Material" resultMap="cutProductDO">
+		select p.*,m.mate_code,m.mate_name,m.mate_type,
+		m.mate_group_expl,m.proc_unit,m.basic_unit from bam_cut_prod p  left join 
+		mdm_mate m on p.mate_id = m.mate_id  
+		where 1=1
+		<if test="mateInfo != null and mateInfo != '' ">
+			and(
+			m.mate_code like '%${mateInfo}%'
+			or m.mate_name like
+			'%${mateInfo}%'
+			)
+		</if>
+		<if test="mateGroupInfo != null and mateGroupInfo != '' ">
+			and(
+			m.mate_group_code like '%${mateGroupInfo}%'
+			or
+			m.mate_group_expl like
+			'%${mateGroupInfo}%'
+			)
+		</if>
+		<if test="mateTypeInfo != null and mateTypeInfo != '' ">
+			and(
+			m.mate_type like '%${mateTypeInfo}%'
+			or m.mate_type_expl
+			like
+			'%${mateTypeInfo}%'
+			)
+		</if>
+		<if test="cutAim != null and cutAim != '' ">
+			and p.cut_aim like '%${cutAim}%'
+		</if>
+		<if test="mainStru != null and mainStru != '' ">
+			and p.main_stru like #{mainStru}
+		</if>
+		<if test="isSpecial != null and isSpecial != '' ">
+			and p.is_special like #{isSpecial}
+		</if>
+	</select>
+	
+	<select id="queryCutProd" parameterType="Map" resultMap="prodMateDoMap">
+		select p.* from bam_cut_prod p where p.mate_id=#{mateId} 
+		and p.is_special=#{isSpecial}
+	</select>
+	
+	<select id="querySpecialCutLiaiMate" resultMap="prodMateDoMap">
+		select p.*,m.mate_name,m.mate_code,m.box_number,m.series_Code,m.series_Expl
+		from bam_cut_prod p  left join 
+		mdm_mate m on p.mate_id = m.mate_id 
+		where p.is_special = 'YES'
+	</select>
+	
+	<select id="getLastProdNumByMateCodeAndSuppIdAndCutMonth" parameterType="String" resultType="Integer">
+	  select sum(nvl(lm.prod_num,0)) as prod_num
+      from bam_cut_liai l left join bam_cut_liai_mate lm 
+      on l.liai_id = lm.liai_id
+      where l.supp_id=#{suppId}
+      and l.cut_month=#{lastCutMonth}
+      and lm.mate_code=#{mateCode}
+      and l.status ='已确认'
+	</select>
+	
+	<select id="getLastProdNumByMateCodeAndCutMonth" parameterType="String" resultType="Integer">
+	  select sum(nvl(lm.prod_num,0)) as prod_num
+      from bam_cut_liai l left join bam_cut_liai_mate lm 
+      on l.liai_id = lm.liai_id
+      where  l.cut_month=#{lastCutMonth}
+      and lm.mate_code=#{mateCode}
+      and l.status ='已确认'
+	</select>
+	
+	<select id="queryOneProdMateByProdId" parameterType="String" resultType="String">
+		select nvl(p.version,'QQQ') as version from bam_cut_prod p 
+		where p.prod_id=#{prodId}
+	</select>
+	
+	<resultMap type="com.faujor.entity.mdm.ProdMateDO" id="ProdMateDOMap">
+		<id property="prodId" column="prod_Id" />
+		<id property="mateId" column="mate_id" />
+		<result property="finMateId" column="fin_mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="mateType" column="mate_type" />
+		<result property="mateTypeExpl" column="mate_type_expl" />
+		<result property="mateGroupExpl" column="mate_group_expl" />
+		<result property="boxNumber" column="box_number" />
+		<result property="basicUnit" column="basic_unit" />
+		<result property="procUnit" column="proc_unit" />
+		<result property="version" column="version2" />
+		<result property="prodId" column="prod_id" />
+		<result property="cutAim" column="cut_aim" />
+		<result property="mainStru" column="main_stru" />
+		<result property="isSpecial" column="is_special" />
+		<result property="isHaveSeim" column="is_have_seim" />
+		<result property="seriesCode" column="series_Code" />
+		<result property="seriesExpl" column="series_Expl" />
+		<result property="suppName" column="supp_name" />
+		<result property="suppCode" column="supp_id" />
+		<result property="sapCode" column="sap_id" />
+		<collection property="mateList" ofType="com.faujor.entity.bam.CutBaoCaiMate">
+			<result property="liaiId" column="liai_Id"/>
+			<result property="fields" column="fields"/>
+		</collection>
+	</resultMap>
+	<select id="queryMatesOfCutLiaiBySuppIdAndCutMonth" parameterType="String" resultMap="ProdMateDOMap">
+		select * from(
+		select * from (
+      select p.prod_id,p.create_id,p.creator,p.create_date,nvl(p.version,'QQQ') as version2,
+      p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+      m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+      m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl
+       from bam_cut_prod p left join 
+    mdm_mate m on p.mate_id = m.mate_id  left join 
+    mdm_mate m2 on m.mate_code = m2.fin_mate_id 
+      where p.is_have_seim ='YES' and p.is_special='NO'
+      union all
+      select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+      p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+      m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+      m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl
+	     from bam_cut_prod p left join mdm_mate m2 on p.mate_id = m2.mate_id
+	    where p.is_special ='NO' and p.is_have_seim='NO')s
+	inner join(
+      select bsm.mate_id as mate_id2 from mdm_buyer_supp_mate bsm 
+       where bsm.supp_id=#{suppId})n
+      on s.mate_id = n.mate_id2)main
+      left join (
+      select   cb.liai_id,cbm.mate_code,cbm.mate_name,cbm.fields,
+      nvl(cbm.version,'QQQ') as version,cbm.oem_supp_code
+      from bam_cut_baocai cb left join bam_cut_baocai_mate cbm 
+      on cb.liai_id = cbm.liai_id
+       where cb.cut_month=#{cutMonth}
+       and cb.status='已提交'
+       and cbm.oem_supp_code=(select mqs.sap_id  from mdm_qual_supp mqs where mqs.supp_id=#{suppId} )
+      )m on main.mate_code = m.mate_code and main.version2 = m.version 
+	</select>
+	
+	
+	<select id="queryMatesOfCutProductWithBaoCaiSupp" parameterType="String" resultMap="prodMateDoMap">
+		select prod.*,ops.oem_supp_code as supp_id,ops.oem_supp_name as supp_name,s.sap_id from (
+        select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+        p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+        m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+        m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl
+         from bam_cut_prod p left join
+        mdm_mate m on p.mate_id = m.mate_id  left join
+        mdm_mate m2 on m.mate_code = m2.fin_mate_id
+        where p.is_have_seim ='YES' and p.is_special='NO'
+        union all
+        select p.prod_id,p.create_id,p.creator,p.create_date,p.version,
+        p.cut_aim,p.main_stru,p.is_special,p.is_have_seim,m2.mate_id,
+        m2.mate_code,m2.mate_name,m2.mate_type,m2.mate_type_expl,
+        m2.box_number,m2.basic_unit,m2.proc_unit,m2.fin_mate_id,m2.mate_group_expl,m2.series_code,m2.series_expl
+         from bam_cut_prod p left join mdm_mate m2 on p.mate_id = m2.mate_id
+        where p.is_special ='NO' and p.is_have_seim='NO')prod
+        inner join mdm_oem_pack_supp ops
+        on prod.mate_code = ops.mate_code
+        left join mdm_qual_supp s 
+        on s.supp_id = ops.oem_supp_code
+         where ops.pack_supp_code=#{suppId}
+	</select>
+</mapper>

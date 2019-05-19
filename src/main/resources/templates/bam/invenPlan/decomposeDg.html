@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>备货计划</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.btnDiv{ float: right; margin-right: 40px;}
+</style>
+<body>
+	<form class="layui-form margin-top20" id="searchForm" action="" method="post">
+		<input id="mainId" type="hidden" th:value="${mainId}"/>
+		<input id="status" type="hidden" th:value="${status}"/>
+		<input id="planDetailId" type="hidden" th:value="${planDetailId}"/>
+		<input id="planMonth" type="hidden" th:value="${planMonth}"/>
+		<input id="nextMonthDeliveryNum" type="hidden" th:value="${nextMonthDeliveryNum}"/>
+		<div class="layui-row">
+			<div class=" layui-col-md4   layui-col-sm6">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料编码</label>
+					<div class="layui-input-block" >
+						<input type="text" id="mateCode" readonly="readonly" name="mateCode" th:value="${mateCode}"
+							  class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md4   layui-col-sm6">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料名称</label>
+					<div class="layui-input-block" >
+						<input type="text" id="mateDesc" readonly="readonly" name="mateDesc" th:value="${mateDesc}"
+							   class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class=" layui-col-md4   layui-col-sm6">
+				<div class="layui-form-item">
+					<label class="layui-form-label">交货计划</label>
+					<div class="layui-input-block" >
+						<input type="text" id="deliveryPlan" readonly="readonly" name="deliveryPlan" th:value="${deliveryPlan}"
+							  class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="suppTable" lay-filter="suppTable">
+		</table>
+	</div>
+	<div class="layui-row btnDiv">
+		<button class="layui-btn layui-btn-sm" id=confirmBtn>确定</button>
+		<button class="layui-btn layui-btn-sm" id="cancleBtn">取消</button>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/invenPlan/decomposeDg.js}"></script>
+</body>
+</html>

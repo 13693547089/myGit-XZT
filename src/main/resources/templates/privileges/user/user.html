@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<body>
+	<div class="demoTable" style="margin-top: 10px">
+		<div class="layui-inline">
+			<input class="layui-input" name="id" id="demoReload"
+				autocomplete="off">
+		</div>
+		<button class="layui-btn layui-btn-xs" data-type="reload">搜索</button>
+		<button id="encrypt" class="layui-btn layui-btn-xs" data-type="btn" sec:authorize="hasRole('ROLE_USER_ENCRYPT')">加密</button>
+	</div>
+	<div class="tableCont">
+		<table id="userTable" lay-filter="user"></table>
+	</div>
+	<script type="text/html" id="operateBar">
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="resetPWd">重置</a>
+	</script>
+	<div th:include="include::layuiJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/privileges/user/user.js}"></script>
+</body>
+</html>

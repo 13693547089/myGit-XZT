@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.OrderMonthMapper">
+	<resultMap id="BaseResultMap" type="com.faujor.entity.bam.OrderMonth">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo" />
+		<result column="SUPP_NO" jdbcType="VARCHAR" property="suppNo" />
+		<result column="MATE_CODE" jdbcType="VARCHAR" property="mateCode" />
+		<result column="UNDELIVERED_NUM" jdbcType="DECIMAL" property="undeliveredNum" />
+		<result column="MONTH" jdbcType="DATE" property="month" />
+	</resultMap>
+	<insert id="insert" parameterType="com.faujor.entity.bam.OrderMonth">
+		insert into BAM_ORDER_MONTH
+		(ID, ORDER_NO, SUPP_NO,
+		MATE_CODE, UNDELIVERED_NUM, MONTH
+		)
+		values
+		(#{id,jdbcType=CHAR}, #{orderNo,jdbcType=VARCHAR},
+		#{suppNo,jdbcType=VARCHAR},
+		#{mateCode,jdbcType=VARCHAR},
+		#{undeliveredNum,jdbcType=DECIMAL}, #{month,jdbcType=DATE}
+		)
+	</insert>
+	<select id="selectUndeliveredNumByMap" parameterType="Map"
+		resultType="Double">
+		select nvl(sum(t1.undelivered_num),0)
+		from bam_order_month t1
+		<where>
+			<if test="suppNo!=null and suppNo!=''">
+				and t1.supp_no = #{suppNo}
+			</if>
+			<if test="mateCode!=null and mateCode!=''">
+				and t1.mate_code = #{mateCode}
+			</if>
+			<if test="planMonth!=null">
+				and t1.month=#{planMonth}
+			</if>
+			<if test="suppNos!=null">
+				and t1.supp_no in
+				<foreach collection="suppNos" item="item" open="(" close=")"
+					separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<insert id="ScheduledAsybcMonthOrder">
+		INSERT INTO BAM_ORDER_MONTH( ID, ORDER_NO, SUPP_NO,
+		MATE_CODE, UNDELIVERED_NUM, MONTH) SELECT SYS_GUID(), t2.MAIN_ID,
+		t1.SUPP_NAME, t2.MATE_NUMB, t2.UNPA_QUAN, TRUNC(SYSDATE) FROM
+		BAM_ORDE_RELE t1 LEFT JOIN BAM_ORDE_MATE t2 ON t1.CONT_ORDE_NUMB =
+		t2.MAIN_ID WHERE t2.UNPA_QUAN > 0
+	</insert>
+</mapper>

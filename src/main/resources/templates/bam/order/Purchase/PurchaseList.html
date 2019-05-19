@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>订单发布列表</title>
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" th:href="@{/layui/css/style.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+.layui-table-cell {
+	padding: 0px !important;
+}
+
+.layui-table-fixed-r {
+	display: none;
+}
+
+.blueInline {
+	border: none
+}
+/* .blueInline:hover{background:green !important;color:white;} */
+.layui-input-block {
+	margin-left: 110px !important;
+}
+
+.layui-table {
+	margin: 0px;
+}
+</style>
+<body>
+	<div class="demoTable MarginTop">
+		<form  class="layui-form" id="queryForm">
+			<div class="layui-row">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">供应商</label>
+						<div class="layui-input-block">
+							<input type="text" id="suppName" name="suppName" placeholder="供应商编码/名称" style="width: 100%" class="layui-input supply">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 118px">订单编号</label>
+						<div class="layui-input-block" style='margin-left: 127px;'>
+							<input type="text" id="contOrdeNumb" name="contOrdeNumb" placeholder="请输入订单编号搜索" style="width: 100%" class="layui-input ordeNumb">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label">订购日期</label>
+						<div class="layui-input-inline" style='display: flex;'>
+							<input type="text" id="startDate" name="startDate" placeholder="yyyy-MM-dd" class="layui-input dateSta">
+							<div style='padding: 0px 10px; line-height: 38px;'>-</div>
+							<input type="text" id="endDate" name="endDate" placeholder="yyyy-MM-dd" class="layui-input dateEnd">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">状态</label>
+						<div class="layui-input-block">
+							<select name="status" id="status"
+								style='width: 100%; height: 30px; border: 1px solid #e6e6e6'
+								class='type'>
+								<option value=''></option>
+								<option value='未发布'>未发布</option>
+								<option value='已发布'>已发布</option>
+								<option value='已回签'>已回签</option>
+								<option value='已确认'>已确认</option>
+								<option value='已退回'>已退回</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row ">
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">交货状态</label>
+						<div class="layui-input-block">
+							<select id="deliType" name="deliType"
+								style='width: 100%; height: 30px; border: 1px solid #e6e6e6'
+								class='deliState'>
+								<option value=''></option>
+								<option value='已交'>已交</option>
+								<option value='未交'>未交</option>
+								<option value='已结案'>已结案</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">采购组织</label>
+						<div class="layui-input-block">
+							<input type="text" id="purchOrg" name="purchOrg" placeholder="采购组织" style="width: 100%" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">发布人</label>
+						<div class="layui-input-block">
+							<input type="text" id="publishName" name="publishName" placeholder="发布人" style="width: 100%" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row BttonDiv">
+				<div class="layui-col-md1" style="padding-left: 5px;">
+					<button class="layui-btn layui-btn-xs blueHollow" type="button" id="asyncBtn" sec:authorize="hasRole('ROLE_ORDER_SYNCH')">同步</button>
+					<!-- <button class="layui-btn layui-btn-xs layui-btn-danger blueHollow" type="button" sec:authorize="hasRole('ROLE_ORDER_EXPORT')" id="removeAppo" >导出</button> -->
+					<button class="layui-btn layui-btn-xs layui-btn-danger blueHollow" type="button" id="exportBtn">导出</button>
+				</div>
+				<div class="layui-col-md3">
+					<label class="layui-form-label" style="width: 100px;">已交总量:</label>
+					<div style="padding-top: 6px;">
+						<span id="doneNum" style="color: red;"></span>
+					</div>
+				</div>
+				<div class="layui-col-md3">
+					<label class="layui-form-label" style="width: 100px;">订单总量:</label>
+					<div style="padding-top: 6px;">
+						<span id="totalNum" style="color: red;"></span>
+					</div>
+				</div>
+				
+				<div class="layui-col-md1" style='text-align: center; float: right; padding-right: 15px;'>
+					<button class="layui-btn layui-btn-xs yellowSolid" data-type="reload" type="button" id="serachSupp">搜索</button>
+					<button class="layui-btn layui-btn-xs yellowHollow" type="reset">重置</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="layui-fluid tableCont">
+		<table class="layui-table" id="orderTable" lay-filter="demo">
+		</table>
+	</div>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="check">查看</a>
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/order/PurchaseList.js}"></script>
+</body>
+</html>

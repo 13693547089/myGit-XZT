@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.fam.AuditMapper">
+	<resultMap type="com.faujor.entity.fam.AuditOrder" id="auditOrder">
+		<id property="id" column="id" />
+		<result property="auditCode" column="audit_code" />
+		<result property="suppId" column="supp_id" />
+		<result property="suppCode" column="supp_code" />
+		<result property="suppName" column="supp_name" />
+		<result property="auditStatus" column="audit_status" />
+		<result property="creator" column="creator" />
+		<result property="creatorName" column="creator_name" />
+		<result property="createTime" column="create_time" />
+		<result property="modifier" column="modifier" />
+		<result property="modifierName" column="modifier_name" />
+		<result property="modifyTime" column="modify_time" />
+		<result property="confirm" column="confirm" />
+		<result property="confirmName" column="confirm_name" />
+		<result property="confirmTime" column="confirm_time" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.fam.AuditMate" id="auditMate">
+		<id property="id" column="id" />
+		<result property="auditId" column="audit_id" />
+		<result property="mateId" column="mate_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="lastMonthBala" column="last_month_bala" />
+		<result property="outWarehouse" column="out_warehouse" />
+		<result property="inWarehouse" column="in_warehouse" />
+		<result property="topLoss" column="top_loss" />
+		<result property="suppLoss" column="supp_loss" />
+		<result property="noAdd" column="no_add" />
+		<result property="addLoss" column="add_loss" />
+		<result property="monthStock" column="month_stock" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.fam.AuditMould" id="auditMould">
+		<id property="id" column="id" />
+		<result property="auditId" column="audit_id" />
+		<result property="mouldName" column="mould_name" />
+		<result property="mouldNum" column="mould_num" />
+		<result property="mouldStatus" column="mould_status" />
+		<result property="storePlace" column="store_place" />
+		<result property="qualRate" column="qual_rate" />
+		<result property="belongRight" column="belong_right" />
+		<result property="imgName" column="img_name" />
+		<result property="imgUrl" column="img_url" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<select id="findAuditListByParams" resultMap="auditOrder"
+		parameterType="com.faujor.entity.fam.AuditOrder">
+		select t1.*,
+		t2.sap_id as supp_code, t2.supp_name from fam_audit_order
+		t1 left
+		join mdm_qual_supp t2 on t1.supp_id = t2.supp_id where 1=1
+		<if test="suppName != null and suppName != ''">
+			and (t2.sap_id like #{suppName} or t2.supp_name like
+			#{suppName})
+		</if>
+		<if test="auditStatus != null and auditStatus != 0">
+			and t1.audit_status = #{auditStatus}
+		</if>
+		<if test="auditCode != null and auditCode != ''">
+			and t1.audit_code like concat('%', concat(#{auditCode},
+			'%'))
+		</if>
+		<if test="startDate != null">
+			and t1.create_time &gt; #{startDate}
+		</if>
+		<if test="endDate != null">
+			and t1.create_time &lt; #{endDate}
+		</if>
+		<if test="creator != null and creator != ''">
+			and t1.creator = #{creator}
+		</if>
+		order by t1.audit_code desc
+	</select>
+	<select id="countAuditListByParams" resultType="Integer"
+		parameterType="com.faujor.entity.fam.AuditOrder">
+		select count(t1.id) from fam_audit_order
+		t1 left join mdm_qual_supp t2
+		on t1.supp_id = t2.supp_id where 1=1
+		<if test="suppName != null and suppName != ''">
+			and (t2.sap_id like #{suppName} or t2.supp_name like
+			#{suppName})
+		</if>
+		<if test="auditStatus != null and auditStatus != 0">
+			and t1.audit_status = #{auditStatus}
+		</if>
+		<if test="auditCode != null and auditCode != ''">
+			and t1.audit_code like concat('%', concat(#{auditCode},
+			'%'))
+		</if>
+		<if test="startDate != null">
+			and t1.create_time &gt; #{startDate}
+		</if>
+		<if test="endDate != null">
+			and t1.create_time &lt; #{endDate}
+		</if>
+		<if test="creator != null and creator != ''">
+			and t1.creator = #{creator}
+		</if>
+	</select>
+
+	<select id="findAuditById" resultMap="auditOrder" parameterType="String">
+		select t1.*, t2.sap_id as supp_code, t2.supp_name from fam_audit_order
+		t1 left join mdm_qual_supp t2 on t1.supp_id = t2.supp_id where t1.id =
+		#{id}
+	</select>
+
+	<select id="findAuditMouldByAuditId" resultMap="auditMould"
+		parameterType="String">
+		select t.* from fam_audit_mould t where t.audit_id =
+		#{auditId}
+	</select>
+
+	<select id="findAuditMateByAuditId" resultMap="auditMate"
+		parameterType="String">
+		select t.*, t1.mate_code, t1.mate_name from
+		fam_audit_mate t left join mdm_mate t1
+		on t.mate_id = t1.mate_id where
+		t.audit_id = #{auditId}
+	</select>
+
+	<insert id="batchSaveAuditMate" parameterType="list">
+		insert all into
+		fam_audit_mate (id, audit_id, mate_id, last_month_bala,
+		out_warehouse, in_warehouse, top_loss, supp_loss, no_add, add_loss,
+		month_stock) values
+		<foreach collection="list" item="item" index="index" open=""
+			close=""
+			separator="into fam_audit_mate (id, audit_id, mate_id, 
+			last_month_bala, out_warehouse, in_warehouse, top_loss, supp_loss,
+			 no_add, add_loss, month_stock) values">
+			(#{item.id}, #{item.auditId}, #{item.mateId},
+			#{item.lastMonthBala}, #{item.outWarehouse}, #{item.inWarehouse},
+			#{item.topLoss}, #{item.suppLoss}, #{item.noAdd}, #{item.addLoss},
+			#{item.monthStock})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<update id="updateAuditMate" parameterType="com.faujor.entity.fam.AuditMate">
+		update fam_audit_mate
+		t set t.mate_id = #{mateId}, t.last_month_bala = #{lastMonthBala},
+		t.out_warehouse = #{outWarehouse}, t.in_warehouse = #{inWarehouse},
+		t.top_loss = #{topLoss}, t.supp_loss = #{suppLoss}, t.no_add =
+		#{noAdd}, t.add_loss = #{addLoss}, t.month_stock = #{monthStock}
+		where
+		t.id = #{id}
+	</update>
+
+	<delete id="batchRemoveAuditMateByIDs" parameterType="list">
+		delete from fam_audit_mate t where t.id in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<update id="updateAuditMould" parameterType="com.faujor.entity.fam.AuditMould">
+		update
+		fam_audit_mould t set t.mould_name = #{mouldName}, t.mould_num =
+		#{mouldNum}, t.mould_status = #{mouldStatus}, t.store_place =
+		#{storePlace}, t.qual_rate = #{qualRate}, t.belong_right =
+		#{belongRight}, t.img_name = #{imgName}, t.img_url = #{imgUrl},
+		t.remark = #{remark} where t.id = #{id}
+	</update>
+
+	<delete id="batchRemoveAuditMouldByIDs" parameterType="list">
+		delete from fam_audit_mould where id in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<insert id="batchSaveAuditMould" parameterType="list">
+		insert all into fam_audit_mould (id, audit_id, mould_name, mould_num,
+		mould_status, store_place, qual_rate, belong_right, img_name, img_url,
+		remark) values
+		<foreach collection="list" item="item" index="index" open=""
+			close=""
+			separator="into fam_audit_mould (id, audit_id, mould_name, 
+			mould_num, mould_status, store_place, qual_rate, belong_right, 
+			img_name, img_url, remark) values">
+			(#{item.id}, #{item.auditId}, #{item.mouldName},
+			#{item.mouldNum},#{item.mouldStatus}, #{item.storePlace},
+			#{item.qualRate}, #{item.belongRight}, #{item.imgName},
+			#{item.imgUrl}, #{item.remark})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<insert id="saveAuditOrder" parameterType="com.faujor.entity.fam.AuditOrder">
+		insert into
+		fam_audit_order (id, audit_code, supp_id, audit_status, creator,
+		creator_name, create_time) values (#{id}, #{auditCode}, #{suppId},
+		#{auditStatus}, #{creator}, #{creatorName}, #{createTime})
+	</insert>
+
+	<update id="updateAuditOrder" parameterType="com.faujor.entity.fam.AuditOrder">
+		update
+		fam_audit_order t set t.supp_id = #{suppId}, t.audit_status =
+		#{auditStatus}, t.modifier = #{modifier}, t.modifier_name =
+		#{modifierName}, t.modify_time = #{modifyTime}, t.confirm =
+		#{confirm}, t.confirm_name = #{confirmName}, t.confirm_time =
+		#{confirmTime} where t.id = #{id}
+	</update>
+
+	<delete id="batchRemoveAuditOrder" parameterType="list">
+		delete from fam_audit_order where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<delete id="batchRemoveAuditMateByAuditIDs" parameterType="list">
+		delete from fam_audit_mate where audit_id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<delete id="batchRemoveAuditMouldByAuditIDs" parameterType="list">
+		delete from fam_audit_mould where audit_id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="auditConfirmData" resultMap="auditOrder"
+		parameterType="com.faujor.entity.fam.AuditOrder">
+		select t1.*, t2.sap_id as supp_code, t2.supp_name from fam_audit_order
+		t1 left join mdm_qual_supp t2 on t1.supp_id = t2.supp_id where
+		t1.audit_status != '已保存'
+		<if test="suppName != null and suppName != ''">
+			and (t2.sap_id like #{suppName} or t2.supp_name like
+			#{suppName})
+		</if>
+		<if test="auditCode != null and auditCode != ''">
+			and t1.audit_code like concat('%', concat(#{auditCode},
+			'%'))
+		</if>
+		<if test="startDate != null">
+			and t1.create_time &gt; #{startDate}
+		</if>
+		<if test="endDate != null">
+			and t1.create_time &lt; #{endDate}
+		</if>
+		order by audit_code desc
+	</select>
+
+	<select id="countAuditConfirmData" resultType="Integer"
+		parameterType="com.faujor.entity.fam.AuditOrder">
+		select count(*) from fam_audit_order t1 left join mdm_qual_supp t2 on
+		t1.supp_id = t2.supp_id where t1.audit_status != '已保存'
+		<if test="suppName != null and suppName != ''">
+			and (t2.sap_id like #{suppName} or t2.supp_name like
+			#{suppName})
+		</if>
+		<if test="auditCode != null and auditCode != ''">
+			and t1.audit_code like concat('%', concat(#{auditCode},
+			'%'))
+		</if>
+		<if test="startDate != null">
+			and t1.create_time &gt; #{startDate}
+		</if>
+		<if test="endDate != null">
+			and t1.create_time &lt; #{endDate}
+		</if>
+	</select>
+
+	<select id="queryLastMonthBala" parameterType="Map" resultMap="auditMate">
+		select b.* from (
+		select a.* ,rownum rn from (
+		select * from
+		fam_audit_order f left join fam_audit_mate m on f.id = m.audit_id
+		where f.supp_id=#{suppId}
+		and f.audit_status='已确认'
+		and
+		m.mate_id=#{mateId}
+		and f.create_time between
+		to_date(#{startDate},'yyyy-mm-dd') and
+		to_date(#{endDate},'yyyy-mm-dd')
+		order by f.create_time desc)a)b
+		where
+		b.rn =1
+	</select>
+	
+	<update id="updateAuditSatusByAuditId" parameterType="Map">
+		update FAM_AUDIT_ORDER t set t.audit_status=#{auditStatus} where t.id=#{auditId}
+	</update>
+</mapper>

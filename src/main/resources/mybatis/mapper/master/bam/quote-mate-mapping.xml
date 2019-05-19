@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.QuoteMateMapper">
+	<resultMap id="quoteMateMap" type="com.faujor.entity.bam.QuoteMate">
+			<id property="id" column="id"/>
+			<result property="quoteCode" column="quote_Code"/>
+			<result property="mateNo" column="mate_No"/>
+			<result property="suppScope" column="supp_Scope"/>
+			<result property="remark" column="remark"/>
+			<result property="mateCode" column="mate_code"/>
+			<result property="mateName" column="mate_name"/>
+			<result property="startDate" column="start_Date"/>
+			<result property="endDate" column="end_Date"/>
+			<result property="mateReason" column="mate_reason"/>
+	</resultMap>
+	<insert id="saveQuoteMate" parameterType="com.faujor.entity.bam.QuoteMate">
+		insert into bam_quote_mate
+		(id,quote_Code,mate_No,supp_Scope,remark,start_Date,end_Date,mate_reason)
+		values
+		(#{id},#{quoteCode},#{mateNo},#{suppScope},#{remark},#{startDate},#{endDate},#{mateReason})
+	</insert>
+	<delete id="getQuoteMateById" parameterType="String">
+		delete from bam_quote_mate where id=#{mateId}
+	</delete>
+	<delete id="delQuoteMateByQuoteCode" parameterType="String">
+		delete from bam_quote_mate where quote_Code=#{quoteCode}
+	</delete>
+	<select id="getAllQuoteMateByQuoteCode" parameterType="String" resultMap="quoteMateMap">
+		select t1.*,t2.mate_code mate_Code,t2.sku_english as mate_name from bam_quote_mate t1
+		left join mdm_mate t2 
+		on t1.mate_no=t2.mate_id
+		 where t1.quote_Code=#{quoteCode}
+	</select>
+</mapper>

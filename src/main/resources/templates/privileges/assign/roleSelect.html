@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8"></meta>
+<head th:include="include :: layuiHeader"></head>
+<body>
+	<form class="layui-form" id="signForm">
+		<input id="orgId" name="orgId" type="hidden" th:value="${orgId}" /> <input
+			id="roleIds" name="roleIds" type="hidden">
+		<table id="roleTable" lay-filter="test"></table>
+		<button id="subBtn" class="btn btn-primary">提交</button>
+	</form>
+	<div th:include="include::layuiJS"></div>
+	<script src="/js/appjs/privileges/assign/roleSelect.js"></script>
+</body>
+</html>

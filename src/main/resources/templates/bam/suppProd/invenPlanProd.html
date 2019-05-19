@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>排产计划</title>
+</head>
+<style type="text/css">
+	.margin-top20 { margin-top: 20px; }
+	.operateBtnGroup{ margin-left: 6%;}
+	.marginLeft5{margin-left: 5%;}
+</style>
+<body>
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<button class="layui-btn layui-btn-sm marginLeft5" id="backBtn" type="button">返回</button>
+		</div>
+	</div>
+	<form class="layui-form margin-top20" id="searchForm" action="" method="post">
+		<input type="text" id="id" th:value="${invenPlan.id}" class="layui-input layui-hide marginLeft5">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" >计划编号</label>
+					<div class="layui-input-inline">
+						<input type="text" id="planCode" name="planCode" readonly="readonly" th:value="${invenPlan.planCode}"
+							 class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item ">
+					<label class="layui-form-label suppInput">计划状态</label>
+					<div class="layui-input-inline">
+						<input type="text" id="status" name="status" readonly="readonly" th:value="${invenPlan.status}"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">创建日期</label>
+					<div class="layui-input-inline">
+						<input type="text" id="createTime" name="createTime" th:value="${invenPlan.createTime==null}?'':${#dates.format(invenPlan.createTime,'yyyy-MM-dd')}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">月份</label>
+					<div class="layui-input-inline">
+						<input type="text" id="planMonth" name="planMonth" th:value="${invenPlan.planMonth==null}?'':${#dates.format(invenPlan.planMonth,'yyyy-MM-dd')}" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">产品系列</label>
+					<div class="layui-input-inline">
+						<input type="text" id="series" name="series" th:value="${invenPlan.prodSeriesDesc}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-row">
+		<div class="layui-col-md3">
+			<div class="layui-form-item">
+				<label class="layui-form-label">物料</label>
+				<div class="layui-input-inline">
+					<input type="text" id="mateDesc" name="mateDesc"  placeholder="物料名称/编码" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3">
+			<div class="layui-form-item">
+				<label class="layui-form-label">供应商</label>
+				<div class="layui-input-inline">
+					<input type="text" id="suppName" name="suppName"  placeholder="供应商名称/编码" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md2">
+			<button class="layui-btn layui-btn-sm" type="button" style="margin-top: 2%;" id="searchBtn">搜索</button>
+		</div>
+	</div>
+	<div class="layui-fluid">
+		<table class="layui-hide" id="suppProdTable" lay-filter="suppProdTable">
+		</table>
+	</div>
+	<div>
+		<script type="text/html" id="operateBar">
+ 			<a class="layui-btn layui-btn-xs" lay-event="plan">排产</a>
+		</script>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/suppProd/invenPlanProd.js}"></script>
+</body>
+</html>

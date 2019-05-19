@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>打切结构</title>
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style type="text/css">
+html,body{overflow:auto !important;}
+.spanCon{
+margin-left: 16px;
+font-size: 14px;
+}
+</style>
+<body>
+<div class="layui-row "> 	  	  
+	<div class="layui-col-md6" style='margin-left:15px;margin-top:5px;'>
+		<button class="layui-btn layui-btn-xs blueHollow" type="button" id="Save">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" type="button" id="goBack">返回</button>
+	</div>   
+</div>
+<div class="layui-row "> 	  	  
+	<div class="layui-col-md6" style='margin-left:15px;margin-top:5px;'>
+		<button class="layui-btn layui-btn-xs blueHollow" type="button" id="addDuan">添加段</button>
+		<button class="layui-btn layui-btn-xs blueHollow" type="button" id="Detail">删除</button>
+		<span class="spanCon">折算规则(A：表示按箱入数折算，B：表示按1:1折算)</span>
+	</div>   
+</div>
+<form action="" method="post" id="cutStruForm">
+	<input type="text" name="cutStruData" id="cutStruData" style="display: none;"/>
+</form>
+<div class="layui-fluid tableCont" style='padding:0px;'>
+<table class="layui-hide" id="cutStruTable" lay-filter="cutStruTable">
+</table>
+</div>
+</body>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs blueInline" lay-event="add">添加</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+</script>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/placut/Maintain/MaintainDetail.js}"></script>	
+</html>

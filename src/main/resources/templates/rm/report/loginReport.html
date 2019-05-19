@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+</head>
+<style type="text/css">
+.cube_div {
+	display: block;
+	width: 195px;
+	height: 90px;
+	padding: 12px;
+}
+
+.cube_item_div {
+	margin-top: 10px;
+}
+
+.div_img {
+	float : left;
+	padding-top: 10px;
+}
+.cube_item_div span {
+	font-weight: bold;
+}
+
+.cube_item_div_span {
+    color: #696969;
+    width: 23%;
+    float: left;
+    font-size: 6px;
+    padding-top: 16px;
+}
+.cube_item_div_span2 {
+	font-size: 25px;
+	padding-top: 2px;
+}
+
+layui-col-xs5 {
+	position: relative;
+}
+
+.xs5_div {
+	position: absolute;
+	top: 20px;
+	left: 12px;
+	width: 92%;
+	z-index: 2
+}
+
+.btn_check {
+	background: rgba(100, 152, 245, 1);
+	border-radius: 17px;
+	font-size: 16px;
+	font-family: PingFang-SC-Medium;
+	font-weight: 500;
+	color: rgba(255, 255, 255, 1);
+}
+
+.btn_uncheck {
+	border-radius: 17px;
+	background: rgba(233, 238, 242, 0.8);
+	border: 1px solid rgba(204, 204, 204, 1);
+	font-size: 16px;
+	font-family: PingFang-SC-Medium;
+	color: rgba(105, 105, 105, 1);
+	line-height: 22px;
+	border: 1px solid rgba(204, 204, 204, 1);
+}
+</style>
+<body>
+	<form action="" class="layui-form" style="margin-top: 10px;">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">月份</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" id="month_date"
+							name="month_date" placeholder="yyyy-MM"> <input
+							id="dateStr" class="layui-hide" th:value="${dateStr}"> <input
+							id="currentDate" class="layui-hide" th:value="${currentDate}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-row" id="ratio_div" th:fragment="ratio_div">
+		<div class="layui-col-xs2 ">
+			<div class="gray-bg cube_div">
+				<span th:text="${lr.third_login_month}"></span><span>月登陆次数</span>
+				<div class="cube_item_div">
+					<img class="div_img" th:src="${lr.third_login_src}">
+					<div class="cube_item_div_span" >
+						<span th:text="${lr.third_login_status}"></span>
+					</div>
+					<div class="cube_item_div_span2" >
+						<span th:text="${lr.third_login_percent}"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs2 ">
+			<div class="gray-bg cube_div">
+				<span th:text="${lr.second_login_month}"></span><span>月登陆次数</span>
+				<div class="cube_item_div">
+					<img class="div_img" th:src="${lr.second_login_src}">
+					<div class="cube_item_div_span">
+						<span th:text="${lr.second_login_status}"></span> 
+					</div>
+					<div class="cube_item_div_span2">
+						<span th:text="${lr.second_login_percent}"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs2 ">
+			<div class="gray-bg cube_div">
+				<span th:text="${lr.first_login_month}"></span><span>月登陆次数</span>
+				<div class="cube_item_div">
+					<img class="div_img" th:src="${lr.first_login_src}">
+					<div class="cube_item_div_span">
+						<span th:text="${lr.first_login_status}"></span>
+					</div>
+					<div class="cube_item_div_span2">
+						<span th:text="${lr.first_login_percent}"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs2">
+			<div class="gray-bg cube_div">
+				<span th:text="${lr.third_operate_month}"></span><span>月操作次数</span>
+				<div class="cube_item_div">
+					<img class="div_img" th:src="${lr.third_operate_src}">
+					<div class="cube_item_div_span">
+						<span th:text="${lr.third_operate_status}"></span>
+					</div>
+					<div class="cube_item_div_span2">
+						<span th:text="${lr.third_operate_percent}"></span>					
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs2">
+			<div class="gray-bg cube_div">
+				<span th:text="${lr.second_operate_month}"></span><span>月操作次数</span>
+				<div class="cube_item_div">
+					<img class="div_img" th:src="${lr.second_operate_src}">
+					<div class="cube_item_div_span">
+						<span th:text="${lr.second_operate_status}"></span>					
+					</div>
+					<div class="cube_item_div_span2">
+						<span th:text="${lr.second_operate_percent}"></span>					
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs2 ">
+			<div class="gray-bg cube_div">
+				<span th:text="${lr.first_operate_month}"></span><span>月操作次数</span>
+				<div class="cube_item_div">
+					<img class="div_img" th:src="${lr.first_operate_src}">
+					<div class="cube_item_div_span">
+						<span th:text="${lr.first_operate_status}"></span> 
+					</div>
+					<div class="cube_item_div_span2">
+						<span th:text="${lr.first_operate_percent}"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="layui-row" id="login_div"
+		style="width: 100%; height: 400px; padding-top: 10px;"></div>
+
+	<div class="layui-row">
+		<div class="layui-col-xs5">
+			<div class="xs5_div">
+				<div style="float: left; margin-top: 6px;">
+					<span>上月内部用户登录次数排名</span>
+				</div>
+				<div style="float: right">
+					<button id="btn_before1" class="layui-btn layui-btn-sm btn_check">前10名</button>
+					<button id="btn_after1" class="layui-btn layui-btn-sm btn_uncheck">后10名</button>
+				</div>
+			</div>
+			<div id="top_div_1" style="height: 500px; padding-top: 10px;"></div>
+		</div>
+		<div class="layui-col-xs7">
+			<div class="xs5_div">
+				<div style="float: left; margin-top: 6px;">
+					<span>上月外部用户登录次数排名</span>
+				</div>
+				<div style="float: right">
+					<button id="btn_before2" class="layui-btn layui-btn-sm btn_check">前10名</button>
+					<button id="btn_after2" class="layui-btn layui-btn-sm btn_uncheck">后10名</button>
+				</div>
+			</div>
+			<div id="top_div_2" style="height: 500px; padding-top: 10px;"></div>
+		</div>
+	</div>
+
+	<div class="layui-row">
+		<div class="layui-col-xs5">
+			<div class="xs5_div">
+				<div style="float: left; margin-top: 6px;">
+					<span>上月内部用户操作次数排名</span>
+				</div>
+				<div style="float: right">
+					<button id="btn_before3" class="layui-btn layui-btn-sm btn_check">前10名</button>
+					<button id="btn_after3" class="layui-btn layui-btn-sm btn_uncheck">后10名</button>
+				</div>
+
+			</div>
+			<div id="top_div_3" style="height: 500px; padding-top: 10px;"></div>
+		</div>
+		<div class="layui-col-xs7">
+			<div class="xs5_div">
+				<div style="float: left; margin-top: 6px;">
+					<span>上月外部用户操作次数排名</span>
+				</div>
+				<div style="float: right">
+					<button id="btn_before4" class="layui-btn layui-btn-sm btn_check">前10名</button>
+					<button id="btn_after4" class="layui-btn layui-btn-sm btn_uncheck">后10名</button>
+				</div>
+			</div>
+			<div id="top_div_4" style="height: 500px; padding-top: 10px;"></div>
+		</div>
+
+	</div>
+
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/rm/report/loginReport.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/echarts.js}"></script>
+</body>
+</html>

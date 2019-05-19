@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>字典管理</title>
+<link rel="stylesheet" th:href="@{css/bootstrap-table/bootstrap-editable.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-table/bootstrap-switch.css}" />
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link th:href="@{/css/chosen/chosen.css}" rel="stylesheet" />
+<link th:href="@{/css/chosen/select2/select2.min.css}" rel="stylesheet" />
+<link th:href="@{/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet" />
+<link th:href="@{/css/plugins/jsTree/style.min.css}" rel="stylesheet" />
+<link th:href="@{/css/plugins/jqTreeGrid/jquery.treegrid.css}" rel="stylesheet" />
+<link th:href="@{/larryMS/js/plugins/jqTreeGrid/jquery.treegrid.css}" rel="stylesheet" />
+<link th:href="@{/css/plugins/fileinput/fileinput.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table/bootstrapValidator.css}" />
+<style>
+.vertical-center {
+	margin-top: 8px;
+}
+
+.btn-padding {
+	padding: 5px 0px 5px 0px;
+}
+
+.chosen-container-single .chosen-single {
+	background: #ffffff;
+	box-shadow: none;
+	-moz-box-sizing: border-box;
+	background-color: #FFFFFF;
+	border: 1px solid #CBD5DD;
+	border-radius: 2px;
+	cursor: text;
+	height: auto !important;
+	margin: 0;
+	min-height: 30px;
+	overflow: hidden;
+	padding: 4px 12px;
+	position: relative;
+	width: 100%;
+}
+
+.chosen-select {
+	width: 150px !important;
+}
+
+.red {
+	color: red
+}
+
+.green {
+	color: green
+}
+</style>
+</head>
+<body>
+	<div class="row border-bottom" id="matePanl">
+		<nav class="navbar navbar-static-top" role="navigation"
+			style="margin-bottom: 0; background-color: #f9f9f9;">
+			<div>
+				<a class="navbar-minimalize minimalize-styl-2 btn " href="#"> <i
+					class="fa fa-bars"></i>&nbsp;&nbsp;字典管理
+				</a>
+			</div>
+		</nav>
+	</div>
+
+	<div class=" panel-default ">
+		<div class="border-bottom btn-padding">
+			<a class="btn "> <i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;筛选查询
+			</a>
+			<div class="pull-right " style="padding-right: 15px;">
+
+				<a href="#" class="btn btn-primary btn-more" data-toggle="collapse"
+					data-target="#collapseOne" id="openHref"> <i
+					class='fa fa-angle-down'></i> <i class='fa fa-angle-up hidden'></i>
+					<span class="nav-label">关闭查询</span>
+				</a>
+				<button type="button" class="btn btn-primary">高级检索</button>
+				<button type="button" id="seachBtn" class="btn btn-primary">查询</button>
+			</div>
+		</div>
+		<div id="collapseOne" class="panel-collapse collapse in">
+			<div class="panel-body">
+				<form class="form-inline" role="form">
+					<div class="form-group">
+						<label for="name">分类名称：</label> <input type="text"
+							class="form-control" name="categoryName" id="categoryName" />
+					</div>
+					<div class="form-group">
+						<label for="name">分类编码：</label> <input type="text"
+							class="form-control" name="categoryCode" id="categoryCode" />
+					</div>
+					<div class="form-group">
+						<label for="name">分类状态：</label> <select
+							class="form-control select-width must chosen-select"
+							name="status" id="status">
+							<option value="">全部</option>
+							<option value="1">启用</option>
+							<option value="0">禁用</option>
+						</select>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="panel-default ">
+		<div class="border">
+			<nav class="navbar-static-top btn-padding" role="navigation"
+				style="margin-bottom: 0; background-color: #f9f9f9; border-top: 1px solid #e7eaec; padding-right: 15px;">
+				<a class="navbar-minimalize btn"> <i class="fa fa-bars"></i>&nbsp;&nbsp;数据列表
+				</a>
+				<div class="pull-right">
+					<!-- <button type="button" class="btn btn-primary" id="viewBtn">查看</button> -->
+					<button type="button" class="btn btn-primary" id="createCategory"
+						data-toggle="modal" data-target="#createModal">新建</button>
+					<button type="button" class="btn btn-primary" id="editBtn">编辑</button>
+					<button type="button" class="btn btn-primary" id="enableBtn">启用</button>
+					<button type="button" class="btn btn-primary" id="disableBtn">禁用</button>
+					<button type="button" class="btn btn-primary" id="deleteBtn">删除</button>
+				</div>
+			</nav>
+		</div>
+		<div class="col-md-12 table-responsive">
+			<table
+				class="table table-striped table-bordered table-hover text-nowrap"
+				id="dicTable"></table>
+		</div>
+	</div>
+
+
+	<!--新建分类和字典的弹出框-->
+	<div class="modal fade" id="createModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog ">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">字典信息</h4>
+				</div>
+				<div class="modal-body row">
+
+					<div class=" panel-default ">
+						<div class=" btn-padding">
+							<a class="btn " data-toggle="collapse" href="#collapseFour1">
+								<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;分类信息
+							</a>
+							<div id="collapseFour1" class="panel-collapse collapse in">
+								<div class="panel-body">
+									<form class="form-inline" th:action="@{/saveCategoryInfo}"
+										method="post" id="createCategoryForm">
+										<input type="hidden" name="jsonStr" id="dicList" /> <input
+											type="hidden" name="cateId" id="cateId">
+										<div class="formGroup form-group">
+											<label for="name">分类名称：</label> <input type="text"
+												class="form-control" name="cateName" id="cateName"
+												placeholder="输入分类的名称"></input>
+										</div>
+										<div class="formGroup form-group">
+											<label for="code">编码：</label> <input type="text"
+												class="form-control" name="cateCode" id="cateCode"
+												placeholder="输入分类的编码"></input>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class=" panel-default ">
+						<div class=" btn-padding">
+							<a class="btn " data-toggle="collapse" href="#collapseFour2">
+								<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;字典详情
+							</a>
+							<div class="pull-right">
+								<!-- 新增按钮 -->
+								<a class="btn editRow " id="addDicRow"> <i
+									class="glyphicon glyphicon-plus"></i>
+								</a>
+								<!-- 删除按钮 -->
+								<a class="btn editRow" id="removeDicRows"> <i
+									class="glyphicon glyphicon-minus"></i>
+								</a>
+							</div>
+							<div id="collapseFour2" class="panel-collapse collapse in">
+								<div class="panel-body">
+									<table
+										class="table table-striped table-bordered table-hover text-nowrap"
+										id="dicInfoTable"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="saveCategoryBtn" class="btn btn-primary">确定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--查看分类和字典的弹出框-->
+	<div class="modal fade" id="viewModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog ">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">字典信息</h4>
+				</div>
+				<div class="modal-body row">
+
+					<div class=" panel-default ">
+						<div class=" btn-padding">
+							<a class="btn " data-toggle="collapse" href="#collapseFour3">
+								<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;分类信息
+							</a>
+							<div id="collapseFour3" class="panel-collapse collapse in">
+								<div class="panel-body">
+									<form class="form-inline" th:action="@{/saveCategoryInfo}"
+										method="post" id="createCategoryForm">
+										<div class="formGroup form-group">
+											<label for="cateName">分类名称：</label> <input type="text"
+												class="" id="viewName"></input>
+										</div>
+										<div class="formGroup form-group">
+											<label for="cateCode">编码：</label> <input type="text" class=""
+												id="viewCode"></input>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class=" panel-default ">
+						<div class=" btn-padding">
+							<a class="btn " data-toggle="collapse" href="#collapseFour4">
+								<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;字典详情
+							</a>
+							<div id="collapseFour4" class="panel-collapse collapse in">
+								<div class="panel-body">
+									<table
+										class="table table-striped table-bordered table-hover text-nowrap"
+										id="dicInfoViewTable"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<script type="text/javascript">
+			var s_add_h = 'hidden';
+			var s_edit_h = 'hidden';
+			var s_remove_h = 'hidden';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			s_add_h = '';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			s_edit_h = '';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			var s_remove_h = '';
+		</script>
+	</div>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{editTable/plus/import.inc.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/chosen/chosen.jquery.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/bootstrap-table/bootstrap-table-locale-all.min.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/common.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/basic/dic.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/bootstrap-table/bootstrapValidator.js}"></script>
+</body>
+</html>

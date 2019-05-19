@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.basic.ApproveMapper">
+	<resultMap type="com.faujor.entity.basic.ApproveDO" id="approveMap">
+		<id property="id" column="id" />
+		<result property="mainId" column="main_id" />
+		<result property="apprId" column="appr_id" />
+		<result property="apprName" column="appr_name" />
+		<result property="apprTime" column="appr_time" />
+		<result property="apprIdea" column="appr_idea" />
+		<result property="apprStatus" column="appr_status" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<insert id="saveApproveInfo" parameterType="com.faujor.entity.basic.ApproveDO">
+		insert into
+		srm_approve (id, main_id, appr_id, appr_name, appr_time, appr_idea,
+		appr_status, remark) values(#{id},#{mainId}, #{apprId}, #{apprName},
+		#{apprTime}, #{apprIdea}, #{apprStatus}, #{remark})
+	</insert>
+
+	<select id="findApproveListByMainId" resultMap="approveMap"
+		parameterType="String">
+		select * from srm_approve where main_id = #{mainId}
+	</select>
+</mapper>

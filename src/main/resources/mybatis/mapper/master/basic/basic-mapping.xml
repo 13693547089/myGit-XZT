@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.basic.BasicMapper">
+	<resultMap type="com.faujor.entity.basic.Dic" id="dic">
+		<id property="id" column="ID" />
+		<result property="dicName" column="DIC_NAME" />
+		<result property="dicCode" column="DIC_CODE" />
+		<result property="cateId" column="CATE_ID" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="nodeKind" column="NODE_KIND" />
+		<result property="remark" column="REMARK" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="creator" column="CREATOR" />
+		<result property="creatorName" column="CREATOR_NAME" />
+		<result property="modifyTime" column="MODIFY_TIME" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifierName" column="MODIFIER_NAME" />
+	</resultMap>
+	<resultMap type="com.faujor.entity.basic.DicCategory" id="dicCategory">
+		<id property="id" column="ID" />
+		<result property="cateName" column="CATE_NAME" />
+		<result property="cateCode" column="CATE_CODE" />
+		<result property="isUsed" column="IS_USED" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="creator" column="CREATOR" />
+		<result property="creatorName" column="CREATOR_NAME" />
+		<result property="modifyTime" column="MODIFY_TIME" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifierName" column="MODIFIER_NAME" />
+		<!-- <collection property="dicList" > <id property="id" column="ID" /> 
+			<result property="dicName" column="DIC_NAME" /> <result property="dicCode" 
+			column="DIC_CODE" /> <result property="cateId" column="CATE_ID" /> <result 
+			property="parentId" column="PARENT_ID" /> <result property="nodeKind" column="NODE_KIND" 
+			/> <result property="remark" column="REMARK" /> <result property="createTime" 
+			column="CREATE_TIME" /> <result property="creator" column="CREATOR" /> <result 
+			property="creatorName" column="CREATOR_NAME" /> <result property="modifyTime" 
+			column="MODIFY_TIME" /> <result property="modifier" column="MODIFIER" /> 
+			<result property="modifierName" column="MODIFIER_NAME" /> </collection> -->
+	</resultMap>
+
+	<select id="findDicCategoryById" parameterType="String"
+		resultMap="dicCategory">
+		select * from
+		SRM_DIC_CATEGORY t
+		where t.id = #{id}
+	</select>
+
+	<select id="findDicCategoryByParams" parameterType="Map"
+		resultMap="dicCategory">
+		select a2.* from(
+		select a1.*,rownum rn from(
+		select * from
+		SRM_DIC_CATEGORY where 1=1
+		<if test="category.cateName != null and category.cateName != ''"> and cate_name like concat(concat('%',
+			#{category.cateName}), '%')</if>
+		<if test="category.cateCode != null and category.cateCode != ''"> and cate_code like concat(concat('%',
+			#{category.cateCode}), '%')</if>
+		<if test="category.isUsed != null and category.isUsed != 0 "> and is_used = #{category.isUsed}</if>
+		)a1)a2
+		<![CDATA[where a2.rn>=#{start} and a2.rn<=#{end}]]>
+	</select>
+
+
+	<select id="countDicCategoryByParams" resultType="Integer"
+		parameterType="Map">
+		SELECT count(*)
+		FROM SRM_DIC_CATEGORY where 1=1
+		<if test="category.cateName != null and category.cateName != ''"> and cate_name like concat(concat('%',
+			#{category.cateName}), '%')</if>
+		<if test="category.cateCode != null and category.cateCode != ''"> and cate_code like concat(concat('%',
+			#{category.cateCode}), '%')</if>
+		<if test="category.isUsed != null and category.isUsed != 0 "> and is_used = #{category.isUsed}</if>
+	</select>
+
+	<select id="findDicByParams" resultMap="dic" parameterType="Map">
+		select * from SRM_DIC t
+		<where>
+			<if test="dic.cateId != null and dic.cateId != ''"> and t.cate_id = #{dic.cateId}</if>
+		</where>
+	</select>
+
+	<select id="findDicByCodeParams" resultMap="dic" parameterType="Map">
+		select * from SRM_DIC t1
+		left join SRM_DIC_CATEGORY t2
+		on t1.cate_id =
+		t2.id
+		where t2.cate_code = #{cateCode} and t1.parent_id is null
+		<if test="dicCode != null and dicCode != ''"> and t1.dic_code = #{dicCode}</if>
+		<if test="dicName!=null and dicName!=''">
+			and( t1.dic_code like #{dicName} or t1.dic_name like
+			#{dicName})
+		</if>
+		order by t1.dic_code
+	</select>
+
+	<select id="findDicListByCategory" parameterType="com.faujor.entity.basic.DicCategory"
+		resultMap="dic">
+		select * from srm_dic t
+		<where>
+			<if test="id != null and id != ''">and cate_id = #{id}</if>
+		</where>
+	</select>
+
+	<select id="findDicListByParentId" resultMap="dic"
+		parameterType="String">
+		select * from srm_dic t where t.parent_id = #{pid}
+	</select>
+
+	<select id="countDicByParams" resultType="Integer"
+		parameterType="Map">
+		select count(*) from SRM_DIC t where 1=1
+		<if test="dic.cateId != null and dic.cateId != ''"> and t.cate_id = #{dic.cateId}</if>
+	</select>
+
+	<select id="findDicCategoryByIdANDCode" resultType="Integer"
+		parameterType="Map">
+		select count(*) from srm_dic_category t
+		where 1=1
+		<if test="code != null and code != ''"> and t.cate_code = #{code}</if>
+		<if test="id != null and id != ''"> and t.id != #{id}</if>
+	</select>
+
+
+	<insert id="saveDicInfo" parameterType="com.faujor.entity.basic.Dic">
+		insert into srm_dic (ID,
+		DIC_NAME, DIC_CODE, CATE_ID, PARENT_ID, NODE_KIND, REMARK,
+		CREATE_TIME, CREATOR, CREATOR_NAME) values (
+		#{id}, #{dicName},
+		#{dicCode}, #{cateId}, #{parentId}, #{nodeKind},
+		#{remark},
+		#{createTime}, #{creator}, #{creatorName}
+		)
+	</insert>
+	<delete id="deleteDicInfoByID" parameterType="String">
+		delete from srm_dic t where t.id = #{id} or t.parent_id = #{id}
+	</delete>
+
+	<delete id="deleteDicInfoByCateId" parameterType="String">
+		delete from
+		srm_dic t where t.cate_id = #{cateId}
+	</delete>
+	<update id="updateDicInfo" parameterType="com.faujor.entity.basic.Dic">
+		update srm_dic t set
+		t.DIC_NAME = #{dicName}, t.DIC_CODE = #{dicCode}, t.REMARK =
+		#{remark}, t.MODIFY_TIME = #{modifyTime}, t.MODIFIER = #{modifier},
+		t.MODIFIER_NAME = #{modifierName} where t.ID = #{id}
+	</update>
+
+	<insert id="saveCategoryInfo" parameterType="com.faujor.entity.basic.DicCategory">
+		insert into
+		srm_dic_category (ID, CATE_NAME, CATE_CODE, IS_USED, CATE_TYPE, CREATE_TIME, CREATOR, CREATOR_NAME) 
+		values (
+			#{id}, #{cateName}, #{cateCode}, #{isUsed}, #{cateType}, #{createTime}, #{creator}, #{creatorName}
+		)
+	</insert>
+	<update id="updateCategoryInfo" parameterType="com.faujor.entity.basic.DicCategory">
+		update
+		srm_dic_category t set t.CATE_NAME = #{cateName}, t.CATE_CODE=#{cateCode}, t.IS_USED = #{isUsed}, t.CATE_TYPE=#{cateType}, 
+		t.MODIFY_TIME = #{modifyTime}, t.MODIFIER = #{modifier}, t.MODIFIER_NAME = #{modifierName}
+		where t.ID = #{id}
+	</update>
+
+	<delete id="deleteDicCategoryByID" parameterType="String">
+		delete
+		srm_dic_category t where t.id = #{id}
+	</delete>
+	
+	<select id="findDicById" parameterType="String" resultMap="dic">
+		select * from srm_dic t where id = #{id}
+	</select>
+	
+	<insert id="batchSaveDicInfo" parameterType="list">
+		insert all
+		<foreach collection="list" index="index" item="item">
+			into srm_dic (ID, DIC_NAME, DIC_CODE, CATE_ID, PARENT_ID, NODE_KIND, REMARK, CREATE_TIME, CREATOR, CREATOR_NAME) 
+			values (#{item.id}, #{item.dicName}, #{item.dicCode}, #{item.cateId}, #{item.parentId}, #{item.nodeKind}, #{item.remark}, 
+					#{item.createTime}, #{item.creator}, #{item.creatorName})
+		</foreach> 
+		select 1 from dual
+	</insert>
+
+</mapper>

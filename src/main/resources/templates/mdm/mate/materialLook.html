@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>物料详情</title>
+</head>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+.checkInput+div {
+	display: none;
+}
+
+body {
+	overflow: auto;
+}
+
+.layui-col-md5 {
+	width: 50%;
+}
+
+.layui-col-md-offset2 {
+	margin-left: 0%;
+	width: 50%;
+}
+</style>
+<body>
+	<div class='divMargin divMargin1' style="margin-left:15px;">
+		<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>
+	<div class="panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;基础信息
+			</a>
+		</div>
+	</div>
+	<input type="text" name="mateId" id="mateId" th:value="${mate.mateId}"
+		style="display: none;" />
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">物料编码</label>
+				<div class="layui-input-block">
+					<input type="text" name="mateCode" th:value="${mate.mateCode}"
+						style="width: 70%" class="layui-input disa">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">物料类型</label>
+				<div class="layui-input-block">
+					<input type="text" name="mateType" th:value="${mate.mateType}"
+						style="width: 70%" class="layui-input disa">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">物料组</label>
+				<div class="layui-input-block">
+					<input type="text" name="mateGroupCode"
+						th:value="${mate.mateGroupExpl}" class="layui-input disa">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">SKU英文</label>
+				<div class="layui-input-block">
+					<input type="text" name="skuEnglish" disabled
+						th:value="${mate.skuEnglish}" style="width: 70%"
+						class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md8">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">中文名称</label>
+				<div class="layui-input-block">
+					<input type="text" name="chinName" disabled
+						th:value="${mate.chinName}" class="layui-input">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">条码</label>
+				<div class="layui-input-block">
+					<input type="text" name="barCode" th:value="${mate.barCode}"
+						style="width: 70%" class="layui-input disa">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label"
+					style="width: 111px; padding-right: 11px">条码英文简称</label>
+				<div class="layui-input-block">
+					<input type="text" name="barCodeEngl"
+						th:value="${mate.barCodeEngl}" style="width: 70%"
+						class="layui-input disa">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label"
+					style="width: 111px; padding-right: 11px">条码中文简称</label>
+				<div class="layui-input-block">
+					<input type="text" name="barCodeChin"
+						th:value="${mate.barCodeChin}" style="width: 99.5%"
+						class="layui-input disa">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label"
+					style="width: 111px; padding-right: 12px">基本计量单位</label>
+				<div class="layui-input-block">
+					<input type="text" name="repeUnit" disabled
+						th:value="${mate.repeUnit}" style="width: 70%" class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">箱入数</label>
+				<div class="layui-input-block">
+					<input type="text" name="boxNumber" disabled
+						th:value="${mate.boxNumber}" style="width: 70%"
+						class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">生产划分</label>
+				<div class="layui-input-block">
+					<input type="text" name="produExpl" disabled
+						th:value="${mate.produExpl}" style="width: 70%"
+						class="layui-input">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">对应成品料</label>
+				<div class="layui-input-block">
+					<input type="text" name="finProMate" th:value="${mate.finProMate}"
+						style="width: 70%" class="layui-input disa">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label"
+					style="width: 111px; padding-right: 11px; white-space: pre;">成品SKU英文</label>
+				<div class="layui-input-block">
+					<input type="text" name="finProSku" th:value="${mate.finProSku}"
+						style="width: 70%" class="layui-input disa">
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">ABC标识</label>
+				<div class="layui-input-block">
+					<input type="text" name="abcIden" th:value="${mate.abcIden}"
+						class="layui-input disa">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物料层级
+			</a>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">事业部代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="busiCode" th:value="${mate.busiCode}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">事业部说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="busiExpl" th:value="${mate.busiExpl}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">品类代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="cateCode" th:value="${mate.cateCode}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">品类说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="cateExpl" th:value="${mate.cateExpl}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">大类</label>
+						<div class="layui-input-block">
+							<input type="text" name="bigCate" th:value="${mate.bigCate}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">大类名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="bigCateName"
+								th:value="${mate.bigCateName}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">系列代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="seriesCode"
+								th:value="${mate.seriesCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">系列说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="seriesExpl"
+								th:value="${mate.seriesExpl}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">大品项代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="bigItemCode"
+								th:value="${mate.bigItemCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">大品项说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="bigItemExpl"
+								th:value="${mate.bigItemExpl}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">小品项代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="smallItemCode"
+								th:value="${mate.smallItemCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">小品项说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="smallItemExpl"
+								th:value="${mate.smallItemExpl}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">主规格代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="mainProfCode"
+								th:value="${mate.mainProfCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">主规格说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="mainProfExpl"
+								th:value="${mate.mainProfExpl}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">次规格代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="nextProfCode"
+								th:value="${mate.nextProfCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">次规格说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="nextProfExpl"
+								th:value="${mate.nextProfExpl}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;单位转换
+			</a>
+		</div>
+	</div>
+	<table class="table table-striped table-bordered table-hover"
+		id="papers">
+		<thead>
+			<tr>
+				<td class="center">序号</td>
+				<td class="center">单位</td>
+				<td class="center">转换分子</td>
+				<td class="center">转换分母</td>
+				<td class="center">长</td>
+				<td class="center">宽</td>
+				<td class="center">高</td>
+				<td class="center">长宽高单位</td>
+				<td class="center">重量</td>
+				<td class="center">重量单位</td>
+				<td class="center">体积</td>
+				<td class="center">体积单位</td>
+			</tr>
+		</thead>
+		<tbody id="tbody">
+			<tr th:each="mateunit,unitStart:${unitList}">
+				<td class="center" name="paper" th:text="${unitStart.count}"></td>
+				<td class="center" name="paper" th:text="${mateunit.unit}"></td>
+				<td class="center" name="paper" th:text="${mateunit.mole}"></td>
+				<td class="center" name="paper" th:text="${mateunit.deno}"></td>
+				<td class="center" name="paper" th:text="${mateunit.mateLength}"></td>
+				<td class="center" name="paper" th:text="${mateunit.mateWidth}"></td>
+				<td class="center" name="paper" th:text="${mateunit.mateHigh}"></td>
+				<td class="center" name="paper" th:text="${mateunit.lwhUnit}"></td>
+				<td class="center" name="paper" th:text="${mateunit.mateWeight}"></td>
+				<td class="center" name="paper" th:text="${mateunit.weightUnit}"></td>
+				<td class="center " name="paper" th:text="${mateunit.mateBulk}"></td>
+				<td class="center " name="paper" th:text="${mateunit.bulkUnit}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;其他信息
+			</a>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">箱条码</label>
+						<div class="layui-input-block">
+							<input type="text" name="boxCode" th:value="${mate.boxCode}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">是否礼包</label>
+						<div class="layui-input-block">
+							<input type="text" name="isGift" th:value="${mate.isGift}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">品牌代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="brandCode" th:value="${mate.brandCode}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">品牌说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="brandExpl" th:value="${mate.brandExpl}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">子品牌代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="childBrandCode"
+								th:value="${mate.childBrandCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">子品牌说明</label>
+						<div class="layui-input-block">
+							<input type="text" name="childBrandExpl"
+								th:value="${mate.childBrandExpl}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">用途英文</label>
+						<div class="layui-input-block">
+							<input type="text" name="useChin" th:value="${mate.useChin}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">用途中文</label>
+						<div class="layui-input-block">
+							<input type="text" name="useEngl" th:value="${mate.useEngl}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">物料状态(生命周期)</label>
+						<div class="layui-input-block">
+							<input type="text" name="mateStatus"
+								th:value="${mate.mateStatus}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">包入数</label>
+						<div class="layui-input-block">
+							<input type="text" name="packNumber"
+								th:value="${mate.packNumber}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">大小/量纲</label>
+						<div class="layui-input-block">
+							<input type="text" name="dimension" th:value="${mate.dimension}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">产品ABC</label>
+						<div class="layui-input-block">
+							<input type="text" name="produAbc" th:value="${mate.produAbc}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">条码ABC</label>
+						<div class="layui-input-block">
+							<input type="text" name="barCodeAbc"
+								th:value="${mate.barCodeAbc}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">货源</label>
+						<div class="layui-input-block">
+							<input type="text" name="supply" th:value="${mate.supply}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label"
+							style="width: 100px; padding-right: 0px;">税收分类编码</label>
+						<div class="layui-input-block">
+							<input type="text" name="reveCateCode"
+								th:value="${mate.reveCateCode}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label"
+							style="width: 100px; padding-right: 0px;">税收分类名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="reveCateName"
+								th:value="${mate.reveCateName}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">保质期</label>
+						<div class="layui-input-block">
+							<input type="text" name="expiDate" th:value="${mate.expiDate}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">保质单位</label>
+						<div class="layui-input-block">
+							<input type="text" name="guarUnit" th:value="${mate.guarUnit}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">国家键值</label>
+						<div class="layui-input-block">
+							<input type="text" name="nationKey" th:value="${mate.nationKey}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">国家名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="nationName"
+								th:value="${mate.nationName}" class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md5">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">行政省编码</label>
+						<div class="layui-input-block">
+							<input type="text" name="provCode" th:value="${mate.provCode}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">行政省名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="provName" th:value="${mate.provName}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md5 layui-col-md-offset2">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">行政市编码</label>
+						<div class="layui-input-block">
+							<input type="text" name="cityCode" th:value="${mate.cityCode}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 100px;">行政市名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="cityName" th:value="${mate.cityName}"
+								class="layui-input disa">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/mate/materialLook.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<title>OEM供应商和包材供应商关系配置</title>
+</head>
+<style type="text/css">
+.layui-col-md9 {
+	margin-left: 0px;
+}
+
+.layui-col-space10>* {
+	padding-bottom: 0px;
+}
+
+.layui-btn-group {
+	margin-top: 6px;
+}
+
+html, body {
+	overflow: auto !important;
+}
+
+.pitch2 {
+	background: #b9e0ef;
+}
+</style>
+<body class='fau-body'>
+	<div class="demoTable" style="margin-top: 10px;">
+		<form class="layui-form" action="" method="post">
+			<div class="layui-row">
+				<div class="layui-col-md4">
+					<label class="layui-form-label">OEM供应商</label>
+					<div class="layui-input-block">
+						<input type="text" id="oemSuppCode" name="oemSuppCode" placeholder="OEM供应商编码/名称" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<label class="layui-form-label">包材供应商</label>
+					<div class="layui-input-block">
+						<input type="text" id="packSuppCode" name="packSuppCode" placeholder="包材供应商编码/名称" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<label class="layui-form-label">物料</label>
+					<div class="layui-input-block">
+						<input type="text" id="mateCode" name="mateCode" placeholder="物料编码/名称" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-row" style="padding-top: 10px;">
+				<div class="layui-btn-group1">
+					<button class="layui-btn layui-btn-xs blueHollow" id="btn_add" type="button" sec:authorize="hasRole('ROLE_SUPPMATE_ADD')">添加</button>
+					<button class="layui-btn layui-btn-xs blueHollow" id="btn_del" type="button" sec:authorize="hasRole('ROLE_SUPPMATE_ADD')">删除</button>
+					<button class="layui-btn layui-btn-xs blueHollow" id="btn_upload" type="button" sec:authorize="hasRole('ROLE_SUPPMATE_ADD')">上传</button>
+					
+					<button class="layui-btn layui-btn-xs yellowSolid" id="btn_search" type="button" style='margin-left: 10px !important; float: right;'>搜索</button>
+					<button class="layui-btn layui-btn-xs yellowHollow" id="btn_reset" type="button" style='float: right;' >重置</button>
+				</div>
+			</div>
+
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<div class="layui-fluid tableCont " style='padding: 0px;'>
+						<table id="mateTable" lay-filter="mateTable"></table>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript">
+	layui.use([ "form", "table", 'element','upload' ], function() {
+		var $ = layui.$, table = layui.table, element = layui.element, upload = layui.upload;
+		// 重置
+		$("#btn_reset").on("click", function() {
+			$("#oemSuppCode").val("");
+			$("#packSuppCode").val("");
+			$("#mateCode").val("");
+			reload();
+		});
+		
+		//指定允许上传的文件类型
+		var uploading;
+		upload.render({
+			elem: '#btn_upload',
+			url: '/supp_pack_mate/upload_excel',
+			accept: 'file',
+			multiple: true,
+			before: function () {
+				uploading = layer.load();
+			},
+			done: function(res){
+			layer.confirm(res.message, {icon: 3, title:'提示'}, function(index){
+				layer.close(index);
+				layer.close(uploading);
+			});
+		   }
+		});
+		
+		// 搜索
+		$("#btn_search").on("click", function() {
+			reload();
+		});
+		
+		function reload() {
+			var oemSuppCode = $("#oemSuppCode").val();
+			var packSuppCode = $("#packSuppCode").val();
+			var mateCode = $("#mateCode").val();
+			table.reload("mateTable", {
+				page : {
+					curr : 1
+				},
+				where: {
+					oemSuppCode : oemSuppCode,
+					packSuppCode : packSuppCode,
+					mateCode : mateCode
+				}
+			});
+		}
+		
+		table.render({
+			elem : '#mateTable',
+			url : "/supp_pack_mate/list_data",
+			page : true,
+			cols : [ [ {
+				type : "checkbox"
+			}, {
+				field : 'oemSuppCode',
+				title : 'OEM供应商编号'
+			}, {
+				field : 'oemSuppName',
+				title : 'OEM供应商名称'
+			}, {
+				field : 'packSuppCode',
+				title : '包材供应商编号'
+			}, {
+				field : 'packSuppName',
+				title : '包材供应商名称'
+			},{
+				field : 'mateCode',
+				title : '物料编号'
+			}, {
+				field : 'mateName',
+				title : '物料名称'
+			}] ]
+		
+			
+		});
+		
+		// 删除
+		$("#btn_del").on("click", function () {
+			var checkStatus = table.checkStatus("mateTable");
+			var data = checkStatus.data;
+			if(data.length > 0) {
+				layer.confirm("是否确认删除？", 
+					{icon: 3, title: "提示"}, 
+					function(index) {
+						$.ajax({
+							url : "/supp_pack_mate/remove_oem_pack_supp",
+							async : false,
+							data : {
+								jsonData : JSON.stringify(data)
+							},
+							success : function(res) {
+								layer.msg(res.msg);
+								reload();
+							}
+						});
+					}
+				);
+			}else {
+				layer.msg("请选择要删除的数据！");
+			}
+		});
+		
+		$("#btn_add").on("click", function() {
+			layer.open({
+				type : 2,
+				title : '添加物料',
+				shadeClose : false,
+				shade : 0.1,
+				content : '/supp_pack_mate/multiple_choice_mate',
+				area : [ '1100px', '95%' ],
+				maxmin : true,// 开启最大化最小化按钮
+				btn : [ '确认', '取消' ],
+				yes : function(index, layero) {
+					//按钮【按钮一】的回调
+					// 获取选中的物料数据
+					var checkedData = $(layero).find("iframe")[0].contentWindow.getCheckedData();
+					if (checkedData.length == 0) {
+						layer.msg("OEM供应商、包材供应商和物料为必填项！");
+					} else {
+						// 处理数据
+						$.ajax({
+							url : "/supp_pack_mate/save_oem_pack_supp",
+							async : false,
+							data : {
+								jsonData : JSON.stringify(checkedData)
+							},
+							success : function(res) {
+								reload();
+							}
+						});
+						// 关闭弹框
+						layer.close(index);
+					}
+				},
+				btn2 : function(index, layero) {
+				}
+			});
+		});
+	});
+</script>
+</html>

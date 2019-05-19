@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.ReceiveMapper">
+
+	<resultMap type="com.faujor.entity.bam.Receive" id="receive">
+		<result property="receId" column="rece_id" />
+		<result property="status" column="status" />
+		<result property="receCode" column="rece_code" />
+		<result property="receDate" column="rece_date" />
+		<result property="suppId" column="supp_id" />
+		<result property="suppName" column="supp_name" />
+		<result property="receNumber" column="rece_number" />
+		<result property="receAmount" column="rece_amount" />
+		<result property="truckNum" column="truck_num" />
+		<result property="createId" column="create_id" />
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="receUnit" column="rece_unit" />
+		<result property="deliCode" column="deli_code" />
+		<result property="qrurl" column="qrurl" />
+		<result property="receType" column="rece_type" />
+		<result property="post" column="post" />
+		<result property="asyncStatus" column="async_status" />
+		<result property="errorMsg" column="error_msg" />
+		<result property="suppRange" column="supp_range" />
+		<result property="suppRangeDesc" column="supp_range_desc" />
+	</resultMap>
+	<select id="queryReceiveByPage" parameterType="Map" resultMap="receive">
+		select r2.* from(
+		select r1.*,rownum rn from(
+		select * from bam_receive
+		r
+		where 1=1
+		<if test="createId != null and createId != '' ">
+			and r.create_id=#{createId}
+		</if>
+		<if test="suppId != null and suppId != '' ">
+			and r.supp_id = #{suppId}
+		</if>
+		<if test="status != null and status != '' ">
+			and r.status != #{status}
+		</if>
+		<if test="rece.status != null and rece.status != '' ">
+			and r.status = #{rece.status}
+		</if>
+		<if test="rece.suppName != null and rece.suppName != '' ">
+			and r.supp_name like '%${rece.suppName}%'
+		</if>
+		<if test="rece.qrurl != null and rece.qrurl != '' ">
+			and r.create_date like to_date(#{rece.qrurl},'yyyy/mm/dd')
+		</if>
+		<if test="rece.receCode != null and rece.receCode != '' ">
+			and r.rece_code like '%${rece.receCode}%'
+		</if>
+		<if test="rece.deliCode != null and rece.deliCode != '' ">
+			and r.deli_code like '%${rece.deliCode}%'
+		</if>
+		<if test="rece.startDate != null or rece.endDate != null ">
+			and r.rece_date between #{rece.startDate,jdbcType=VARCHAR}
+			and #{rece.endDate,jdbcType=VARCHAR}
+		</if>
+		order by r.rece_code desc,r.create_date desc)r1)r2
+		<![CDATA[where r2.rn>=#{start} and r2.rn<=#{end}]]>
+	</select>
+
+
+
+	<select id="queryReceiveByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_receive r
+		where 1=1
+		<if test="createId != null and createId != '' ">
+			and r.create_id=#{createId}
+		</if>
+		<if test="suppId != null and suppId != '' ">
+			and r.supp_id = #{suppId}
+		</if>
+		<if test="status != null and status != '' ">
+			and r.status != #{status}
+		</if>
+		<if test="rece.status != null and rece.status != '' ">
+			and r.status = #{rece.status}
+		</if>
+		<if test="rece.suppName != null and rece.suppName != '' ">
+			and r.supp_name like '%${rece.suppName}%'
+		</if>
+		<if test="rece.qrurl != null and rece.qrurl != '' ">
+			and r.create_date like to_date(#{rece.qrurl},'yyyy/mm/dd')
+		</if>
+		<if test="rece.receCode != null and rece.receCode != '' ">
+			and r.rece_code like '%${rece.receCode}%'
+		</if>
+		<if test="rece.deliCode != null and rece.deliCode != '' ">
+			and r.deli_code like '%${rece.deliCode}%'
+		</if>
+		<if test="rece.startDate != null or rece.endDate != null ">
+			and r.rece_date between #{rece.startDate,jdbcType=VARCHAR}
+			and #{rece.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="queryAllReceiveByPage" parameterType="Map"
+		resultMap="receive">
+		select r2.* from(
+		select r1.*,rownum rn from(
+		select * from bam_receive
+		r
+		where 1=1
+		and r.status != '已保存'
+		<if test="suppId != null and suppId != '' ">
+			and r.supp_id = #{suppId}
+		</if>
+		<if test="rece.status != null and rece.status != '' ">
+			and r.status = #{rece.status}
+		</if>
+		<if test="rece.suppName != null and rece.suppName != '' ">
+			and r.supp_name like '%${rece.suppName}%'
+		</if>
+		<if test="rece.qrurl != null and rece.qrurl != '' ">
+			and r.create_date like to_date(#{rece.qrurl},'yyyy/mm/dd')
+		</if>
+		<if test="rece.receCode != null and rece.receCode != '' ">
+			and r.rece_code like '%${rece.receCode}%'
+		</if>
+		<if test="rece.deliCode != null and rece.deliCode != '' ">
+			and r.deli_code like '%${rece.deliCode}%'
+		</if>
+		<if test="rece.startDate != null or rece.endDate != null ">
+			and r.rece_date between #{rece.startDate,jdbcType=VARCHAR}
+			and #{rece.endDate,jdbcType=VARCHAR}
+		</if>
+		order by r.rece_code desc,r.create_date desc)r1)r2
+		<![CDATA[where r2.rn>=#{start} and r2.rn<=#{end}]]>
+	</select>
+
+	<select id="queryAllReceiveByPageCount" parameterType="Map"
+		resultType="int">
+		select count(*) from bam_receive r
+		where 1=1
+		and r.status != '已保存'
+		<if test="suppId != null and suppId != '' ">
+			and r.supp_id = #{suppId}
+		</if>
+		<if test="rece.status != null and rece.status != '' ">
+			and r.status = #{rece.status}
+		</if>
+		<if test="rece.suppName != null and rece.suppName != '' ">
+			and r.supp_name like '%${rece.suppName}%'
+		</if>
+		<if test="rece.qrurl != null and rece.qrurl != '' ">
+			and r.create_date like to_date(#{rece.qrurl},'yyyy/mm/dd')
+		</if>
+		<if test="rece.receCode != null and rece.receCode != '' ">
+			and r.rece_code like '%${rece.receCode}%'
+		</if>
+		<if test="rece.deliCode != null and rece.deliCode != '' ">
+			and r.deli_code like '%${rece.deliCode}%'
+		</if>
+		<if test="rece.startDate != null or rece.endDate != null ">
+			and r.rece_date between #{rece.startDate,jdbcType=VARCHAR}
+			and #{rece.endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<delete id="deleteReceiveByReceId">
+		delete from bam_receive r where r.rece_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<delete id="deleteReceMateByReceId">
+		delete from bam_rece_mate rm where rm.rece_id in
+		<foreach collection="array" open="(" close=")" separator=","
+			item="v">#{v}</foreach>
+	</delete>
+
+	<insert id="addReceive" parameterType="com.faujor.entity.bam.Receive">
+		<selectKey keyProperty="receId" resultType="java.lang.String"
+			order="BEFORE">
+			select lower(sys_guid()) from dual
+		</selectKey>
+		insert into bam_receive r values(#{receId}, #{status}, #{receCode},
+		#{receDate}, #{suppId}, #{suppName}, #{receNumber}, #{receAmount},
+		#{truckNum}, #{createId}, #{creator}, sysdate, #{receUnit},
+		#{deliCode}, #{qrurl}, #{receType}, #{post}, #{asyncStatus},
+		#{errorMsg},#{suppRange},#{suppRangeDesc})
+	</insert>
+
+	<insert id="addReceMate" parameterType="com.faujor.entity.bam.ReceMate">
+		insert into bam_rece_mate
+		values(lower(sys_guid()), #{receId}, #{orderId}, #{mateCode},
+		#{mateName}, #{deliNumber}, #{receNumber}, #{unit}, #{prodPatchNum},
+		#{remark}, #{frequency}, #{inboDeliCode}, #{factoryAddr},
+		#{storLocation}, #{isOccupy})
+	</insert>
+
+	<select id="queryReceiveByReceId" parameterType="String"
+		resultMap="receive">
+		select * from bam_receive r where r.rece_id=#{receId}
+	</select>
+
+	<resultMap type="com.faujor.entity.bam.ReceMate" id="receMate">
+		<result property="id" column="id" />
+		<result property="receId" column="rece_id" />
+		<result property="orderId" column="order_id" />
+		<result property="mateCode" column="mate_code" />
+		<result property="mateName" column="mate_name" />
+		<result property="deliNumber" column="deli_number" />
+		<result property="receNumber" column="rece_number" />
+		<result property="unit" column="unit" />
+		<result property="prodPatchNum" column="prod_patch_num" />
+		<result property="remark" column="remark" />
+		<result property="frequency" column="frequency" />
+		<result property="inboDeliCode" column="inbo_deli_code" />
+		<result property="factoryAddr" column="factory_addr" />
+		<result property="storLocation" column="stor_location" />
+		<result property="isOccupy" column="is_occupy" />
+	</resultMap>
+	<select id="queryReceMatesByReceId" parameterType="String"
+		resultMap="receMate">
+		select * from bam_rece_mate rm where rm.rece_id=#{receId}
+	</select>
+
+	<update id="updateReceiveByReceId" parameterType="com.faujor.entity.bam.Receive">
+		update bam_receive r
+		<set>
+			<if test="status != null">
+				r.status=#{status} ,
+			</if>
+			<if test="receDate != null">
+				r.rece_date=#{receDate},
+			</if>
+			<if test="suppId != null and suppId != '' ">
+				r.supp_id=#{suppId},
+			</if>
+			<if test="suppName != null and suppName != '' ">
+				r.supp_name=#{suppName},
+			</if>
+			<if test="receNumber != null">
+				r.rece_number=#{receNumber},
+			</if>
+			<if test="receAmount != null">
+				r.rece_amount=#{receAmount},
+			</if>
+			<if test="truckNum != null">
+				r.truck_num=#{truckNum},
+			</if>
+			<if test="receUnit != null and receUnit != '' ">
+				r.rece_unit=#{receUnit},
+			</if>
+			r.deli_code=#{deliCode},
+			r.post = #{post},
+			r.supp_range = #{suppRange},
+			r.supp_range_desc = #{suppRangeDesc},
+		</set>
+		where r.rece_id=#{receId}
+	</update>
+
+	<update id="updateReceiveMateByOutData" parameterType="com.faujor.entity.bam.delivery.OutData">
+		update
+		bam_rece_mate set inbo_deli_code = #{deliveryNo} where order_id =
+		#{orderNo} and rece_id = (select rece_id from bam_receive where
+		RECE_CODE = #{receiveNo})
+	</update>
+
+	<update id="updateReceMate" parameterType="com.faujor.entity.bam.ReceMate">
+		update bam_rece_mate
+		set order_id = #{orderId}, mate_code = #{mateCode}, mate_name =
+		#{mateName}, deli_number = #{deliNumber}, rece_number=#{receNumber},
+		unit=#{unit}, prod_patch_num = #{prodPatchNum}, frequency =
+		#{frequency}, remark = #{remark}, factory_addr = #{factoryAddr},
+		stor_location = #{storLocation}, is_occupy = #{isOccupy} where id =
+		#{id}
+	</update>
+
+	<delete id="removeReceMateByIDs" parameterType="list">
+		delete from bam_rece_mate where id in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<insert id="batchSaveReceMate" parameterType="list">
+		insert all into
+		bam_rece_mate (id, rece_id, order_id, mate_code,
+		mate_name,
+		deli_number, rece_number, unit, prod_patch_num, remark,
+		frequency,inbo_deli_code,factory_addr,stor_location, is_occupy)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator="into bam_rece_mate (id, rece_id, order_id, 
+			mate_code, mate_name, deli_number, rece_number, unit,
+			 prod_patch_num, remark, frequency,inbo_deli_code,
+			 factory_addr,stor_location, is_occupy) values">
+			(#{item.id},#{item.receId}, #{item.orderId},
+			#{item.mateCode},
+			#{item.mateName}, #{item.deliNumber},
+			#{item.receNumber},
+			#{item.unit}, #{item.prodPatchNum},
+			#{item.remark},
+			#{item.frequency},#{item.inboDeliCode},
+			#{item.factoryAddr},#{item.storLocation}, #{item.isOccupy})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<update id="updateStatusOfReceiveByReceCode" parameterType="Map">
+		update bam_receive r set r.status=#{status} where
+		r.rece_code=#{receCode}
+	</update>
+
+	<select id="findReceMate" resultMap="receMate">
+		SELECT t1.ORDER_ID,
+		t1.FREQUENCY, t1.INBO_DELI_CODE FROM BAM_RECE_MATE t1 LEFT JOIN
+		BAM_RECEIVE t2 ON t1.RECE_ID = t2.RECE_ID WHERE t2.STATUS = '已收货' AND
+		t1.INBO_DELI_CODE IS NOT NULL and t1.is_occupy = 'yes'
+	</select>
+
+	<update id="updateReceiveMateByReceMate" parameterType="com.faujor.entity.bam.ReceMate">
+		update
+		BAM_RECE_MATE t set t.is_occupy = 'no' where t.INBO_DELI_CODE =
+		#{inboDeliCode}
+	</update>
+	
+	<update id="updateReceAsyncStatusByReceCode" parameterType="com.faujor.entity.bam.Receive">
+		update bam_receive r set r.async_status=#{asyncStatus}, r.error_msg=#{errorMsg}  
+		where r.rece_code=#{receCode}
+	</update>
+	
+	<select id="getReceiveListByAppoCode" parameterType="String" resultMap="receive">
+		 select *
+		  from bam_receive r where r.deli_code in(
+		  select d.deli_code from bam_delivery d where d.mapg_code=#{code}
+		  )
+	</select>
+	
+	<select id="queryReceiveListByDeliCode" parameterType="String" resultMap="receive">
+		  select * from bam_receive r where r.deli_code=#{code}
+	</select>
+	
+	<select id="queryOneReceiveByReceCode" parameterType="String" resultMap="receive">
+		select * from bam_receive r where r.rece_code=#{code}
+	</select>
+	
+	<update id="updateReceMateInboDeliCodeAndIsOccupy" parameterType="com.faujor.entity.bam.ReceMate" >
+		update bam_rece_mate rm
+		<set>
+			 rm.inbo_deli_code=#{inboDeliCode},
+			<if test="isOccupy !=null and isOccupy != '' ">
+				rm.is_occupy=#{isOccypy}, 
+			</if>
+		</set> 
+    	where rm.id=#{id}
+	</update>
+	
+	<select id="queryReceMateMessById" parameterType="String" resultMap="receMate">
+		select * from bam_rece_mate rm where rm.id=#{id}
+	</select>
+</mapper>

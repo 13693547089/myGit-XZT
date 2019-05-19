@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>潜在供应商提交OA</title>
+</head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+</style>
+<body >
+	<div class='divMargin divMargin1' style="margin-left:15px;">
+	<button class="layui-btn layui-btn-xs blueHollow" id="approveLatentSupp">提交OA</button>
+	<button class="layui-btn layui-btn-xs blueHollow" id="backLatentSupp">退回</button>
+	<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+	</div>
+	<div class="panel-default ">
+			<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse"  href="#collapseOne">
+				<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;基础信息
+			</a>		
+			</div>
+	</div>
+	  <input type="text" name="prov" id="prov" th:value="${supp.provName}" style="display: none;"/>
+	  <input type="text" name="city" id="city" th:value="${supp.cityName}" style="display: none;"/>
+	<form class="layui-form" action="" method="post" id="latentSuppForm" enctype="multipart/form-data">
+	  <input type="text" name="paperData" id="paperTableData" style="display: none;"/>
+	  <input type="text" name="category" id="category" style="display: none;"/>
+	  <input type="text" name="suppId" id="suppId" th:value="${supp.suppId}" style="display: none;"/>
+	  <input type="date" name="registerTime" id="registerTime" th:value="${supp.registerTime == null ? '' : #dates.format(supp.registerTime,'yyyy-MM-dd')}" style="display: none;"/>
+	   <input type="text" name="taskName" id="taskName" th:value="${task.taskName}" style="display: none;"/>
+	  <input type="text" name="processCode" id="processCode" th:value="${task.processCode}" style="display: none;"/>
+	  <input type="text" name="isOwn" id="isOwn" th:value="${task.isOwn}" style="display: none;"/>
+	   <input type="text" name="paperList2" id="paperList2" th:value="${paperList2}" style="display: none;"/>
+	  <div class="layui-row">
+	  	 <div class="layui-col-md4">
+			  <div class="layui-form-item">
+    		      <label class="layui-form-label" style="width: 100px;">供应商类型</label>
+    			  <div class="layui-input-block">
+				      <select name="categoryId" lay-verify="required" disabled  id="categoryId">
+				        <option value=""></option>
+				        <option th:each="suppcate:${suppCateList}" th:value="${suppcate.dicCode}" th:text="${suppcate.dicName}" th:selected="${suppcate.dicCode==supp.categoryId}"></option>
+				      </select>
+    			  </div>
+ 			   </div>
+		  </div> 
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">供应商状态</label>
+			    <div class="layui-input-block">
+			    		<input type="text" name="status" id="status" required disabled lay-verify="required" th:value="${supp.status}" style="width: 70%" class="layui-input">
+			       <!-- <select name="status" lay-verify="required" disabled id="categoryId">
+				        <option value=""></option>
+				        <option th:each="statusList:${statusList}" th:value="${statusList.dicCode}" th:text="${statusList.dicName}" th:selected="${statusList.dicName==supp.status}"></option>
+				   </select> -->
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			   <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">编号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="srmId" required disabled lay-verify="required" th:value="${supp.srmId}" style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	   
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md8">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">供应商全称</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppName" id="suppName" required disabled lay-verify="required" th:value="${supp.suppName}" style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" >简称</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="suppAbbre" required disabled  lay-verify="required" th:value="${supp.suppAbbre}"  class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">邮编</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="postcode" required disabled lay-verify="required" th:value="${supp.postcode}"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			   <div class="layui-form-item">
+    		      <label class="layui-form-label">省</label>
+    			  <div class="layui-input-block">
+				      <input type="text" name="provName"  disabled  th:value="${supp.provName}"  class="layui-input disa">
+    			  </div>
+ 			   </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+    		      <label class="layui-form-label">地级市</label>
+    			  <div class="layui-input-block">
+				     <input type="text" name="cityName"  disabled  th:value="${supp.cityName}"  class="layui-input disa">
+    			  </div>
+ 			   </div>
+		  </div>  
+	  </div>
+	   <div class="layui-row">
+	  	  <div class="layui-col-md12">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">地址</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="address" required disabled lay-verify="required"  th:value="${supp.address}"  class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">联系人</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="contacts" required disabled lay-verify="required" th:value="${supp.contacts}"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			   <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">联系电话</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="phone" required disabled lay-verify="required" th:value="${supp.phone}" style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	   
+	  </div>
+	
+	<div class=" panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;相关证件
+			</a>
+			<div id="collapseFour" class="panel-collapse collapse in">
+				<div class="panel-body">
+					 <!-- <table class="table table-striped table-bordered table-hover" id="papers">
+						 <thead> 
+				 	 		<tr>
+				 	 			<td class="center">序号</td>
+				 	 			<td class="center">附件类型</td>
+				 	 			<td class="center">名称</td>
+				 	 			<td class="center">有效期从</td>
+				 	 			<td class="center">有效期至</td>
+				 	 			<td class="center">附件</td>
+				 	 			<td class="center">附件操作</td>
+				 	 		</tr>
+				 	 	</thead>
+				 	 	<tbody id="tbody">
+				 	 		<tr th:each="lapaper,paperStart:${paperList}">
+				 	 			<td class="center" th:text="${paperStart.count}"></td>
+				 	 			<td class="center" name="paper" th:text="${lapaper.papersType}"></td>
+				 	 			<td style="display: none;" class="center" name="paper" th:text="${lapaper.papersId}"></td>
+				 	 			<td class="center" name="paper" th:text="${lapaper.papersName}"></td>
+				 	 			<td class="center " name="paper" th:text="${lapaper.startDate == null ? '': #dates.format(lapaper.startDate,'yyyy-MM-dd')}"></td>
+				 	 			<td class="center " name="paper" th:text="${lapaper.endDate == null ? '': #dates.format(lapaper.endDate,'yyyy-MM-dd')}"></td>
+				 	 			<td class="center " name="paper" th:text="${lapaper.acceOldName}"></td>
+				 	 			<td class="center">
+					 	 			<div class="layui-btn-group">
+									  <a class="layui-btn layui-btn-xs blueInline" id="downPaper">下载</a>
+									</div>
+				 	 			</td>
+				 	 		</tr>
+				 	 	</tbody>
+					 </table> -->
+					  <table id="paperTable" lay-filter="paperTableEvent" style='width:99%;margin-left:1%;'></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="panel-default ">
+			<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse"  href="#collapseOne">
+				<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;交易资料
+			</a>		
+			</div>
+	</div>
+	<div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 115px;">银行名称简称</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="bankAbbre" required disabled th:value="${supp.bankAbbre}" lay-verify="required" style="width: 69%;"  class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md8">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 120px;" >银行中文名称</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="bankName" required disabled th:value="${supp.bankName}" lay-verify="required"  style="width: 83%;" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  </div>
+	<div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">银行账号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="bankAccount" required disabled th:value="${supp.bankAccount}" lay-verify="required"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			   <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">银行户主</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="accountHolder" required disabled th:value="${supp.accountHolder}" lay-verify="required"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			   <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">户主电话</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="holderPhone" required disabled th:value="${supp.holderPhone}" lay-verify="required"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">户主传真</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="faxNumber" required disabled th:value="${supp.faxNumber}" lay-verify="required"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			   <div class="layui-form-item">
+			    <label class="layui-form-label" style="width: 100px;">户主邮箱</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="email" required disabled th:value="${supp.email}" lay-verify="required"  style="width: 70%" class="layui-input">
+			    </div>
+			  </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+    		      <label class="layui-form-label" style="width: 99px">付款条件</label>
+    			  <div class="layui-input-block">
+				      <select name="payClauseId" id="payClauseId" lay-verify="required" disabled >
+				        <option value=""></option>
+				        <option th:each="payList:${payList}" th:value="${payList.dicCode}" th:text="${payList.dicName}" th:selected="${payList.dicCode==supp.payClauseId}"></option>
+				      </select>
+    			  </div>
+ 			   </div>
+		  </div>  
+	  </div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md4">
+			    <div class="layui-form-item">
+    		      <label class="layui-form-label" style="width: 99px">惯用币种</label>
+    			  <div class="layui-input-block" >
+				      <select name="currencyId" id="currencyId" lay-verify="required"disabled >
+				        <option value=""></option>
+				        <option th:each="currList:${currList}" th:value="${currList.dicCode}" th:text="${currList.dicName}" th:selected="${currList.dicCode==supp.currencyId}"></option>
+				      </select>
+    			  </div>
+ 			   </div>
+		  </div>  
+	  	  <div class="layui-col-md4">
+			  <div class="layui-form-item">
+    		      <label class="layui-form-label" style="width: 99px">惯用税种</label>
+    			  <div class="layui-input-block">
+				      <select name="taxeKindId" id="taxeKindId" lay-verify="required" disabled>
+				        <option value=""></option>
+				        <option th:each="taxeList:${taxeList}" th:value="${taxeList.dicCode}" th:text="${taxeList.dicName}" th:selected="${taxeList.dicCode==supp.taxeKindId}"></option>
+				      </select>
+    			  </div>
+ 			   </div>
+		  </div>  
+	  </div>
+	  <div class="panel-default">
+			<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse"  href="#collapseOne">
+				<i class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;备注说明
+			</a>		
+			</div>
+	</div>
+	  <div class="layui-row">
+	  	  <div class="layui-col-md12">
+			     <textarea name="remark" placeholder="请输入内容" disabled  th:text="${supp.remark}" class="layui-textarea"></textarea>
+		  </div>  
+	  </div>
+	</form>
+<script type="text/html" id="barDemo">
+<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="down">下载</a>
+</script>
+<div th:include="include::websocketJS"></div>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/task/taskCommon.js}"></script>		
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/supp/latentSuppSubOA.js}"></script>		
+</body>
+</html>
+		 

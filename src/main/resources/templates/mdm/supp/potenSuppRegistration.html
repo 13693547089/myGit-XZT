@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>潜在供应商注册</title>
+<style>
+html {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 100%;
+	background: #F0F4F9;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	background: url(/img/top.png) no-repeat 96% 92%;
+	background-size: 32%;
+	margin: 0px;
+	padding: 0px;
+	overflow:hidden;
+}
+
+.DIV {
+	width: 1280px;
+	margin: 0px auto;
+	height: 100%;
+}
+
+.DIV_mind_img {
+	width: 100%;
+	height: 26%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.DIV_mind_regi {
+	width: 100%;
+	height: 70%;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.DIV_mind_regi_notice h3 {
+	font-size: 32px;
+}
+
+.DIV_mind_regi_notice p {
+	font-size: 24px;
+}
+
+.dataNext,.bankNext {
+	margin-left: 30px;
+	margin-top: 18px;
+}
+
+.regi {
+	width: 100%;
+	height: auto;
+	text-align: center;
+}
+
+p {
+	width: 75%;
+	text-align: left;
+	margin-left: 25%;
+	box-sizing: border-box;
+	
+	}
+
+button {
+	background: #2f77ef;
+	border: 1px solid #2f77ef;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+	outline: none;
+}
+
+.Input {
+	width: 60%;
+	margin: 0px auto;
+	height: 47px;
+}
+
+label {
+	width: 120px;
+	display: inline-block;
+	padding-right: 10px;
+	text-align: right;
+}
+
+input[type='date']::-webkit-inner-spin-button {
+	display: none;
+}
+
+.pushButton {
+	background: white;
+	color: #2f77ef;
+}
+
+.Hide {
+	display: none;
+}
+
+img {
+	width: 100%;
+}
+
+.register1 {
+	padding: 8px 12px;
+	font-size: 18px;
+}
+
+label {
+	font-size: 18px;
+	width: 165px;
+}
+
+input,select {
+	height: 36px;
+	line-height: 1.2;
+	border-radius: 2px;
+	border: 1px solid #e6e6e6;
+	font-size: 18px;
+	width: 420px;
+	background: #fff;
+	padding-top: 1px;
+	box-sizing: border-box;
+}
+
+.succeed {
+	width: 100%;
+	text-align: center;
+	font-size: 32px;
+	margin-left: 0px;
+}
+</style>
+</head>
+<body>
+	<!-- 中部 -->
+	<div class='DIV'>
+		<!-- 照片 -->
+		<div class='DIV_mind_img'>
+			<img src='/img/type1.png' class='Img'></img>
+		</div>
+		<!-- 注册内容 -->
+		<div class='DIV_mind_regi'>
+			<!-- 供应商须知 -->
+			<div class='DIV_mind_regi_notice regi'>
+				<h3>供应商注册须知</h3>
+				<p>1.请提前准备基础资料信息，包括公司全称、地址、法人、银行交易等信息；</p>
+				<p>2.请提前按照示例扫描营业执照原件；</p>
+				<p>3.请按照供应商资料评估表如实填写企业信息；</p>
+				<button class='register1 register'
+					style="position: absolute; bottom: 200px;">立即注册</button>
+				<div
+					style='position: absolute; bottom: 0px; width: 100%; height: 120px; padding-left: 10%; box-sizing: border-box; text-align: left; border-top: 1px solid #a5a7a9;'>
+					<h5
+						style="margin: 0px; font-size: 20px; padding-top: 25px; font-weight: 400;">附件下载:</h5>
+					<div>
+						<input type="hidden" id="yyzz" th:value="${fileId1}">
+						<span style="font-size: 20px;">1.</span><a class='register1' href="#" id="down1"
+							style="text-decoration: underline; color: #20A0FF;">营业执照附件</a>
+					</div>
+					<div>
+					    <input type="hidden" id="gys" th:value="${fileId2}">
+						<span style="font-size: 20px;">2.</span><a class='register1' href="#" id="down2"
+							style="text-decoration: underline; color: #20A0FF;">供应商资料评估表</a>
+					</div>
+
+				</div>
+
+			</div>
+			<!-- 基础资料 -->
+			<form action="" method="post" id="latentSuppForm"
+				enctype="multipart/form-data" name='creator'>
+				<input type="text" id="suppId" name="suppId" style="display: none;"
+					value="0">
+				<div class='DIV_mind_regi_data regi Hide'>
+					<div class='Input'>
+						<label>企业名称</label> <input type="text" id="suppName"
+							name="suppName">
+					</div>
+					<div class='Input'>
+						<label>省</label>
+						<!--  <select name="provName" onChange="selectcityarea('provName','cityName','creator');"class='Slect'>
+   					<option value="0" selected>不限-- 
+  					</select>
+  					-->
+						<select name="provName" id="ddlProvince"
+							onchange="selectMoreCity(this)" class='Slect'>
+						</select>
+
+					</div>
+					<div class='Input'>
+						<label>市</label>
+
+
+						<!--  <select name="cityName" class='Slect'>
+   				<option value="0" selected>不限-- 
+ 				 </select>
+ 				 -->
+						<select name="cityName" id="ddlCity" class='Slect'>
+							<option selected value="">城市</option>
+						</select>
+					</div>
+					<div class='Input'>
+						<label>详细地址</label> <input type="text" name="address">
+					</div>
+					<div class='Input'>
+						<label>邮编</label> <input type="text" name="postcode">
+					</div>
+					<div class='Input'>
+						<label>联系人</label> <input type="text" name="contacts">
+					</div>
+					<div class='Input'>
+						<label>联系电话</label> <input type="text" name="phone">
+					</div>
+					<div class='Input'>
+						<label>营业执照有效期</label> <input type="text" name="startDate" class='demo-input'
+							style='width: 200px'><span
+							style='width: 17px; text-align: center; display: inline-block;'>~</span><input
+							type="text" class='demo-input1' name="endDate" style='width: 200px;'>
+					</div>
+					<div class='Input'>
+						<label>营业执照附件</label> <input type="file" name="file">
+					</div>
+					<div class='Input'>
+						<label>供应商资料评估表</label> <input type="file" name="file">
+					</div>
+					<button type="button" class='register1 pushButton dataPush'>上一步</button>
+					<button type="button" class='register1 dataNext'>下一步</button>
+				</div>
+				<!-- 银行资料 -->
+				<div class='DIV_mind_regi_bank regi Hide'>
+					<div class='Input'>
+						<label>银行名称简称</label> <input type="text" name="bankAbbre">
+					</div>
+					<div class='Input'>
+						<label>银行中文名称</label> <input type="text" name="bankName">
+					</div>
+					<div class='Input'>
+						<label>银行账号</label> <input type="text" name="bankAccount">
+					</div>
+					<div class='Input'>
+						<label>银行户主人</label> <input type="text" name="accountHolder">
+					</div>
+					<div class='Input'>
+						<label>户主电话</label> <input type="text" name="holderPhone">
+					</div>
+					<div class='Input'>
+						<label>户主传真</label> <input type="text" name="faxNumber">
+					</div>
+					<div class='Input'>
+						<label>户主邮箱</label> <input type="text" name="email">
+					</div>
+					<button type="button" class='register1 pushButton bankPush' id="bankPush">上一步</button>
+					<button type="button" class='register1 bankNext' id ="bankNext">下一步</button>
+				</div>
+			</form>
+			<!-- 注册完成 -->
+			<div class='DIV_mind_regi_comp regi Hide'style='margin-top:10%;'>
+				<p class='succeed'style='padding:0px;margin:0px;' >恭喜您已经完成注册，管理员审核通过后将邮件通知您登陆的账号及密码</p>
+				<br>
+				<p class='succeed' style='margin-top: -10px;padding:0px;margin:0px;'>感谢您的支持！</p>
+				<br>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"th:src="@{/larryMS/js/appjs/mdm/supp/laydate.js}"></script>
+	<script>
+	laydate.render({
+		  elem: '.demo-input' //指定元素
+
+		});
+		laydate.render({
+		  elem: '.demo-input1' //指定元素
+
+		});
+	</script>
+	<div th:include="include::websocketJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery-form.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/supp/potenSuppRegistration.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/supp/provinceSelect.js}"></script>
+	<script language="javascript">
+		BindProvince();
+	</script>
+</body>
+</html>

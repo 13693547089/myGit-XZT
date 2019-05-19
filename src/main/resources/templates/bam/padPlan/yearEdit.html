@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>物料交货计划年度调整</title>
+</head>
+<style type="text/css">
+.btnDiv{ float: right; right: 40px;position: fixed; bottom: 20px;}
+.searchForm{ margin-right: 20px; margin-top: 20px;}
+.red {color: red;}
+</style>
+<body>
+	<form class="layui-form searchForm padDetailForm" id="padDetailForm" action="" method="post">
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">物料</label>
+				<div class="layui-input-block" >
+					<select name="mateCode" id="mateCode" lay-filter="mateCode" lay-verify="required" lay-search="" class="must">
+					<option value="">请选择</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+		<table class="layui-hide" id="yearEditTable" lay-filter="yearEditTable">
+		</table>
+	</div>
+	<div class="layui-row btnDiv">
+		<button class="layui-btn layui-btn-sm" id=confirmBtn>确定</button>
+		<button class="layui-btn layui-btn-sm" id="cancleBtn">取消</button>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/padPlan/yearEdit.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery.serializejson.min.js}"></script>	
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiHeader">
+<title>添加库存信息</title>
+</head>
+<style type="text/css">
+.btnDiv{ float: right; margin-right: 40px;}
+.searchForm{ margin-right: 20px; margin-top: 20px;}
+</style>
+<body>
+	<form class="layui-form searchForm stockForm" id="stockForm" action="" method="post">
+		<input id="mainId" name="mainId" type="hidden" th:value="${mainId}"/>
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">物料编码</label>
+				<div class="layui-input-block" >
+					<select name="mateCode" id="mateCode" lay-filter="mateCode" lay-verify="required" lay-search="" class="must">
+					<option value="">请选择</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">物料名称</label>
+				<div class="layui-input-block" >
+					<input type="text" id="mateDesc" readonly="readonly" name="mateDesc"  class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">版本</label>
+				<div class="layui-input-block" >
+					<input type="text" id="version" name="version"  class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">批次号</label>
+				<div class="layui-input-block" >
+					<input type="text" id="batchNo" name="batchNo"  class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">下单方</label>
+				<div class="layui-input-block" >
+					<input type="text" id="orderSide" name="orderSide"  class="layui-input">
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-form-item">
+				<label class="layui-form-label">数量</label>
+				<div class="layui-input-block" >
+					<input type="text" id="stockNum" name="stockNum"  class="layui-input">
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="layui-row btnDiv">
+		<button class="layui-btn layui-btn-sm" id=confirmBtn>确定</button>
+		<button class="layui-btn layui-btn-sm" id="cancleBtn">取消</button>
+	</div>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/capRep/addStock.js}"></script>
+	<script type="text/javascript" th:src="@{/larryMS/js/jquery.serializejson.min.js}"></script>
+	
+</body>
+</html>

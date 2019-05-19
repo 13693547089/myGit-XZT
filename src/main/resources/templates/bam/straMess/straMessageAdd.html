@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>新建/编辑直发通知</title>
+<div th:include="include :: header"></div>
+<link th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet" />
+<link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.min862f.css}" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" />
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<style type="text/css">
+.red {
+	color: red;
+}
+
+.center {
+	text-align: center;
+}
+
+input {
+	height: 30px;
+}
+
+td:nth-child(1) {
+	border-right: 1px solid #e6e6e6 !important;
+}
+
+th:nth-child(1) {
+	border-right: 1px solid #e6e6e6 !important;
+}
+
+html,body {
+	overflow: auto !important;
+}
+
+.margin-top {
+	margin-top: 10px;
+}
+
+.layui-layer-shade {
+	opacity: 0.5 !important;
+}
+</style>
+<body style="padding-left: 10px; padding-right: 10px;">
+	<div class='BttonDiv margin-top'>
+		<button class="layui-btn layui-btn-xs blueHollow" th:if="${type!='3'}"
+			id="submitStraMess">提交</button>
+		<button class="layui-btn layui-btn-xs blueHollow" th:if="${type!='3'}"
+			id="saveStraMess" onclick="saveStraMess()">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="goBack">返回</button>
+		<button class="layui-btn layui-btn-xs blueHollow" th:if="${type=='3'}"
+			id="printBut">打印</button>
+	</div>
+
+	<div class="panel-default ">
+		<div class=" btn-padding">
+			<a class="btn " data-toggle="collapse" href="#collapseOne"> <i
+				class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;送货信息
+			</a>
+		</div>
+	</div>
+	<form class="layui-form" action="" method="post" id="straMessForm"
+		enctype="multipart/form-data">
+		<span th:if="${type!='1'}"> <input type="text" name="messId"
+			id="messId" style="display: none;" th:value="${straMess.messId}" />
+		</span> <input type="text" name="messMateData" id="messMateData"
+			style="display: none;" /> <input type="text" name="alloNo"
+			id="alloNo" th:value="${straMess.alloNo}" class="layui-hide">
+		<input type="text" name="type" id="type" style="display: none;"
+			th:value="${type}" /> <input type="text" name="suppName"
+			id="suppName" readonly="readonly" style="display: none;"
+			class="layui-input disa" th:value="${straMess.suppName}"> <input
+			type="text" name="sapId" id="sapId" readonly="readonly"
+			style="display: none;" class="layui-input disa" th:value="${sapId}">
+			<input type="text" name="post" id="post" style="display: none;" th:value="${straMess.post}"/>
+			<input type="text" name="suppRange" id="suppRange" style="display: none;" th:value="${straMess.suppRange}" />
+	  		<input type="text" name="suppRangeDesc" id="suppRangeDesc" style="display: none;" th:value="${straMess.suppRangeDesc}" />
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">提货单号</label>
+					<div class="layui-input-block">
+						<input type="text" name="messCode" readonly="readonly"
+							class="layui-input" th:value="${straMess.messCode}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">创建日期</label>
+					<div class="layui-input-block">
+						<input type="date" name="createDate" readonly="readonly"
+							class="layui-input"
+							th:value="${straMess.createDate == null ? '' : #dates.format(straMess.createDate,'yyyy-MM-dd')}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;"><i
+						class="red xinghao">*</i>供应商</label>
+					<div class="layui-input-block">
+						<select name="suppId" id="suppId" lay-search=""
+							lay-filter="suppId" class="disa must">
+							<option value=""></option>
+							<option th:each="supp:${dsList}" th:value="${supp.suppId}"
+								th:text="${supp.sapId+' '+supp.suppName}"
+								th:selected="${supp.suppId==straMess.suppId}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label"
+						style="width: 100px; white-space: pre;">OEM供应商</label>
+					<div class="layui-input-block">
+						<select name="zzoem" id="zzoem" lay-search="" lay-filter="zzoem"
+							class="disa must">
+							<option value=""></option>
+							<option th:each="supp:${suppList}" th:value="${supp.sapId}"
+								th:text="${supp.sapId+' '+supp.suppName}"
+								th:selected="${supp.sapId==straMess.zzoem}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i
+						class="red xinghao">*</i>提货日期</label>
+					<div class="layui-input-block">
+						<input type="text" name="deliveryDate" id="deliveryDate"
+							class="layui-input disa must"
+							th:value="${straMess.deliveryDate == null ? '' : #dates.format(straMess.deliveryDate,'yyyy-MM-dd')}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i
+						class="red xinghao">*</i>到货日期</label>
+					<div class="layui-input-block">
+						<input type="text" name="arriDate" id="arriDate"
+							class="layui-input disa must"
+							th:value="${straMess.arriDate == null ? '' : #dates.format(straMess.arriDate,'yyyy-MM-dd')}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;"><i
+						class="red xinghao">*</i>收货单位</label>
+					<div class="layui-input-block">
+						<select name="receUnit" id="receUnit" lay-search=""
+							lay-filter="receUnit" class="disa must">
+							<option value=""></option>
+							<option th:each="receUnitList:${receUnitList}"
+								th:value="${receUnitList}" th:text="${receUnitList}"
+								th:selected="${receUnitList==straMess.receUnit}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">收货地址</label>
+					<div class="layui-input-block">
+						<input type="text" name="receAddr" id="receAddr"
+							readonly="readonly" class="layui-input"
+							th:value="${straMess.receAddr}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">联系人</label>
+					<div class="layui-input-block">
+						<input type="text" name="contact" id="contact" readonly="readonly"
+							class="layui-input" th:value="${straMess.contact}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">联系电话</label>
+					<div class="layui-input-block">
+						<input type="text" name="phone" id="phone" readonly="readonly"
+							class="layui-input" th:value="${straMess.phone}">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">总数量/箱</label>
+					<div class="layui-input-block">
+						<input type="text" name="mateNumber" id="mateNumber"
+							readonly="readonly" th:value="${straMess.mateNumber}"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">总方量</label>
+					<div class="layui-input-block">
+						<input type="text" name="mateAmount" id="mateAmount"
+							readonly="readonly" th:value="${straMess.mateAmount}"
+							class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width: 100px;">供应商子范围</label>
+					<div class="layui-input-block">
+						<select name="suppRange2" id="suppRange2" class="disa" lay-filter="suppRange2">
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class=" panel-default ">
+			<div class=" btn-padding">
+				<a class="btn " data-toggle="collapse" href="#collapseFour"> <i
+					class="glyphicon glyphicon-bookmark"></i>&nbsp;&nbsp;物资信息
+				</a> <span th:if="${type!='3'}">
+					<div>
+						<!-- 添加按钮 -->
+						<a class="btn editRow " id="addMate"
+							style='margin-left: 0.3%; padding-right: 0px;'>
+							<button class="layui-btn layui-btn-xs blueHollow" type="button">添加</button>
+						</a>
+						<!-- 删除按钮 -->
+						<a class="btn editRow" id="removeMate" style='padding-left: 6px;'>
+							<button class="layui-btn layui-btn-xs blueHollow" type="button">删除</button>
+						</a>
+					</div>
+				</span>
+				<div class="layui-fluid tableCont" style='padding: 0px;'>
+					<table id="MessmateTable" lay-filter="MessmateTableEvent"></table>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript"
+		th:src="@{/larryMS/js/appjs/bam/straMess/straMessageAdd.js}"></script>
+
+</body>
+</html>

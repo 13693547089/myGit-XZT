@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiCommonHeader">
+<!-- <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>预约申请列表</title>
+<div th:include="include :: header"></div>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/cssCommon/Common.css}">
+<link rel="stylesheet" href="/layui/css/style.css" media="all"> -->
+</head>
+<style type="text/css">
+.red{color:red;}
+.center{text-align: center;}
+input{height:30px;}
+td:nth-child(1){border-right:none !important;}
+th:nth-child(1){border-right:none !important;}
+.layui-table-cell{padding:0px !important;}
+html,body{overflow:auto !important;}
+.marginTop10{margin-top:10px;}
+</style>
+<body >
+<form class="layui-form" action="" method="post">
+	<div class="demoTable">
+		<div class="layui-row">
+			<div class="layui-col-md9 marginTop10" >
+				<button class="layui-btn layui-btn-xs blueHollow" type="button" id="addReceMess" sec:authorize="hasRole('ROLE_RECEMESS_ADD')">新建收货信息</button>
+				<button class="layui-btn layui-btn-xs blueHollow"  type="button" id="removeReceMess" sec:authorize="hasRole('ROLE_RECEMESS_REMOVE')">删除</button>
+				<button class="layui-btn layui-btn-xs blueHollow" type="button" id="exportReceMess">导出</button>
+			</div>
+		</div> 	
+	</div>
+	</form>	
+	<div class="layui-fluid tableCont" style='padding:0px;'>
+	<table class="layui-table " id ="receMessTable" lay-filter="demo" style='display:none' >
+	</table>
+	</div>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+</script>
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/receMess/receMessList.js}"></script>	
+				
+</body>
+</html>
+		 

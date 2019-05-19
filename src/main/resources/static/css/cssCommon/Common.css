@@ -1,0 +1,32 @@
+/*bodyȥ��������*/
+
+/* labelDateȥ���±߾�*/
+.layui-form-item{margin-bottom:0px !important;}
+/*����ѡ�������ѡ����ݼ�ͷ*/
+input[type='date']::-webkit-inner-spin-button {
+    display:none;
+  }
+/*margin-top10px*/
+.MarginTop{margin-top:10px;}
+/*table���100%*/
+��tabWidth{width:100%;}
+/*table��100%*/
+.layui-table-body, .layui-table-header .layui-table, .layui-table-page{width:100%;}
+.layui-table-view .layui-table{width:100%;}
+/*����tdth�ĵ�һ��Ԫ�ر߿� */
+td:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+th:nth-child(1){border-right:1px solid #e6e6e6 !important;}
+.layui-table-fixed-l{box-shadow:none !important;border-right:1px solid #e6e6e6;}
+/*�½���ť��λ��1.8*/
+/*th���� */
+.layui-table-cell{margin:0px auto;}
+/*������ɫ*/
+h2,h3{color:black;display:inline-block;margin-bottom:0px !important;}
+/*hrȥ���ϱ߾�*/
+hr{margin-top:0px !important; margin: 0px;
+    margin-bottom: 10px !important;
+    border-top: 1px solid black !important;}
+/*�½����水ť��λ��*/
+.BttonDiv{width:99%;margin-left:1%}
+/*�����ı�����*/
+.textareaWid{width:99%;margin-left:1%;}

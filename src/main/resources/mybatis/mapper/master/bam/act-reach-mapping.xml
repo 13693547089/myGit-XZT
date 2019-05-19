@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.ActReachMapper">
+	<resultMap id="actReach" type="com.faujor.entity.bam.psm.ActuallyReach">
+		<result property="mateCode" column="mateCode"/>
+		<result property="mateDesc" column="mateDesc"/>
+		<result property="suppNo" column="suppNo"/>
+		<result property="suppName" column="suppName"/>
+		<result property="rank" column="rank"/>
+		<result property="planMonth" column="planMonth"/>
+		<result property="planPrdNum" column="planPrdNum"/>
+		<result property="actPrdNum" column="actPrdNum"/>
+		<result property="pudReachScale" column="pudReachScale"/>
+		<result property="planDlvNum" column="planDlvNum"/>
+		<result property="actDlvNum" column="actDlvNum"/>
+		<result property="dlvReachScale" column="dlvReachScale"/>
+		<result property="suppActNum" column="suppActNum"/>
+		<result property="safeScale" column="safeScale"/>
+		<result property="itemCode" column="itemCode"/>
+		<result property="itemName" column="itemName"/>
+		<result property="prodSeriesCode" column="prod_Series_Code" />
+		<result property="prodSeriesDesc" column="prod_Series_Desc" />
+	</resultMap>
+	
+	
+	<resultMap id="innerControl" type="com.faujor.entity.bam.psm.InnerControl">
+		<result property="mateCode" column="mateCode"/>
+		<result property="mateDesc" column="mateDesc"/>
+		<result property="suppNo" column="suppNo"/>
+		<result property="suppName" column="suppName"/>
+		<result property="rank" column="rank"/>
+		<result property="planMonth" column="planMonth"/>
+		<result property="planPrdNum" column="planPrdNum"/>
+		<result property="actPrdNum" column="actPrdNum"/>
+		<result property="pudReachScale" column="pudReachScale"/>
+		<result property="planDlvNum" column="planDlvNum"/>
+		<result property="actDlvNum" column="actDlvNum"/>
+		<result property="dlvReachScale" column="dlvReachScale"/>
+		<result property="suppActNum" column="suppActNum"/>
+		<result property="safeScale" column="safeScale"/>
+		<result property="addOnePlanDlvNum" column="addOnePlanDlvNum"/>
+		<result property="boxNumber" column="boxNumber"/>
+		<result property="packNumber" column="packNumber"/>
+		<result property="beginOrder" column="beginOrder"/>
+		<result property="beginStock" column="beginStock"/>
+		<result property="beginEnableOrder" column="beginEnableOrder"/>
+		<result property="itemCode" column="itemCode"/>
+		<result property="itemName" column="itemName"/>
+		<result property="endStock" column="endStock"/>
+		<result property="planSafeScale" column="planSafeScale"/>
+		<result property="prodSeriesCode" column="prodSeriesCode" />
+		<result property="prodSeriesDesc" column="prodSeriesDesc" />
+
+	</resultMap>
+		<resultMap id="busyStock" type="com.faujor.entity.bam.psm.BusyStock">
+		<result property="itemCode" column="itemCode"/>
+		<result property="itemName" column="itemName"/>
+		<result property="mateCode" column="mateCode"/>
+		<result property="mateDesc" column="mateDesc"/>
+		<result property="suppNo" column="suppNo"/>
+		<result property="suppName" column="suppName"/>
+		<result property="rank" column="rank"/>
+		<result property="planMonth" column="planMonth"/>
+		<result property="planPrdNum" column="planPrdNum"/>
+		<result property="planDlvNum" column="planDlvNum"/>
+		<result property="endStock" column="endStock"/>
+		<result property="boxNumber" column="boxNumber"/>
+		<result property="packNumber" column="packNumber"/>
+		<result property="beginOrder" column="beginOrder"/>
+		<result property="beginStock" column="beginStock"/>
+		<result property="beginEnableOrder" column="beginEnableOrder"/>
+	</resultMap>
+	
+	
+	<select id="getActReachByPage" parameterType="Map" resultMap="actReach">
+		select t3.* from 
+			(  SELECT t1.mate_code mateCode,t1.mate_desc mateDesc,
+	           t1.ranking rank,t1.delivery_plan planDlvNum,t1.prod_plan planPrdNum,
+	           t2.plan_month planMonth,
+	           rownum rn    
+	           from ps_supp_inven_plan_detail t1
+	           INNER JOIN ps_supp_inven_plan t2 ON t2.ID = t1.MAIN_ID
+	           WHERE t2.plan_month=to_date(#{planMonth},'yyyy-MM')
+	           	<if test="mateDesc!=null and mateDesc!=''">
+		  	   			and (t1.mate_desc like '%'||#{mateDesc}||'%' or t1.mate_code like '%'||#{mateDesc}||'%')
+		  	   </if>
+		  	   <if test="userIds!=null">
+		  	 	 and exists  (
+			  	   	 select m.mate_code from mdm_mate
+						m left join mdm_buyer_mate bm
+						on
+						m.mate_id = bm.mate_id
+						where  bm.buyer_id in
+							<foreach collection="userIds" open="(" close=")" item="item"
+								separator=",">
+								#{item}
+							</foreach>
+							and t1.mate_code=m.mate_code
+			  	   )
+		  	   </if>
+		     and  rownum &lt;=#{page.to}) t3 
+		 where t3.rn &gt; #{page.from}
+	</select>
+	<select id="getActReachCount" parameterType="Map" resultType="Integer">
+		SELECT count(1)  
+			from ps_supp_inven_plan_detail t1
+	           INNER JOIN ps_supp_inven_plan t2 ON t2.ID = t1.MAIN_ID
+	           WHERE t2.plan_month=to_date(#{planMonth},'yyyy-MM')
+	           <if test="mateDesc!=null and mateDesc!=''">
+		  	   		and (t1.mate_desc like '%'||#{mateDesc}||'%' or t1.mate_code like '%'||#{mateDesc}||'%')
+		  	   </if>
+		  	   <if test="userIds!=null">
+		  	 	 and  exists  (
+			  	   	 select m.mate_code from mdm_mate
+						m left join mdm_buyer_mate bm
+						on
+						m.mate_id = bm.mate_id
+						where  bm.buyer_id in
+							<foreach collection="userIds" open="(" close=")" item="item"
+								separator=",">
+								#{item}
+							</foreach>
+						and t1.mate_code=m.mate_code
+			  	   )
+		  	   </if>
+	</select>
+	
+	<select id="getExportActData" parameterType="Map" resultMap="actReach">
+	 SELECT t1.mate_code mateCode,t1.mate_desc mateDesc,
+          t1.ranking rank,t1.delivery_plan planDlvNum,t1.prod_plan planPrdNum,
+          t2.plan_month planMonth,t1.prod_series_code,t1.prod_series_desc,
+          t1.item_code itemCode,t1.item_name itemName,
+          t1.supp_no suppNo,t1.supp_name suppName
+          from ps_supp_prod t1
+          INNER JOIN ps_supp_inven_plan t2 ON t2.ID = t1.MAIN_ID
+          WHERE t2.plan_month=#{planMonth}
+          <if test="mateDesc!=null and mateDesc!=''">
+  	   			and (t1.mate_desc like '%'||#{mateDesc}||'%' or t1.mate_code like '%'||#{mateDesc}||'%')
+	  	   </if>
+	  	   <if test="userIds!=null">
+	  	 	 and exists  (
+		  	   	 select m.mate_code from mdm_mate
+					m left join mdm_buyer_mate bm
+					on
+					m.mate_id = bm.mate_id
+					where  bm.buyer_id in
+						<foreach collection="userIds" open="(" close=")" item="item"
+							separator=",">
+							#{item}
+						</foreach>
+						and t1.mate_code=m.mate_code
+		  	   )
+	  	   </if>
+	  	   order by t1.mate_desc,t1.mate_code
+	</select>
+	
+	<select id="getPlanPrdDevNum" parameterType="Map" resultMap="actReach">
+		select nvl(sum(t1.prod_plan),0) planPrdNum,nvl(sum(t1.delivery_plan),0) planDlvNum from ps_supp_prod t1
+		where t1.mate_code=#{mateCode}
+		<if test="suppNo!=null and suppNo!=''">
+		and t1.supp_no=#{suppNo}
+		</if>
+		and t1.plan_month=#{planMonth}
+	</select>
+	
+	<select id="getActPrdNum" parameterType="Map" resultMap="actReach">
+		select nvl(sum(t1.act_pdc_qty),0) actPrdNum,nvl(sum(t1.act_dev_qty),0) actDlvNum
+	      from ps_pdr_detail t1
+	      left join ps_pdr t2
+	        on t1.main_id = t2.id
+	     where t1.mat_code=#{mateCode}
+	     <if test="suppNo!=null and suppNo!=''">
+	       and t2.supp_code=#{suppNo}
+	     </if>
+	       and t2.status='已提交'
+	       and t2.produce_date &gt;=#{startDate}
+	       and t2.produce_date &lt;=#{endDate}
+	</select>
+	
+	<select id="getActStoreNum" parameterType="Map" resultType="BigDecimal">
+		select nvl(sum(t1.stock_Qty),0)
+		  from ps_pdr_detail t1
+		  left join ps_pdr t2
+		    on t1.main_id = t2.id
+		 where t1.mat_code = #{mateCode}
+		   and t2.supp_code = #{suppNo}
+		   and t2.status='已提交'
+		   and t2.produce_date =
+		       (select max(t2.produce_date) maxday
+		          from ps_pdr_detail t1
+		          left join ps_pdr t2
+		            on t1.main_id = t2.id
+		         where t1.mat_code = #{mateCode}
+		           and t2.supp_code = #{suppNo}
+		           and t2.status='已提交'
+		           and t2.produce_date &lt;= #{endDate})
+	</select>
+	<select id="getSuppInnerControl" parameterType="Map" resultMap="innerControl">
+		select t1.plan_month    planMonth,
+	       t1.mate_code     mateCode,
+	       t1.mate_desc     mateDesc,
+	       t1.item_code     itemCode,
+	       t1.item_name     itemName,
+	       t1.prod_Series_Code     prodSeriesCode,
+	       t1.prod_Series_Desc     prodSeriesDesc,
+	       t1.supp_no       suppNo,
+	       t1.supp_name     suppName,
+	       t1.ranking       rank,
+	       t1.prod_plan     planPrdNum,
+ 		   t1.delivery_plan planDlvNum,
+ 		   t1.begin_Order 	beginOrder,
+ 		   t1.begin_Stock   beginStock,
+ 		   t1.begin_Enable_Order beginEnableOrder,
+           nvl(t2.box_number,0)    boxNumber,
+           nvl(t2.pack_number,0)  packNumber,
+           t1.end_stock endStock,
+           t1.safe_scale planSafeScale
+	  from ps_supp_prod t1
+	    left join mdm_mate t2
+        on t1.mate_code = t2.mate_code
+        left join ps_supp_inven_plan t3 on t1.main_id=t3.id  
+	 where  t1.plan_month = #{planMonth}
+	  	   <if test="userIds!=null">
+	  	 	 and exists  (
+		  	   	 select m.mate_code from mdm_mate
+					m left join mdm_buyer_mate bm
+					on
+					m.mate_id = bm.mate_id
+					where  bm.buyer_id in
+						<foreach collection="userIds" open="(" close=")" item="item"
+							separator=",">
+							#{item}
+						</foreach>
+						and t1.mate_code=m.mate_code
+		  	   )
+	  	   </if>
+	  	  <if test="invenCode!=null and invenCode!=''">
+	  	  	and t3.plan_code=#{invenCode}
+	  	  </if>
+	 order by  t1.prod_Series_Desc ,t1.prod_Series_Code,t1.item_name ,t1.item_code, t1.mate_code
+	</select>
+	<select id="getMateInnerControl" parameterType="Map" resultMap="innerControl">
+	    select t1.plan_month    planMonth,
+		         nvl(t1.mate_code,'') mateCode,
+		         max(t1.mate_desc)  mateDesc,
+		         t1.item_code       itemCode,
+		         max(t1.prod_Series_Code)     prodSeriesCode,
+	       		 max(t1.prod_Series_Desc)     prodSeriesDesc,
+		         max(t1.item_name)  itemName,
+		         max(t1.ranking)    rank,
+		         sum(t1.prod_plan)     planPrdNum,
+		         sum(t1.delivery_plan) planDlvNum,
+		         sum(t1.begin_Order) 	beginOrder,
+ 		         sum(t1.begin_Stock)   beginStock,
+ 		         sum( t1.begin_Enable_Order) beginEnableOrder,
+		         nvl(max(t2.box_number),0)    boxNumber,
+		         nvl(max(t2.pack_number),0)   packNumber,
+		         sum( t1.end_stock) endStock
+		    from ps_supp_prod t1
+		      left join mdm_mate t2
+		        on t1.mate_code = t2.mate_code
+		         left join ps_supp_inven_plan t3 on t1.main_id=t3.id  
+		   where t1.plan_month = #{planMonth}
+	  	   <if test="userIds!=null">
+	  	 	 and exists  (
+		  	   	 select m.mate_code from mdm_mate
+					m left join mdm_buyer_mate bm
+					on
+					m.mate_id = bm.mate_id
+					where  bm.buyer_id in
+						<foreach collection="userIds" open="(" close=")" item="item"
+							separator=",">
+							#{item}
+						</foreach>
+						and t1.mate_code=m.mate_code
+		  	   )
+	  	   </if>
+	  	  <if test="invenCode!=null and invenCode!=''">
+	  	  	and t3.plan_code=#{invenCode}
+	  	  </if>    
+	   group by t1.plan_month,t1.prod_Series_Code, t1.item_code,t1.mate_code     
+	   order by t1.prod_Series_Code,t1.item_code, t1.mate_code
+	   <!-- order by t1.item_code,t1.mate_code -->
+	</select>
+	<select id="getSuppBusyStock" parameterType="Map" resultMap="busyStock">	
+		select t1.plan_month    planMonth,
+	       t1.mate_code     mateCode,
+	       t1.mate_desc     mateDesc,
+	       t1.supp_no       suppNo,
+	       t1.supp_name     suppName,
+	       t1.ranking       rank,
+	       t1.begin_order   beginOrder,
+	       t1.begin_stock   beginStock,
+	       t1.begin_enable_order beginEnableOrder,      
+	       t1.prod_plan     planPrdNum,
+	       t1.delivery_plan planDlvNum,
+	       t1.end_stock     endStock,
+ 		   nvl(t2.box_number,0)   boxNumber,
+           nvl(t2.pack_number,0)  packNumber
+	  from ps_supp_prod t1
+	    left join mdm_mate t2
+        on t1.mate_code = t2.mate_code
+         left join ps_supp_inven_plan t3 on t1.main_id=t3.id 
+	 where t1.plan_month = #{planMonth}	 
+	  	   <if test="userIds!=null">
+	  	 	 and exists  (
+		  	   	 select m.mate_code from mdm_mate
+					m left join mdm_buyer_mate bm
+					on
+					m.mate_id = bm.mate_id
+					where  bm.buyer_id in
+						<foreach collection="userIds" open="(" close=")" item="item"
+							separator=",">
+							#{item}
+						</foreach>
+						and t1.mate_code=m.mate_code
+		  	   )
+	  	   </if>
+	  	  <if test="invenCode!=null and invenCode!=''">
+	  	  	and t3.plan_code=#{invenCode}
+	  	  </if>  
+	 order by t1.mate_code
+	</select>
+	<select id="getMateBusyStock" parameterType="Map" resultMap="busyStock">
+	    select t1.plan_month    planMonth,
+	         nvl(t1.mate_code,'') mateCode,
+	         max(t1.mate_desc)  mateDesc,
+	         t1.item_code       itemCode,
+	         max(t1.item_name)  itemName,
+	         max(t1.ranking)    rank,
+	         sum(t1.begin_order)   beginOrder,
+	         sum(t1.begin_stock)   beginStock,
+	         sum(t1.begin_enable_order) beginEnableOrder,      
+	         sum(t1.prod_plan)     planPrdNum,
+	         sum(t1.delivery_plan) planDlvNum,
+	         sum(t1.end_stock)     endStock,
+ 			 nvl(max(t2.box_number),0)    boxNumber,
+		     nvl(max(t2.pack_number),0)   packNumber	
+		  from ps_supp_prod t1
+	      left join mdm_mate t2
+	        on t1.mate_code = t2.mate_code
+	      left join ps_supp_inven_plan t3 on t1.main_id=t3.id 
+	   where t1.plan_month = #{planMonth}
+	  	   <if test="userIds!=null">
+	  	 	 and exists  (
+		  	   	 select m.mate_code from mdm_mate
+					m left join mdm_buyer_mate bm
+					on
+					m.mate_id = bm.mate_id
+					where  bm.buyer_id in
+						<foreach collection="userIds" open="(" close=")" item="item"
+							separator=",">
+							#{item}
+						</foreach>
+						and t1.mate_code=m.mate_code
+		  	   )
+	  	   </if>
+ 	  <if test="invenCode!=null and invenCode!=''">
+  	  	and t3.plan_code=#{invenCode}
+  	  </if>    
+   group by t1.plan_month, t1.item_code,t1.mate_code     
+   order by t1.item_code,t1.mate_code
+	</select>
+	<select id="getPrdDlvInfo" parameterType="Map" resultType="com.faujor.entity.bam.psm.PrdDlvInfo">
+		select nvl(sum(t1.prod_plan), 0) planPrdNum,
+		       nvl(sum(t1.delivery_plan), 0) planDlvNum,
+		       nvl(sum(t1.end_stock), 0) endStock
+		  from ps_supp_prod t1
+		 where t1.plan_month = #{planMonth}
+		   and t1.mate_code = #{mateCode}
+		   <if test="suppNo!=null and suppNo!=''">
+		   and t1.supp_no = #{suppNo}
+		   </if>
+	</select>
+	<select id="getSuppPrdDlvInfo" parameterType="Map" resultType="com.faujor.entity.bam.psm.PrdDlvInfo">
+		select t1.prod_plan planPrdNum,
+		       t1.delivery_plan planDlvNum,
+		       t1.end_stock endStock,
+		       t1.safe_scale safeScale
+		  from ps_supp_prod t1
+		 where t1.plan_month = #{planMonth}
+		   and t1.mate_code = #{mateCode}
+		   and t1.supp_no = #{suppNo}
+	</select>
+	
+	<select id="getSuppByMateMonth" parameterType="Map" resultType="com.faujor.entity.mdm.QualSupp">
+ 		select distinct t1.supp_no  as  sapId ,t1.supp_name as suppName
+	       from ps_supp_prod t1
+	       left join ps_supp_inven_plan t2
+	         on t1.main_id = t2.id
+	      where t2.plan_month=#{planMonth}
+	      and t1.mate_code=#{mateCode}
+	      and t1.supp_no is not null
+	       order by t1.supp_no
+	</select>
+	<select id="getPrdDetailByMap" parameterType="Map" resultType="com.faujor.entity.bam.psm.PdrDetailVo">
+      select t1.mat_code mateCode,t1.mat_name mateDesc,
+         t2.supp_code suppNo,t2.supp_name suppName,
+         t1.act_pdc_qty actPdcQty, t1.act_dev_qty actDevQty,
+         t1.stock_qty stockQty,t2.produce_date produceDate
+           from Ps_Pdr_Detail t1
+           left Join ps_pdr t2
+             on t1.main_id = t2.id
+          where t1.mat_code = #{mateCode}
+          <if test="suppName!=null and suppName!=''">
+          	and (t2.supp_name like '%'||#{suppName}||'%' or t2.supp_code like '%'||#{suppName}||'%' )
+          </if>
+          <if test="startDate!=null">
+          and t2.produce_date &lt;=#{endDate}
+          </if>
+          <if test="endDate!=null">
+          and t2.produce_date &gt;=#{startDate}
+          </if>
+          order by t2.produce_date desc,t2.supp_name asc
+	</select>
+</mapper>

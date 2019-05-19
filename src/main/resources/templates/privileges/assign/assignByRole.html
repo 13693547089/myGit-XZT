@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include::layuiCommonHeader">
+<title>SRM</title>
+</head>
+<body>
+	<div class="layui-fluid" style="padding-top: 10px;">
+		<div class="layui-row">
+			<div class="layui-col-sm3">
+				<div style="width: 80%;">
+					<input id="roleName" name="roleName" class="form-control"
+						placeholder="角色名称和编码搜索" type="text">
+				</div>
+			</div>
+			<div class="layui-col-sm9">
+				<div class="layui-btn-group" style="width: 10%; float: left; padding-top:7px;">
+					<button class="layui-btn layui-btn-xs" id="addBtn">添加</button>
+					<!-- 
+					<button class="layui-btn layui-btn-sm" id="delBtn">删除</button>
+					 -->
+				</div>
+				<div style="width: 32%; float: left;">
+					<input id="orgName" name="orgName" class="form-control"
+						placeholder="组织机构名称或编码搜索" type="text">
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-sm3 tableCont">
+				<table class="layui-table" id="roleTable" lay-filter="roleTable">
+				</table>
+			</div>
+			<div class="layui-col-sm9 tableCont">
+				<table class="layui-table" id="assignTable">
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<div th:include="include::layuiCommonJS"></div>
+<script th:src="@{/larryMS/js/appjs/privileges/assign/assignByRole.js}"></script>
+</html>

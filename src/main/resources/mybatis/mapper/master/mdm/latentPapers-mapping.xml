@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.LatentPapersMapper">
+	
+	<delete id="deleteLatentPapersBySuppId">
+		delete from mdm_latent_papers p where p.supp_id in
+		<foreach collection="array" open="(" close=")" separator="," item="v">#{v}</foreach>
+	</delete>
+	
+	<resultMap type="com.faujor.entity.mdm.LatentPapers" id="latentPapers">
+		<result property="id" column="id"/>
+		<result property="papersId" column="papers_id"/>
+		<result property="papersName" column="papers_name"/>
+		<result property="papersType" column="papers_type"/>
+		<result property="startDate" column="start_date"/>
+		<result property="endDate" column="end_date"/>
+		<result property="acceUrl" column="acce_url"/>
+		<result property="acceOldName" column="acce_old_name"/>
+		<result property="acceNewName" column="acce_new_name"/>
+		<result property="fileId" column="file_id"/>
+		<result property="suppId" column="supp_id"/>
+	</resultMap>
+	<select id="queryManyLatentPapersBySuppId" parameterType="String" resultMap="latentPapers">
+		select * from mdm_latent_papers p where p.supp_id=#{suppId}
+	</select>
+	
+	
+</mapper>

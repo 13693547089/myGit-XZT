@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.CutPlanMapper">
+	<resultMap id="cutPlan" type="com.faujor.entity.bam.CutPlan">
+		<id property="planId" column="plan_Id"/>
+		<result property="status" column="status"/>
+		<result property="cutMonth" column="cut_Month"/>
+		<result property="cutPlanCode" column="cut_Plan_Code"/>
+		<result property="planName" column="plan_Name"/>
+		<result property="createId" column="create_Id"/>
+		<result property="creater" column="creater"/>
+		<result property="createDate" column="create_Date"/>
+		<result property="citeCode" column="cite_code"/>
+	</resultMap>
+	<resultMap id="cutPlanMate" type="com.faujor.entity.bam.CutPlanMate" >
+		<id property="planMateId" column="plan_Mate_Id"/>
+		<result property="planId" column="plan_Id"/>
+		<result property="mateId" column="mate_Id"/>
+		<result property="mateName" column="mate_Name"/>
+		<result property="nowInve" column="now_Inve"/>
+		<result property="outInve" column="out_Inve"/>
+		<result property="addOne" column="add_One"/>
+		<result property="addTwo" column="add_Two"/>
+		<result property="addThree" column="add_Three"/>
+		<result property="addFour" column="add_Four"/>
+		<result property="addFive" column="add_Five"/>
+		<result property="addSix" column="add_Six"/>
+		<result property="residue" column="residue"/>
+		<result property="replaceDate" column="replace_Date"/>
+		<result property="cutGoal" column="cut_Goal"/>
+		<result property="cutSche" column="cut_Sche"/>
+		<result property="remark" column="remark"/>
+		<result property="mateVersion" column="mate_version"/>
+		<result property="mainStruNum" column="main_stru_num"/>
+		<result property="inveNum" column="inve_num"/>
+		<result property="mainStru" column="main_stru"/>
+		<result property="fields" column="fields"/>
+		<result property="isSpecial" column="is_special"/>
+		<result property="bigItemCode" column="big_item_code"/>
+		<result property="bigItemExpl" column="big_item_expl"/>
+		<result property="isChange" column="is_change"/>
+		<result property="mainStru2" column="main_Stru2"/>
+	</resultMap>
+	<select id="getCutPlanByPage" parameterType="Map" resultMap="cutPlan">
+		select t3.* from (
+			select t2.*,rownum  rn from
+				(select t1.* from bam_cut_plan t1 
+				  <where>
+				  	<if test="cutMonth!=null and cutMonth!=''">
+				  		t1.cut_month=#{cutMonth}
+				  	</if>
+				  	<if test="status!=null and status!=''">
+				  		t1.status=#{status}
+				  	</if>
+				  	<if test="cutPlanCode!=null and cutPlanCode!=''">
+				  		t1.cut_plan_code like '%${cutPlanCode}%'
+				  	</if>
+				  </where>
+				order by t1.create_date desc) t2
+		 	where rownum &lt;=#{page.to}) t3
+		where t3.rn &gt; #{page.from}
+	</select>
+	<select id="getCutPlanNum" parameterType="Map" resultType="Integer">
+		select count(1) from bam_cut_plan t1 
+		  <where>
+		  	<if test="cutMonth!=null and cutMonth!=''">
+				  		t1.cut_month=#{cutMonth}
+			</if>
+			<if test="status!=null and status!=''">
+				  		t1.status=#{status}
+		  	</if>
+		  	<if test="cutPlanCode!=null and cutPlanCode!=''">
+		  		t1.cut_plan_code like '%${cutPlanCode}%'
+		  	</if>
+		  </where>
+	</select>
+	<select id="getCutPlanById" parameterType="String" resultMap="cutPlan">
+		select * from bam_cut_plan t1 where t1.plan_id=#{planId}
+	</select>
+	<insert id="saveCutPlan" parameterType="com.faujor.entity.bam.CutPlan">
+		insert into bam_cut_plan t1
+			(t1.plan_Id,t1.status,t1.cut_Month,
+			cut_Plan_Code,plan_Name,create_Id,
+			creater,create_Date,cite_code) 
+		values
+			(#{planId},#{status},#{cutMonth},
+			#{cutPlanCode},#{planName},#{createId},
+			#{creater},#{createDate},#{citeCode}
+			)
+	</insert>
+	<update id="updateCutPlan" parameterType="com.faujor.entity.bam.CutPlan">
+		update  bam_cut_plan t1
+			set t1.status=#{status},
+			t1.cut_Month=#{cutMonth},t1.plan_Name=#{planName},t1.cite_code=#{citeCode}
+		where plan_id=#{planId}	
+	</update>
+	<delete id="delCutPlanById" parameterType="String">
+		delete from bam_cut_plan where plan_id=#{planId}
+	</delete>
+	<update id="changeCutPlanStatus">
+		update bam_cut_plan t1
+			set t1.status=#{status}
+		where t1.plan_id in
+		<foreach collection="ids" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+	<select id="getCutPlanMateByPlanId" parameterType="String" resultMap="cutPlanMate">
+		select * from bam_cut_plan_mate t1 where t1.plan_id=#{planId} order by t1.mate_id,t1.mate_version
+	</select>
+	<insert id="saveCutPlanMates" parameterType="List">
+		insert into bam_cut_plan_mate t1
+			(t1.plan_Mate_Id,t1.plan_Id,t1.mate_Id,
+			mate_Name,now_Inve,out_Inve,
+			add_One,add_Two,add_Three,
+			add_Four,add_Five,add_Six,
+			residue,replace_Date,cut_Goal,
+			cut_Sche,remark,mate_version,
+			main_stru_num,inve_num,is_special,big_item_code,big_item_expl,main_stru
+			) 
+		select t2.* from (
+			<foreach collection="mates" item="item" separator="union all">
+			select 
+			#{item.planMateId} plan_Mate_Id,#{item.planId} plan_Id,#{item.mateId} mate_Id,
+			#{item.mateName} mate_Name,#{item.nowInve} now_Inve,#{item.outInve} out_Inve,
+			#{item.addOne} add_One,#{item.addTwo} add_Two,#{item.addThree} add_Three,
+			#{item.addFour} add_Four,#{item.addFive} add_Five,#{item.addSix} add_Six,
+			#{item.residue} residue ,#{item.replaceDate} replace_Date,#{item.cutGoal} cut_Goal,
+			#{item.cutSche} cut_Sche,#{item.remark} remark,#{item.mateVersion} mate_version,
+			#{item.mainStruNum} main_stru_num,#{item.inveNum} inve_num ,#{item.isSpecial} is_special,
+			#{item.bigItemCode} big_item_code,#{item.bigItemExpl} big_item_expl,#{item.mainStru} main_stru
+			from dual
+			</foreach>
+		)t2
+	</insert>	
+	<delete id="delCutPlanMateByPlanId" parameterType="String">
+	   delete from bam_cut_plan_mate where plan_id=#{planId}
+	</delete>
+	
+	<select id="getCutPlanMateFromLiaison" resultMap="cutPlanMate">
+				 <!-- select main.* ,
+		     nvl(plan.nation_stock2,0) as now_inve,nvl(plan.est_sale_qty,0) as add_one,
+		     nvl(q1,0) as add_two,nvl(q2,0) as add_three,nvl(q3,0) as add_four,nvl(q4,0) as add_five,
+		     nvl(q5,0) as add_six from 
+		     (select d.*,h.mate_name,h.big_item_code,h.big_item_expl from
+		     (select a.out_inve,a.inve_num,a.main_stru_num,a.cut_goal,a.mate_version,a.main_stru,a.is_special,
+		      case when nvl(b.fin_mate_id,'1')='1' then a.mate_id else b.fin_mate_id end as mate_id from 
+		     (select t1.mate_code as mate_id,t1.mate_name,
+		                   sum(nvl(t1.out_num,0)) as out_Inve,sum(nvl(t1.inve_num,0)) as inve_Num,sum(nvl(t1.main_stru_num,0)) as main_Stru_Num,
+		               t1.cut_aim cut_goal,t1.version mate_version,t1.main_stru,t1.is_special
+		             from bam_cut_liai_mate t1
+		             left join bam_cut_liai t2
+		             on t1.liai_id = t2.liai_id
+		             where t2.status = '已确认'
+		                 and t2.cut_month= #{planMonth}
+		                 group by t1.mate_code ,t1.mate_name,t1.cut_aim,t1.version,t1.main_stru,t1.is_special
+		     ) a 
+		     left join mdm_mate b
+		     on a.mate_id = b.mate_code)d  left join mdm_mate h on d.mate_id = h.mate_code
+		     order by d.is_special,d.mate_id,d.mate_version
+		     ) main 
+		     left join (select detail.mat_code,detail.nation_stock2,detail.EST_SALE_QTY from ps_pad_plan_detail detail
+		     inner join ps_pad_plan head on head.id = detail.main_id
+		     where head.plan_month=#{planMonth}) plan on main.mate_id = plan.mat_code
+		     left join 
+		     (
+		     select ${columnName},mat_code from ps_sale_fcst_detail 
+		     where main_id = #{saleFcstId}
+		     ) saleFcst on saleFcst.mat_code = main.mate_id -->
+		     
+		      select main.*,liai.main_stru2,nvl(liai.out_inve,0) as out_inve,
+		      nvl(liai.inve_num,0) as inve_num,nvl(liai.main_stru_num,0) as main_stru_num,
+      		case when main.main_stru = liai.main_stru2 then 'same' 
+        	when liai.mate_id is null then '' 
+          	else 'different' end as is_change,
+            nvl(plan.nation_stock2,0) as now_inve,nvl(plan.est_sale_qty,0) as add_one,
+		     nvl(q1,0) as add_two,nvl(q2,0) as add_three,nvl(q3,0) as add_four,nvl(q4,0) as add_five,
+		     nvl(q5,0) as add_six 
+	       	from(
+	         select p.main_stru,p.cut_aim as cut_goal,
+	          p.version as mate_version,p.is_special,
+	         m.mate_code as mate_id,m.mate_name,m.big_item_code,m.big_item_expl
+	         from bam_cut_prod p left join mdm_mate m 
+	         on p.mate_id = m.mate_id
+	         )main
+	         left join (
+	         select a.out_inve,a.inve_num,a.main_stru_num,a.mate_version2,a.main_stru2,
+		      case when nvl(b.fin_mate_id,'1')='1' then a.mate_id else b.fin_mate_id end as mate_id from 
+		     (select t1.mate_code as mate_id,t1.mate_name,
+		                   sum(nvl(t1.out_num,0)) as out_Inve,sum(nvl(t1.inve_num,0)) as inve_Num,sum(nvl(t1.main_stru_num,0)) as main_Stru_Num,
+                    t1.version as mate_version2,t1.main_stru as main_stru2
+		             from bam_cut_liai_mate t1
+		             left join bam_cut_liai t2
+		             on t1.liai_id = t2.liai_id
+		             where t2.status = '已确认'
+		                 and t2.cut_month= #{planMonth}
+		                 group by t1.mate_code ,t1.mate_name,t1.version,t1.main_stru
+		     ) a 
+		     left join mdm_mate b
+		     on a.mate_id = b.mate_code)liai 
+         	 on main.mate_id = liai.mate_id and nvl(main.mate_version,'QQQ') = nvl(liai.mate_version2,'QQQ')
+             left join (select detail.mat_code,detail.nation_stock2,detail.EST_SALE_QTY from ps_pad_plan_detail detail
+		     inner join ps_pad_plan head on head.id = detail.main_id
+		     where head.plan_month=#{planMonth}) plan on main.mate_id = plan.mat_code
+		     left join 
+		     (
+		     select ${columnName},mat_code from ps_sale_fcst_detail 
+		     where main_id = #{saleFcstId}
+		     ) saleFcst on saleFcst.mat_code = main.mate_id
+             order by main.is_special,main.mate_id,main.mate_version
+	</select>
+
+	
+	<select id="queryCutPlanCodeListByStatus"  resultType="String">
+		select p.cut_plan_code from bam_cut_plan p where p.status in ('已作废','已提交')
+		 order by p.cut_plan_code desc
+	</select>
+	
+	<select id="queryCutPlansByCutMonth" parameterType="String" resultType="String">
+		select p.cut_plan_code from bam_cut_plan p where p.cut_month=#{cutMonth} 
+		and p.status in ('已保存','已提交')
+		order by p.cut_plan_code
+	</select>
+	
+	<select id="getCutPlanMateFromLiaison2" resultMap="cutPlanMate">
+		<!-- select main.* ,
+	     nvl(plan.nation_stock2,0) as now_inve,nvl(plan.est_sale_qty,0) as add_one,
+	     nvl(q1,0) as add_two,nvl(q2,0) as add_three,nvl(q3,0) as add_four,nvl(q4,0) as add_five,
+	     nvl(q5,0) as add_six ,cutPlanMate.cut_sche from 
+	     (select d.*,h.mate_name,h.big_item_code,h.big_item_expl from
+	     (select a.out_inve,a.inve_num,a.main_stru_num,a.cut_goal,a.mate_version,a.main_stru,a.is_special,
+	      case when nvl(b.fin_mate_id,'1')='1' then a.mate_id else b.fin_mate_id end as mate_id from 
+	     (select t1.mate_code as mate_id,t1.mate_name,
+	                   sum(nvl(t1.out_num,0)) as out_Inve,sum(nvl(t1.inve_num,0)) as inve_Num,sum(nvl(t1.main_stru_num,0)) as main_Stru_Num,
+	               t1.cut_aim cut_goal,t1.version mate_version,t1.main_stru,t1.is_special
+	             from bam_cut_liai_mate t1
+	             left join bam_cut_liai t2
+	             on t1.liai_id = t2.liai_id
+	             where t2.status = '已确认'
+	                 and t2.cut_month= #{planMonth}
+	                 group by t1.mate_code ,t1.mate_name,t1.cut_aim,t1.version,t1.main_stru,t1.is_special
+	     ) a 
+	     left join mdm_mate b
+	     on a.mate_id = b.mate_code)d  left join mdm_mate h on d.mate_id = h.mate_code
+	     order by d.is_special,d.mate_id,d.mate_version
+	     ) main 
+	     left join (select detail.mat_code,detail.nation_stock2,detail.EST_SALE_QTY from ps_pad_plan_detail detail
+	     inner join ps_pad_plan head on head.id = detail.main_id
+	     where head.plan_month=#{planMonth}) plan on main.mate_id = plan.mat_code
+	     left join 
+	     (
+	     select ${columnName},mat_code from ps_sale_fcst_detail 
+	     where main_id = #{saleFcstId}
+	     ) saleFcst on saleFcst.mat_code = main.mate_id
+         left join
+         (
+         select pm.mate_id,pm.mate_version,pm.main_stru,pm.cut_goal, pm.cut_sche from bam_cut_plan_mate pm where pm.plan_id=(
+         select p.plan_id from bam_cut_plan p where p.cut_plan_code=#{citeCode})
+         ) cutPlanMate on (cutPlanMate.mate_id = main.mate_id and nvl(cutPlanMate.mate_version,'QQQ') = nvl(main.mate_version,'QQQ')
+         and cutPlanMate.main_stru = main.main_stru and nvl(cutPlanMate.cut_goal,'BBB') = nvl(main.cut_goal,'BBB')) -->
+         
+          select main.*,liai.main_stru2,nvl(liai.out_inve,0) as out_inve,
+		      nvl(liai.inve_num,0) as inve_num,nvl(liai.main_stru_num,0) as main_stru_num,
+      		case when main.main_stru = liai.main_stru2 then 'same' 
+        	when liai.mate_id is null then '' 
+          	else 'different' end as is_change,
+            nvl(plan.nation_stock2,0) as now_inve,nvl(plan.est_sale_qty,0) as add_one,
+		     nvl(q1,0) as add_two,nvl(q2,0) as add_three,nvl(q3,0) as add_four,nvl(q4,0) as add_five,
+		     nvl(q5,0) as add_six ,cutPlanMate.cut_sche
+	       	from(
+	         select p.main_stru,p.cut_aim as cut_goal,
+	          p.version as mate_version,p.is_special,
+	         m.mate_code as mate_id,m.mate_name,m.big_item_code,m.big_item_expl
+	         from bam_cut_prod p left join mdm_mate m 
+	         on p.mate_id = m.mate_id
+	         )main
+	         left join (
+	         select a.out_inve,a.inve_num,a.main_stru_num,a.mate_version2,a.main_stru2,
+		      case when nvl(b.fin_mate_id,'1')='1' then a.mate_id else b.fin_mate_id end as mate_id from 
+		     (select t1.mate_code as mate_id,t1.mate_name,
+		                   sum(nvl(t1.out_num,0)) as out_Inve,sum(nvl(t1.inve_num,0)) as inve_Num,sum(nvl(t1.main_stru_num,0)) as main_Stru_Num,
+                    t1.version as mate_version2,t1.main_stru as main_stru2
+		             from bam_cut_liai_mate t1
+		             left join bam_cut_liai t2
+		             on t1.liai_id = t2.liai_id
+		             where t2.status = '已确认'
+		                 and t2.cut_month= #{planMonth}
+		                 group by t1.mate_code ,t1.mate_name,t1.version,t1.main_stru
+		     ) a 
+		     left join mdm_mate b
+		     on a.mate_id = b.mate_code)liai 
+         	 on main.mate_id = liai.mate_id and nvl(main.mate_version,'QQQ') = nvl(liai.mate_version2,'QQQ')
+             left join (select detail.mat_code,detail.nation_stock2,detail.EST_SALE_QTY from ps_pad_plan_detail detail
+		     inner join ps_pad_plan head on head.id = detail.main_id
+		     where head.plan_month=#{planMonth}) plan on main.mate_id = plan.mat_code
+		     left join 
+		     (
+		     select ${columnName},mat_code from ps_sale_fcst_detail 
+		     where main_id = #{saleFcstId}
+		     ) saleFcst on saleFcst.mat_code = main.mate_id
+		     left join
+	         (
+	         select pm.mate_id,pm.mate_version ,pm.cut_sche from bam_cut_plan_mate pm where pm.plan_id=(
+	         select p.plan_id from bam_cut_plan p where p.cut_plan_code=#{citeCode})
+	         ) cutPlanMate 
+	         on (cutPlanMate.mate_id = main.mate_id and nvl(cutPlanMate.mate_version,'QQQ') = nvl(main.mate_version,'QQQ'))
+	         order by main.is_special,main.mate_id,main.mate_version
+	</select>
+</mapper>

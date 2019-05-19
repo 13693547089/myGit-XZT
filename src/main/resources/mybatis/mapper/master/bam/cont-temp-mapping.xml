@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.ContTempMapper">
+	<resultMap id="tempMap" type="com.faujor.entity.bam.ContTemp">
+			<id property="id" column="id"/>
+			<result property="tempStatus" column="temp_status"/>
+			<result property="statusName" column="status_Name"/>
+			<result property="tempNo" column="temp_No"/>
+			<result property="tempName" column="temp_Name"/>
+			<result property="startDate" column="start_Date"/>
+			<result property="endDate" column="end_Date"/>
+			<result property="createTime" column="create_Time"/>
+			<result property="createUser" column="create_user"/>
+			<result property="modifyUser" column="modify_user"/>
+			<result property="modifyTime" column="modify_time"/>
+			
+			<result property="contType" column="cont_Type"/>
+			<result property="contTypeName" column="cont_Type_Name"/>
+			<result property="contVersion" column="cont_Version"/>
+			<result property="contRemark" column="cont_Remark"/>
+			<result property="versionBasis" column="version_Basis"/>
+			<result property="basisName" column="basisName"/>
+			<result property="creater" column="creater"/>
+			<result property="modifier" column="modifier"/>
+			
+	</resultMap>
+	<select id="getTempByPage" resultMap="tempMap" parameterType="Map">
+		select * from (
+			select tb.*,rownum  rn from
+				(select bct.* from bam_cont_temp bct 
+				  where 1=1 
+					<if test="tempName!=null and tempName!=''">
+						and (bct.temp_name like #{tempName} or bct.temp_no like #{tempName})
+					</if>
+					<if test="contType!=null and contType!=''">
+						and bct.cont_Type=#{contType}
+					</if>
+					<if test="tempStatus!=null and tempStatus!=''">
+						and bct.temp_status=#{tempStatus}
+					</if>
+					and (bct.create_user=#{userName} or bct.status_Name='已发布')
+				order by bct.create_time desc) tb
+		 	where rownum &lt;=#{page.to}) tb1
+		where tb1.rn &gt; #{page.from}
+	</select>
+	<select id="getTempNum" resultType="Integer" parameterType="Map">
+		select count(1) from bam_cont_temp bct
+		where 1=1 
+		<if test="tempName!=null and tempName!=''">
+			and (bct.temp_name like #{tempName} or bct.temp_no like #{tempName})
+		</if>
+		<if test="contType!=null and contType!=''">
+			and bct.cont_Type=#{contType}
+		</if>
+		<if test="tempStatus!=null and tempStatus!=''">
+			and bct.temp_status=#{tempStatus}
+		</if>
+		and (bct.create_user=#{userName} or bct.status_Name='已发布')
+	</select>
+	<insert id="saveTemp" parameterType="com.faujor.entity.bam.ContTemp">
+		insert into bam_cont_temp
+		  (id,temp_status,status_name, temp_no,temp_name,
+		   create_user,creater,modifier,
+		   create_time,modify_user,modify_time,
+		   cont_type,cont_type_name,cont_Version,cont_Remark,version_Basis)
+		values
+		  (#{id},#{tempStatus},#{statusName},#{tempNo},#{tempName},
+		 	#{createUser},#{creater},#{modifier},
+		  #{createTime},#{createUser},#{createTime},
+		  #{contType},#{contTypeName}, #{contVersion}, #{contRemark}, #{versionBasis})
+	</insert>
+	<delete id="deleteTempByNo" parameterType="String">
+		delete from bam_cont_temp where temp_no=#{tempNo}
+	</delete>
+	<update id="updateTemp"  parameterType="com.faujor.entity.bam.ContTemp">
+		update bam_cont_temp set
+		  temp_Status=#{tempStatus},
+		  status_name=#{statusName},
+		  temp_name=#{tempName},modifier=#{modifier},
+		  modify_user=#{modifyUser},modify_time=#{modifyTime},
+		  cont_Type=#{contType},cont_Type_name=#{contTypeName}, cont_Version=#{contVersion},
+		  cont_Remark=#{contRemark}, version_Basis=#{versionBasis}
+		where temp_No=#{tempNo}
+	</update>
+	<select id="getTemp" parameterType="Map" resultMap="tempMap">
+		select bct.*,dd.real_name as basisName from bam_cont_temp bct left join doc_document dd
+		on bct.version_basis=dd.id
+		<where>
+			<if test="tempNo!=null and tempNo!=''">
+				 temp_no=#{tempNo}
+			</if>
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+		</where>
+	</select>
+	<update id="changeTempSatus" parameterType="com.faujor.entity.bam.ContTemp">
+		update bam_cont_temp set
+		  temp_Status=#{tempStatus},
+		  status_name=#{statusName}
+		where temp_No=#{tempNo}
+	</update>
+</mapper>

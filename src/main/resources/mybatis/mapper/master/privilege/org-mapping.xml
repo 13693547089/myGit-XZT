@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.privilege.OrgMapper">
+	<resultMap id="orgMap" type="com.faujor.entity.privileges.OrgDo">
+		<id property="menuId" column="sid" />
+		<result property="sname" column="sname" />
+		<result property="scode" column="scode" />
+		<result property="sfname" column="sfname" />
+		<result property="sfid" column="sfid" />
+		<result property="sfcode" column="sfcode" />
+		<result property="sfnames" column="sfnames" />
+		<result property="sfids" column="sfids" />
+		<result property="sfcodes" column="sfcodes" />
+		<result property="stype" column="stype" />
+		<result property="parentId" column="sparent_id" />
+		<result property="snodeKind" column="snode_kind" />
+		<result property="spersonId" column="sperson_id" />
+		<result property="screateTime" column="screate_time" />
+		<result property="screator" column="screator" />
+		<result property="screateName" column="screate_name" />
+		<result property="supdateTime" column="supdate_time" />
+		<result property="smodifier" column="smodifier" />
+		<result property="smodifyName" column="smodify_name" />
+		<result property="suppNo" column="supp_no" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.privileges.UserRoleDO" id="userRoleMap">
+		<id property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="roleId" column="role_id" />
+	</resultMap>
+
+	<resultMap type="com.faujor.entity.privileges.UserDO" id="userDoMap">
+		<id property="id" column="user_id" />
+		<result property="userName" column="username" />
+		<result property="password" column="password" />
+		<result property="email" column="email" />
+		<result property="mobile" column="mobile" />
+		<result property="status" column="status" />
+		<result property="name" column="name" />
+		<result property="leader" column="leader" />
+		<result property="sfcodes" column="sfcodes" />
+	</resultMap>
+
+	<select id="orgList" resultMap="orgMap">
+		select * from sys_org
+	</select>
+	<select id="orgListByMap" resultMap="orgMap" parameterType="Map">
+		select * from sys_org where 1=1
+		<if test="sType!=null and sType!=''">
+			and stype=#{sType}
+		</if>
+	</select>
+
+	<insert id="save" parameterType="com.faujor.entity.privileges.OrgDo">
+		insert into sys_org (SID, SNAME,
+		SCODE, SFNAME, SFID, SFCODE, SFNAMES, SFIDS, SFCODES, STYPE,
+		SPARENT_ID, SNODE_KIND, SPERSON_ID, SCREATE_TIME, SCREATOR,
+		SCREATE_NAME, SUPP_NO) values (#{menuId}, #{sname}, #{scode},
+		#{sfname},
+		#{sfid}, #{sfcode},#{sfnames}, #{sfids}, #{sfcodes},
+		#{stype},
+		#{parentId}, #{snodeKind}, #{spersonId}, #{screateTime},
+		#{screator},
+		#{screateName}, #{suppNo})
+	</insert>
+
+	<select id="getOrgById" resultMap="orgMap" parameterType="Long">
+		select
+		* from sys_org t where t.sid = #{id}
+	</select>
+
+	<delete id="removePsnByParentId" parameterType="Long">
+		delete from
+		sys_org t
+		where t.sparent_id = #{paraentId}
+	</delete>
+	<delete id="removeUserPsnByParentId" parameterType="Long">
+		delete from
+		SYS_USER t where t.USER_ID IN (select q.SPERSON_ID from sys_org q
+		where q.sparent_id = #{parentId} )
+	</delete>
+
+	<select id="findOrgListByParentId" resultMap="orgMap"
+		parameterType="Long">
+		select * from sys_org t where t.sparent_id = #{parentId}
+	</select>
+
+	<delete id="remove" parameterType="List">
+		delete from sys_org t where
+		t.sid in
+		<foreach item="ids" collection="list" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<update id="update" parameterType="com.faujor.entity.privileges.OrgDo">
+		update sys_org
+		<set>
+			<if test="menuId != null "> sid= #{menuId}, </if>
+			<if test="sname != null "> sname = #{sname}, </if>
+			<if test="scode != null "> scode = #{scode}, </if>
+			<if test="sfname != null "> sfname = #{sfname}, </if>
+			<if test="sfid != null ">sfid = #{sfid}, </if>
+			<if test="sfcode != null  ">sfcode = #{sfcode}, </if>
+			<if test="sfnames != null "> sfnames = #{sfnames}, </if>
+			<if test="sfids != null ">sfids = #{sfids}, </if>
+			<if test="sfcodes != null  ">sfcodes = #{sfcodes}, </if>
+			<if test="suppNo != null  ">supp_no = #{suppNo}, </if>
+		</set>
+		where sid = #{menuId}
+	</update>
+
+	<select id="findOrgByUserId" parameterType="Long" resultMap="orgMap">
+		select t.* from sys_org t where t.sperson_id = #{userId}
+	</select>
+
+	<select id="checkCode" parameterType="map" resultType="Integer">
+		select count(*) from sys_org t where t.scode = #{scode}
+		<if test="sid != null and sid != ''">
+			and t.sid <![CDATA[ <> ]]>
+			#{sid}
+		</if>
+	</select>
+
+	<select id="findOrgByOrgCode" resultMap="orgMap">
+		select * from sys_org
+		where scode = #{orgCode}
+	</select>
+
+	<insert id="batchSaveOrg" parameterType="list">
+		insert all into sys_org (scode, sparent_id, sperson_id, stype, sname)
+		values
+		<foreach collection="list" index="index" item="item"
+			separator="into sys_org (scode, sparent_id, sperson_id, stype, sname) values">
+			(#{item.scode}, #{item.parentId}, #{item.spersonId},
+			#{item.stype}, #{item.sname})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<select id="findOrgByParams" resultMap="userDoMap"
+		parameterType="com.faujor.entity.privileges.OrgDo">
+		select t2.*, t1.sfcodes from sys_org t1 left join sys_user t2 on
+		t1.sperson_id =
+		t2.user_id where t2.user_id is not null
+		<if test="scode != null and scode != ''">
+			and t1.sfcode like #{scode}
+		</if>
+		<if test="spersonId != null and spersonId != ''">
+			and t1.SPERSON_ID = #{spersonId}
+		</if>
+		<if test="sfcode != null and sfcode != ''">
+			and t1.sfcode like #{sfcode}
+		</if>
+		<if test="sfname != null and sfname != ''">
+			and t1.sfname like '%'||#{sfname}||'%'
+		</if>
+		<if test="stype != null and stype != ''">
+			and t1.stype = #{stype}
+		</if>
+		<if test="sname != null and sname != ''">
+			and (t1.sname like '%'||#{sname}||'%' or t1.scode like '%'||#{sname}||'%') 
+		</if>
+	</select>
+	
+	<select id="findOrgByParams2" resultMap="userDoMap"
+		parameterType="com.faujor.entity.privileges.OrgDo">
+		select t2.*, t1.sfcodes from sys_org t1 left join sys_user t2 on
+		t1.sperson_id =
+		t2.user_id where t2.user_id is not null
+		<if test="scode != null and scode != ''">
+			and t1.sfcode like '%'||#{scode}||'%'
+		</if>
+		<if test="sfid != null and sfid != ''">
+			and t2.user_id  = #{sfid}
+		</if>
+	</select>
+
+	<select id="findOrgListByParams" resultMap="orgMap"
+		parameterType="com.faujor.entity.privileges.OrgDo">
+		select * from sys_org t where 1=1
+		<if test="sname != null and sname != ''">
+			and (t.sname like #{sname} or t.scode like #{sname})
+		</if>
+	</select>
+
+	<select id="findOrgListBySIDs" resultMap="orgMap" parameterType="list">
+		select * from sys_org where sid in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+
+	</select>
+	
+	<select id="findOrgsByOrgCode" parameterType="String" resultMap="orgMap">
+		select * from sys_org where stype = #{code}
+	</select>
+	
+	
+	<resultMap type="com.faujor.entity.privileges.UserVO" id="userVOMap">
+		<result column="user_id" property="userId" />
+		<result column="name" property="name" />
+		<result column="user_type" property="userType" />
+		<result column="sfname" property="sfname" />
+	</resultMap>
+	<select id="findUserIdsByParams" parameterType="map" resultMap="userVOMap">
+		SELECT t1.USER_ID, t1. NAME, t1.USER_TYPE, t2.SFNAME 
+		FROM SYS_USER t1 LEFT JOIN SYS_ORG t2 ON t1.user_id = t2.SPERSON_ID 
+		<where>
+			<if test="user_type != null and user_type != ''">
+				and t1.user_type = #{user_type}
+			</if>
+			<if test="user_dept != null and user_dept != ''">
+				and t2.sfcode like '%${user_dept}%'
+			</if>
+			<if test="username != null and username != ''">
+				and (t1.name like '%${username}%' or t1.username like '%${username}%')
+			</if>
+		</where>
+	</select>
+	
+	
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include::layuiCommonHeader">
+<title>layui</title>
+</head>
+<body class='fau-body'>
+
+	<div class='divMargin divMargin1'>
+		<!-- <button class="layui-btn layui-btn-xs blueHollow" id="submitBtn">提交</button> -->
+		<button class="layui-btn layui-btn-xs blueHollow" id="saveBtn">保存</button>
+		<button class="layui-btn layui-btn-xs blueHollow" id="backBtn">返回</button>
+
+	</div>
+	<form class="layui-form" action="" id="signForm">
+		<input type="text" id="tempList" th:value="${tempJson}" class="layui-hide">
+		<input type="text" id="mateList" th:value="${mateJson}" class="layui-hide"> 
+		<input type="text" id="quoteTempId" name="quoteTempId" th:value="${qsd.quoteTempId}" class="layui-hide"> 
+		<input type="text" id="mateId" name="mateId" th:value="${qsd.mateId}" class="layui-hide"> 
+		<input type="text" id="id" name="id" th:value="${qsd.id}" class="layui-hide">
+		<input type="text" id="status" name="status" th:value="${status}" class="layui-hide"> 
+		<input type="text" id="struDetailsList" name="struDetailsList" class="layui-hide">
+		<div class="layui-row MarginTop">
+			<div class="layui-col-md8">
+				<label class="layui-form-label">物料编码</label>
+				<div class="layui-input-inline" style="width: 73.5%;">
+					<select name="mateCode" lay-search="" lay-filter="mateSelected">
+						<option value="">请选择...</option>
+						<option th:each="mate:${mateList}" th:value="${mate.mateCode}"
+							th:text="${mate.mateCode+' '+mate.skuEnglish}"
+							th:selected="${mate.mateCode == qsd.mateCode}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">基本计量单位</label>
+					<div class="layui-input-inline">
+						<input type="text" name="basicUnit" id="basicUnit" th:value="${qsd.basicUnit}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md8">
+				<label class="layui-form-label">中文名称</label>
+				<div class="layui-input-inline" style="width: 73.5%;">
+					<input type="text" id="chName" name="chName" th:value="${qsd.chName}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">物料类型</label>
+					<div class="layui-input-inline">
+						<input type="text" name="mateType" id="mateType" th:value="${qsd.mateType}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md8">
+				<label class="layui-form-label">模板选择</label>
+				<div class="layui-input-inline" style="width: 73.5%">
+					<select name="tempCode" lay-verify="" lay-search=""
+						lay-filter="tempSelected">
+						<option value="">请选择...</option>
+						<option th:each="temp:${tempList}" th:value="${temp.tempCode}" th:text="${temp.remark}"
+							th:selected="${temp.tempCode == qsd.tempCode}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-col-md4">
+				<div class="layui-form-item">
+					<label class="layui-form-label">报价单位</label>
+					<div class="layui-input-inline">
+						<input type="text" name="quoteUnit" id="quoteUnit" th:value="${qsd.quoteUnit}" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="tableCont">
+		<table id="struTable" lay-filter="struDetails"></table>
+	</div>
+	<script type="text/html" id="operateBar">
+ 		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="add">添加</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<div th:include="include::layuiCommonJS"></div>
+	<script type="text/javascript" th:src="@{/larryMS/js/appjs/mdm/quote/struEdit.js}"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.mdm.QualPapersMapper">
+
+	<insert id="insertQualPapers" parameterType="com.faujor.entity.mdm.QualPapers">
+		insert into
+		mdm_qual_papers values(lower(sys_guid()),
+		#{papersId},#{papersName},#{papersType},#{startDate},#{endDate},#{acceUrl},
+		#{acceOldName},#{acceNewName},#{suppId},#{fileId})
+	</insert>
+
+	<resultMap type="com.faujor.entity.mdm.QualPapers" id="papers">
+		<result property="id" column="id" />
+		<result property="papersId" column="papers_id" />
+		<result property="papersName" column="papers_name" />
+		<result property="papersType" column="papers_type" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="acceUrl" column="acce_url" />
+		<result property="acceOldName" column="acce_old_name" />
+		<result property="acceNewName" column="acce_new_name" />
+		<result property="fileId" column="file_id" />
+		<result property="suppId" column="supp_id" />
+	</resultMap>
+	<select id="queryQualPapersBySuppId" parameterType="String"
+		resultMap="papers">
+		select * from mdm_qual_papers p where p.supp_id=#{suppId}
+	</select>
+
+	<resultMap type="com.faujor.entity.mdm.QualProc" id="qualProc">
+		<result property="id" column="id" />
+		<result property="suppId" column="supp_id" />
+		<result property="sapId" column="sap_id" />
+		<result property="purcOrga" column="purc_orga" />
+		<result property="suppRange" column="supp_range" />
+		<result property="suppRangeDesc" column="supp_range_desc" />
+		<result property="payClause" column="pay_clause" />
+		<result property="currCode" column="curr_code" />
+		<result property="abcIden" column="abc_iden" />
+		<result property="suppGroup" column="supp_group" />
+	</resultMap>
+	<select id="queryQualProcBySuppId" parameterType="String"
+		resultMap="qualProc">
+		select * from mdm_proc p where p.supp_id =#{suppId}
+	</select>
+	
+	<select id="queryQualProcBySapId" parameterType="String"
+		resultMap="qualProc">
+		select * from mdm_proc p where p.sap_id =#{sapId}
+	</select>
+	<select id="queryQualProcBySapId2" parameterType="String"
+		resultMap="qualProc">
+		 select p.supp_range,p.supp_range_desc from 
+		 mdm_proc p where p.sap_id =#{sapId} 
+		 and (p.supp_range is not null or p.supp_range != '')
+	</select>
+
+	<update id="updateSuppPurcFromEDI" parameterType="com.faujor.entity.cluster.mdm.SuppPurcDO">
+		update mdm_proc
+		set pay_clause = #{payClause}, curr_code = #{currCode}, abc_iden =
+		#{abcIden}, supp_group = #{suppGroup} where purc_orga = #{purcOrga}
+		and sap_id = #{sapId} and supp_range = #{suppRange}
+	</update>
+
+	<insert id="batchSaveSuppPurcFromEDI" parameterType="list">
+		insert all into mdm_proc (id, supp_id, sap_id,
+		purc_orga,
+		purc_orga_desc, supp_range, supp_range_desc, pay_clause,
+		pay_clause_desc, curr_code, abc_iden, supp_group) values
+		<foreach collection="list" index="index" item="item" open=""
+			close=""
+			separator="into mdm_proc (id, supp_id, sap_id,
+		purc_orga, purc_orga_desc, supp_range, supp_range_desc, pay_clause,
+		pay_clause_desc, curr_code, abc_iden, supp_group) values">
+			(#{item.id}, #{item.suppId}, #{item.sapId},
+			#{item.purcOrga}, #{item.purcOrgaDesc}, #{item.suppRange},
+			#{item.suppRangeDesc}, #{item.payClause},#{item.payClauseDesc},
+			#{item.currCode}, #{item.abcIden},#{item.suppGroup})
+		</foreach>
+		select 1 from dual
+	</insert>
+
+	<select id="findPapersBySuppIdAndCode" resultMap="papers">
+		select * from
+		mdm_qual_papers where supp_id = #{0} and papers_id = #{1}
+	</select>
+
+	<update id="updateSuppPapersFromEDI" parameterType="com.faujor.entity.mdm.QualPapers">
+		update
+		mdm_qual_papers set papers_name = #{papersName}, papers_type =
+		#{papersType}, start_date = #{startDate}, end_date = #{endDate} where
+		id = #{id}
+	</update>
+	
+	<delete id="deletePaperOfQualSuppBySuppId">
+		delete from mdm_qual_papers qp where qp.supp_id=#{suppId}
+	</delete>
+</mapper>

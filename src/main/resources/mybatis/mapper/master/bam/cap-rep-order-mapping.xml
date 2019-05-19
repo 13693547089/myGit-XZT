@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.master.bam.CapRepOrderMapper">
+  <resultMap id="BaseResultMap" type="com.faujor.entity.bam.psm.CapRepOrder">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAIN_ID" jdbcType="VARCHAR" property="mainId" />
+    <result column="MATE_CODE" jdbcType="VARCHAR" property="mateCode" />
+    <result column="MATE_DESC" jdbcType="VARCHAR" property="mateDesc" />
+    <result column="VERSION" jdbcType="VARCHAR" property="version" />
+    <result column="BATCH_NO" jdbcType="VARCHAR" property="batchNo" />
+    <result column="ORDER_NUM" jdbcType="DECIMAL" property="orderNum" />
+    <result column="FINISHED_NUM" jdbcType="DECIMAL" property="finishedNum" />
+    <result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo" />
+    <result column="ORDER_SIDE" jdbcType="VARCHAR" property="orderSide" />
+    <result column="EXPECT_COMPLETE_TIME" jdbcType="DATE" property="expectCompleteTime" />
+    <result column="ORDER_ATTACH" jdbcType="VARCHAR" property="orderAttach" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from PS_CAP_REP_ORDER
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.faujor.entity.bam.psm.CapRepOrder">
+    insert into PS_CAP_REP_ORDER (ID,main_id, MATE_CODE, MATE_DESC, 
+      VERSION, BATCH_NO, ORDER_NUM, 
+      FINISHED_NUM, ORDER_NO, ORDER_SIDE, 
+      EXPECT_COMPLETE_TIME, ORDER_ATTACH)
+    values (#{id,jdbcType=VARCHAR}, #{mainId},#{mateCode,jdbcType=VARCHAR}, #{mateDesc,jdbcType=VARCHAR}, 
+      #{version,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, #{orderNum,jdbcType=DECIMAL}, 
+      #{finishedNum,jdbcType=DECIMAL}, #{orderNo,jdbcType=VARCHAR}, #{orderSide,jdbcType=VARCHAR}, 
+      #{expectCompleteTime,jdbcType=DATE}, #{orderAttach,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.faujor.entity.bam.psm.CapRepOrder">
+    update PS_CAP_REP_ORDER
+    set MATE_CODE = #{mateCode,jdbcType=VARCHAR},
+      MATE_DESC = #{mateDesc,jdbcType=VARCHAR},
+      VERSION = #{version,jdbcType=VARCHAR},
+      BATCH_NO = #{batchNo,jdbcType=VARCHAR},
+      ORDER_NUM = #{orderNum,jdbcType=DECIMAL},
+      FINISHED_NUM = #{finishedNum,jdbcType=DECIMAL},
+      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      ORDER_SIDE = #{orderSide,jdbcType=VARCHAR},
+      EXPECT_COMPLETE_TIME = #{expectCompleteTime,jdbcType=DATE},
+      ORDER_ATTACH = #{orderAttach,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select *
+    from PS_CAP_REP_ORDER
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select*
+    from PS_CAP_REP_ORDER
+  </select>
+    <delete id="deleteByMainId" parameterType="java.lang.String">
+    delete from PS_CAP_REP_ORDER
+    where MAIN_ID = #{mainId}
+  </delete>
+  <select id="selectByMainId" parameterType="String" resultMap="BaseResultMap">
+    select * from ps_cap_rep_order t1 where t1.main_id=#{mainId}
+  </select>
+  <insert id="batchInsert" parameterType="com.faujor.entity.bam.psm.CapRepOrder">
+    insert all
+    <foreach collection="list" item="order">
+    into PS_CAP_REP_ORDER (ID,main_id, MATE_CODE, MATE_DESC, 
+      VERSION, BATCH_NO, ORDER_NUM, 
+      FINISHED_NUM, ORDER_NO, ORDER_SIDE, 
+      EXPECT_COMPLETE_TIME, ORDER_ATTACH)
+    values (#{order.id,jdbcType=VARCHAR},#{order.mainId}, #{order.mateCode,jdbcType=VARCHAR}, #{order.mateDesc,jdbcType=VARCHAR}, 
+      #{order.version,jdbcType=VARCHAR}, #{order.batchNo,jdbcType=VARCHAR}, #{order.orderNum,jdbcType=DECIMAL}, 
+      #{order.finishedNum,jdbcType=DECIMAL}, #{order.orderNo,jdbcType=VARCHAR}, #{order.orderSide,jdbcType=VARCHAR}, 
+      #{order.expectCompleteTime,jdbcType=DATE}, #{order.orderAttach,jdbcType=VARCHAR})
+  	</foreach>
+  	select 1 from dual
+  </insert>
+</mapper>

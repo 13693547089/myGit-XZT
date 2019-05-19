@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.faujor.dao.sapcenter.sync.SyncMapper">
+	
+	<resultMap type="com.faujor.entity.sapcenter.bam.OraCxjhEntity" id="oraCxjhMap">
+		<result property="year" column="YEAR"/>
+		<result property="month" column="MONTH"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="zabc" column="ZABC"/>
+		<result property="zxspj" column="ZXSPJ"/>
+		<result property="zsntq" column="ZSNTQ"/>
+		<result property="zsykc" column="ZSYKC"/>
+		<result property="zbyjh" column="ZBYJH"/>
+		<result property="zsjsc" column="ZSJSC"/>
+		<result property="zbyxl" column="ZBYXL"/>
+		<result property="zyjrk" column="ZYJRK"/>
+		<result property="zygxl" column="ZYGXL"/>
+	</resultMap>
+	
+	<select id="getMatSyncInfoCount" resultType="java.lang.Integer" parameterType="Map">
+		select count(1) from T_ORA_CXJH 
+		WHERE 1=1 
+		<if test="year!=null and year!=''">
+			and YEAR = #{year}
+		</if>
+		<if test="month!=null and month!=''">
+			and MONTH = #{month}
+		</if>
+	</select>
+	
+	<select id='getMatSyncInfoByCondition' resultMap="oraCxjhMap" parameterType="java.util.Map">
+		select * from T_ORA_CXJH 
+		WHERE 1=1 
+		<if test="year!=null and year!=''">
+			and YEAR = #{year}
+		</if>
+		<if test="month!=null and month!=''">
+			and MONTH = #{month}
+		</if>
+	</select>
+	
+	<update id="updatePadPlan" parameterType="com.faujor.entity.bam.psm.PadPlan">
+		update PS_PAD_PLAN set
+			sn=#{sn},plan_code=#{planCode},
+			plan_name=#{planName},plan_month=#{planMonth}, status=#{status},
+			upt_date=#{uptDate},upt_user=#{uptUser}
+		where id=#{id}
+	</update>
+	
+</mapper>

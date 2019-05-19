@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="include::layuiHeader">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>生产交货计划管理</title>
+</head>
+
+<div th:include="include::layuiCommonJS"></div>
+<script type="text/javascript" th:src="@{/larryMS/js/appjs/bam/padPlan/padPlanRecord.js}"></script>
+
+<style type="text/css">
+.red {color: red;}
+.center {text-align: center;}
+input {height: 30px;}
+.main-body{margin-top:20px;margin-left:20px}
+.doc-table{margin-right:20px;}
+.tree-search{width: 70%;}
+.table-search{width: 30%;}
+.layui-colla-title {
+    margin-top: 0px;
+    margin-bottom: 0px;}
+.layui-form-label {
+    width: 105px;
+}
+.margin-left4{margin-left:4%}
+</style>
+
+<body class='fau-body-list'>
+	<div class="demoTable">
+		<form action="" id="searchForm" class="layui-form">
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">物料编号/名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="matName" id="matName" lay-verify="required"
+								placeholder="物料编号/名称"  class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">计划月份</label>
+						<div class="layui-input-block">
+						<input type="text" id="planMonth" name="planMonth" placeholder="yyyy-MM" class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+			    <div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">版本范围</label>
+						<div class="layui-input-inline" style='display:flex;'>
+							<input type="text" class="layui-input" id="startVersion" name="startVersion" disabled="disabled" placeholder="yyyy-MM">
+							<div style='padding:0px 10px;line-height:38px;'>-</div>
+							<input type="text" class="layui-input" id="endVersion" name="endVersion" placeholder="yyyy-MM">
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="layui-row MarginTop">
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">产能划分</label>
+						<div class="layui-input-block">
+							<input type="text" name="produExpl" id="produExpl" lay-verify="required"
+								placeholder="产能划分"  class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">产品系列</label>
+						<div class="layui-input-block">
+							<input type="text" name="prodSeries" id="prodSeries" lay-verify="required"
+								placeholder="产品系列"  class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-form-item">
+						<label class="layui-form-label">大品项</label>
+						<div class="layui-input-block">
+							<input type="text" name="bigItemExpl" id="bigItemExpl" lay-verify="required"
+								placeholder="大品项"  class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+				
+			</div>
+		</form>
+	<div class="layui-row">
+		<div class="layui-col-md9  ">
+			<button class="layui-btn layui-btn-xs blueHollow" style="margin-left: 10px;"  id="exportBtn">导出</button>
+		</div>
+		<div class="layui-col-md3  textRight">
+			<button class="layui-btn layui-btn-xs yellowSolid"  id="searchBtn">搜索</button>
+			<button class="layui-btn layui-btn-xs yellowHollow" id="resetBtn">重置</button>
+		</div>
+
+
+	</div>
+</div>
+	<div class="layui-row">
+		<div class="layui-fluid tableCont" style='padding:0px;'>
+				<table class="layui-table" id="list-table" class="cont-table" lay-filter="docTool"></table>
+		</div>
+	</div>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="show">查看</a>
+  		<a class="layui-btn layui-btn-xs blueInline" lay-event="edit">编辑</a>
+  		<a class="layui-btn layui-btn-danger layui-btn-xs redInline" lay-event="del">删除</a>
+	</script>
+	<script type="text/html" id="barDemo1">
+  		<a class="layui-btn layui-btn-primary layui-btn-xs blueInline" lay-event="show">查看</a>
+	</script>
+	
+	<script th:inline="javascript">
+		// 用户编码
+	    var userCode = [[${userCode}]];
+		// 是否为产销部人员
+	    var isPad = [[${isPad}]];
+	</script>
+</body>
+</html>
