@@ -15,6 +15,8 @@
 		<result property="modifyTime" column="MODIFY_TIME" />
 		<result property="modifier" column="MODIFIER" />
 		<result property="modifierName" column="MODIFIER_NAME" />
+		<result property="sortIndex" column="sort_Index" />
+		<result property="isDelete" column="is_Delete" />
 	</resultMap>
 	<resultMap type="com.faujor.entity.basic.DicCategory" id="dicCategory">
 		<id property="id" column="ID" />
@@ -27,6 +29,7 @@
 		<result property="modifyTime" column="MODIFY_TIME" />
 		<result property="modifier" column="MODIFIER" />
 		<result property="modifierName" column="MODIFIER_NAME" />
+		<result property="cateType" column="cate_Type" />
 		<!-- <collection property="dicList" > <id property="id" column="ID" /> 
 			<result property="dicName" column="DIC_NAME" /> <result property="dicCode" 
 			column="DIC_CODE" /> <result property="cateId" column="CATE_ID" /> <result 
@@ -124,11 +127,11 @@
 	<insert id="saveDicInfo" parameterType="com.faujor.entity.basic.Dic">
 		insert into srm_dic (ID,
 		DIC_NAME, DIC_CODE, CATE_ID, PARENT_ID, NODE_KIND, REMARK,
-		CREATE_TIME, CREATOR, CREATOR_NAME) values (
+		CREATE_TIME, CREATOR, CREATOR_NAME,modify_Time,modifier,modifier_Name,sort_Index,is_Delete) values (
 		#{id}, #{dicName},
 		#{dicCode}, #{cateId}, #{parentId}, #{nodeKind},
 		#{remark},
-		#{createTime}, #{creator}, #{creatorName}
+		#{createTime}, #{creator}, #{creatorName},#{modifyTime},#{modifier},#{modifierName},#{sortIndex},#{isDelete}
 		)
 	</insert>
 	<delete id="deleteDicInfoByID" parameterType="String">
@@ -143,7 +146,8 @@
 		update srm_dic t set
 		t.DIC_NAME = #{dicName}, t.DIC_CODE = #{dicCode}, t.REMARK =
 		#{remark}, t.MODIFY_TIME = #{modifyTime}, t.MODIFIER = #{modifier},
-		t.MODIFIER_NAME = #{modifierName} where t.ID = #{id}
+		t.MODIFIER_NAME = #{modifierName},t.sort_Index = #{sortIndex},
+		t.is_Delete =#{isDelete} ,t.parent_id =#{parentId} where t.ID = #{id}
 	</update>
 
 	<insert id="saveCategoryInfo" parameterType="com.faujor.entity.basic.DicCategory">

@@ -123,6 +123,9 @@ public class BasicServiceImpl implements BasicService {
 				dic.setCreator(user.getUserId().toString());
 				dic.setCreatorName(user.getUsername());
 				dic.setCreateTime(new Date());
+				dic.setModifier(user.getUserId().toString());
+				dic.setModifierName(user.getName());
+				dic.setModifyTime(new Date());
 				basicMapper.saveDicInfo(dic);
 			}
 			return basicMapper.saveCategoryInfo(category);
@@ -131,7 +134,7 @@ public class BasicServiceImpl implements BasicService {
 			// 更新分类信息
 			category.setModifier(user.getUserId().toString());
 			category.setModifyTime(new Date());
-			category.setModifierName(user.getUsername());
+			category.setModifierName(user.getName());
 
 			// 已经添加的字典信息列表
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -157,7 +160,7 @@ public class BasicServiceImpl implements BasicService {
 				if (dicIds.contains(id)) {
 					dic.setModifyTime(new Date());
 					dic.setModifier(user.getUserId().toString());
-					dic.setModifierName(user.getUsername());
+					dic.setModifierName(user.getName());
 					basicMapper.updateDicInfo(dic);
 					dicIds.remove(id);
 				} else {
@@ -167,6 +170,9 @@ public class BasicServiceImpl implements BasicService {
 					dic.setCreateTime(new Date());
 					dic.setCreator(user.getUserId().toString());
 					dic.setCreatorName(user.getUsername());
+					dic.setModifyTime(new Date());
+					dic.setModifier(user.getUserId().toString());
+					dic.setModifierName(user.getName());
 					basicMapper.saveDicInfo(dic);
 				}
 			}

@@ -19,6 +19,7 @@ public class DicCategory implements Serializable {
 	private Date modifyTime;
 	private String modifier;
 	private String modifierName;
+	private String cateType;
 	private List<Dic> dicList;
 
 	public String getId() {
@@ -108,4 +109,13 @@ public class DicCategory implements Serializable {
 	public void setDicList(List<Dic> dicList) {
 		this.dicList = dicList;
 	}
+
+	public String getCateType() {
+		return cateType;
+	}
+
+	public void setCateType(String cateType) {
+		this.cateType = cateType;
+	}
+	
 }

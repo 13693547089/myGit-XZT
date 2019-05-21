@@ -22,6 +22,7 @@ import com.faujor.entity.privileges.UserDO;
 import com.faujor.service.privileges.RoleService;
 import com.faujor.service.privileges.SysUserService;
 import com.faujor.utils.RestCode;
+import com.faujor.utils.UserCommon;
 
 @RequestMapping("/sys/user")
 @Controller
@@ -171,5 +172,20 @@ public class UserController {
 			userService.update(user);
 		}
 		return RestCode.error();
+	}
+	
+	/**
+	 * 初始化密码
+	 * 
+	 * @return
+	 */
+	@GetMapping("/getUserMessage")
+	@ResponseBody
+	RestCode getUserMessage() {
+		//获取当前登录人信息
+		SysUserDO user = UserCommon.getUser();
+		Map<String,Object> map = new HashMap<>();
+		map.put("user", user);
+		return RestCode.ok(map);
 	}
 }

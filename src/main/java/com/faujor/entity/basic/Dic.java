@@ -12,18 +12,20 @@ public class Dic implements Serializable {
 	private String tableId;
 	private String lay_icon_open;
 	private String lay_icon_close;
-	private String dicName;
-	private String dicCode;
-	private String cateId;
-	private String parentId;
+	private String dicName;//名称
+	private String dicCode;//编码
+	private String cateId;//主表id
+	private String parentId;//父类编码，即组别
 	private String nodeKind;
-	private String remark;
+	private String remark;//备注
 	private Date createTime;
 	private String creator;
 	private String creatorName;
 	private Date modifyTime;
 	private String modifier;
 	private String modifierName;
+	private String sortIndex;//排序
+	private String isDelete;//停用标识X
 
 	public String getId() {
 		return id;
@@ -152,4 +154,22 @@ public class Dic implements Serializable {
 	public void setModifierName(String modifierName) {
 		this.modifierName = modifierName;
 	}
+
+	public String getSortIndex() {
+		return sortIndex;
+	}
+
+	public void setSortIndex(String sortIndex) {
+		this.sortIndex = sortIndex;
+	}
+
+	public String getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(String isDelete) {
+		this.isDelete = isDelete;
+	}
+	
+	
 }

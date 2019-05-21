@@ -1,4 +1,6 @@
 var inintData;
+var userId = "";
+var userName ="";
 
 $(function() {
 	var config = {
@@ -21,6 +23,22 @@ $(function() {
 	for ( var selector in config) {
 		$(selector).chosen(config[selector]);
 	}
+	//获取当前登录人信息
+//	$.ajax({
+//		type : "GET",
+//		url : "/sys/user/getUserMessage",
+//		async : true,
+//		error : function(request) {
+//			parent.layer.msg("程序出错了！", {
+//				time : 1000
+//			});
+//		},
+//		success : function(r) {
+//			var user = r.user;
+//			userId = user.userId;
+//			userName = user.name;
+//		}
+//	});
 
 	function inint(searchArgs) {
 		$("#dicTable").bootstrapTable('destroy');
@@ -113,15 +131,56 @@ $(function() {
 			columns : [ {
 				checkbox : true
 			}, {
+				field : 'parentId',
+				title : '组别'
+			},{
+				field : 'dicCode',
+				title : '分类编码'
+			},{
 				field : 'dicName',
 				title : '名称'
 			}, {
-				field : 'dicCode',
-				title : '分类编码'
-			}, {
 				field : 'remark',
-				title : '备注'
+				title : '备注',
+				width:"150px",
 			}, {
+				field : 'isDelete',
+				title : '是否停用',
+				width:"100px",
+				edit:{
+					type:'select',//下拉框
+					data:[{id:"X",text:'是'},{id:"O",text:'否'}],
+        			valueField:'id',
+        			textField:'text',
+        			onSelect:function(val,rec){
+        				console.log("value---"+val);
+        				console.log("text---"+JSON.stringify(rec));
+        			}
+				},
+				formatter:function(value,row,index){
+					if(value=="X"){
+						return "是";
+					}else {
+						return "否";
+					}
+				}
+			},{
+				field : 'sortIndex',
+				title : '排序码',
+			},{
+				field : 'modifyTime',
+				title : '最后修改时间',
+				edit:false,
+				width:"100px",
+				formatter : function(value,row,index) {
+					return formatTime(value, 'yyyy-MM-dd');
+				}
+			},{
+				field : 'modifierName',
+				edit:false,
+				width:"100px",
+				title : '最后修改人',
+			},{
 				field : 'tableId',
 				title : 'ID',
 				visible : false
@@ -142,14 +201,45 @@ $(function() {
 			pageList : [ 10, 20 ],
 			showRefresh : false,
 			columns : [ {
-				field : 'dicName',
-				title : '名称',
-			}, {
+				field : 'parentId',
+				title : '组别'
+			},{
 				field : 'dicCode',
 				title : '分类编码'
+			},{
+				field : 'dicName',
+				title : '名称'
 			}, {
 				field : 'remark',
-				title : '备注'
+				title : '备注',
+				width:"150px",
+			}, {
+				field : 'isDelete',
+				title : '是否停用',
+				width:"100px",
+				formatter:function(value,row,index){
+					if(value=="X"){
+						return "是";
+					}else {
+						return "否";
+					}
+				}
+			},{
+				field : 'sortIndex',
+				title : '排序码',
+			},{
+				field : 'modifyTime',
+				title : '最后修改时间',
+				edit:false,
+				width:"100px",
+				formatter : function(value,row,index) {
+					return formatTime(value, 'yyyy-MM-dd');
+				}
+			},{
+				field : 'modifierName',
+				edit:false,
+				width:"100px",
+				title : '最后修改人',
 			} ]
 		})
 	}
@@ -171,6 +261,14 @@ $(function() {
 			cateCode : $('#categoryCode').val(),
 			cateType : $('#status').val()
 		}
+		inint(searchArgs);
+	});
+	//重置
+	$('#resetBut').click(function() {
+		$('#categoryName').val(""),
+		$('#categoryCode').val(""),
+		$("#status option[value='']").prop("selected",true);
+		var searchArgs={};
 		inint(searchArgs);
 	});
 
@@ -202,6 +300,7 @@ $(function() {
 
 	// 编辑功能
 	$('#editBtn').click(function() {
+		debugger;
 		var rows = $('#dicTable').bootstrapTable('getAllSelections');
 		if (rows.length != 1) {
 			parent.layer.msg("请选择一条进行编辑！", {
@@ -250,14 +349,13 @@ $(function() {
 // 可编辑列表新增一行
 $("#addDicRow").click(function() {
 	var row = {
-		tableId : new Date().getTime()
+		id : new Date().getTime(),
 	};
 	// 通过mark来判断为哪个可编辑框创建新一行
 	$('#dicInfoTable').bootstrapTable('append', row);
 });
 // 删除选中的
 $('#removeDicRows').click(function() {
-	debugger;
 	var rows = $('#dicInfoTable').bootstrapTable('getAllSelections');
 	var ids = [];
 	$.each(rows, function(index, row) {
@@ -318,6 +416,7 @@ $('#saveCategoryBtn').click(function() {
 			},
 			success : function(r) {
 				if (r) {
+					debugger;
 					var rows = $('#dicInfoTable').bootstrapTable('getData');
 					var cateid = 
 					$("#dicList").val(JSON.stringify(rows));

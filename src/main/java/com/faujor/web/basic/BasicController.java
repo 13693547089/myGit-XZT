@@ -175,10 +175,10 @@ public class BasicController {
 	 */
 	@RequestMapping("/checkCode")
 	@ResponseBody
-	public boolean checkCode(String cateCode, String cateId) {
+	public boolean checkCode(String cateCode, String id) {
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("code", cateCode);
-		param.put("id", cateId);
+		param.put("id", id);
 		int i = basicService.findDicCategoryByIdANDCode(param);
 		if (i == 0) {
 			return true;
